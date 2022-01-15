@@ -17,7 +17,7 @@ uint16_t readAndIncrementu16(nes_registers& registers, const nes_memory& memory,
     return memory.read_uint16(address);
 }
 
-uint16_t readAndIncrementu8(nes_registers& registers, const nes_memory& memory, uint16_t address) {
+uint16_t readAndIncrementu8(nes_registers& registers, const nes_memory& memory, uint8_t address) {
     registers.programCounter += 1;
     return memory.read_uint8(address);
 }
