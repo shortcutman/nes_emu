@@ -15,7 +15,11 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
                                        const nes_memory& memory) {
     switch (mode) {
         case AddressMode::Absolute:
-            return memory.read_uint16(registers.programCounter);
+        {
+            auto pc = registers.programCounter;
+            registers.programCounter += 2;
+            return memory.read_uint16(pc);
+        }
             break;
             
         case AddressMode::AbsoluteX:
@@ -27,7 +31,12 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::ZeroPage:
-            return memory.read_uint8(registers.programCounter);
+        {
+            auto pc = registers.programCounter;
+            registers.programCounter += 1;
+            return memory.read_uint8(pc);
+
+        }
             break;
             
         case AddressMode::ZeroPageX:
