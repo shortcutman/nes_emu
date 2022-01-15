@@ -73,6 +73,80 @@ TEST_F(CPUTest, LDA_Z_PositiveInteger) {
     EXPECT_EQ(_registers->statusRegister, 0b00000000);
 }
 
+TEST_F(CPUTest, LDX_PositiveInteger) {
+    _memory->write(0x00, 0xA2);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    
+    ldx(nes_emu::AddressMode::Immediate);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->x, 0x05);
+    EXPECT_EQ(_registers->statusRegister, 0b00000000);
+}
+
+TEST_F(CPUTest, LDY_PositiveInteger) {
+    _memory->write(0x00, 0xA0);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    
+    ldy(nes_emu::AddressMode::Immediate);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->y, 0x05);
+    EXPECT_EQ(_registers->statusRegister, 0b00000000);
+}
+
+TEST_F(CPUTest, STA) {
+    _memory->write(0x00, 0x85);
+    _memory->write(0x01, 0xFC);
+    _memory->write(0xFC, 0xDB);
+    
+    _registers->programCounter = 0x01;
+    _registers->accumulator = 0xBD;
+    
+    sta(nes_emu::AddressMode::ZeroPage);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->accumulator, 0xBD);
+    EXPECT_EQ(_memory->read_uint8(0xFC), 0xBD);
+}
+
+TEST_F(CPUTest, STX) {
+    _memory->write(0x00, 0x85);
+    _memory->write(0x01, 0xFC);
+    _memory->write(0xFC, 0xDB);
+    
+    _registers->programCounter = 0x01;
+    _registers->x = 0xBD;
+    
+    stx(nes_emu::AddressMode::ZeroPage);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->x, 0xBD);
+    EXPECT_EQ(_memory->read_uint8(0xFC), 0xBD);
+}
+
+TEST_F(CPUTest, STY) {
+    _memory->write(0x00, 0x85);
+    _memory->write(0x01, 0xFC);
+    _memory->write(0xFC, 0xDB);
+    
+    _registers->programCounter = 0x01;
+    _registers->y = 0xBD;
+    
+    sty(nes_emu::AddressMode::ZeroPage);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->y, 0xBD);
+    EXPECT_EQ(_memory->read_uint8(0xFC), 0xBD);
+}
 
 TEST_F(CPUTest, TAX_PositiveInteger) {
     _registers->accumulator = 0x05;
