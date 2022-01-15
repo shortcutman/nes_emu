@@ -17,81 +17,72 @@ class CPUTest : public nes_emu::CPU, public ::testing::Test {
 };
 
 TEST_F(CPUTest, LDA_PositiveInteger) {
-    nes_memory m;
-    m.write(0x00, 0xA9);
-    m.write(0x01, 0x05);
-    m.write(0x02, 0x00);
+    _memory->write(0x00, 0xA9);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
     
-    nes_registers r;
-    r.programCounter = 0x01;
-    r.statusRegister = 0x00;
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
     
-    nes_emu::CPU::lda(nes_emu::AddressMode::Immediate, r, m);
+    lda(nes_emu::AddressMode::Immediate);
     
-    EXPECT_EQ(r.programCounter, 0x02);
-    EXPECT_EQ(r.accumulator, 0x05);
-    EXPECT_EQ(r.statusRegister, 0b00000000);
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->accumulator, 0x05);
+    EXPECT_EQ(_registers->statusRegister, 0b00000000);
 }
 
 TEST_F(CPUTest, LDA_Zero) {
-    nes_memory m;
-    m.write(0x00, 0xA9);
-    m.write(0x01, 0x00);
-    m.write(0x02, 0x00);
+    _memory->write(0x00, 0xA9);
+    _memory->write(0x01, 0x00);
+    _memory->write(0x02, 0x00);
     
-    nes_registers r;
-    r.programCounter = 0x01;
-    r.statusRegister = 0x00;
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
     
-    nes_emu::CPU::lda(nes_emu::AddressMode::Immediate, r, m);
+    lda(nes_emu::AddressMode::Immediate);
     
-    EXPECT_EQ(r.accumulator, 0x00);
-    EXPECT_EQ(r.statusRegister, 0b00000010);
+    EXPECT_EQ(_registers->accumulator, 0x00);
+    EXPECT_EQ(_registers->statusRegister, 0b00000010);
 }
 
 TEST_F(CPUTest, LDA_Immediate_NegativeInteger) {
-    nes_memory m;
-    m.write(0x00, 0xA9);
-    m.write(0x01, 0xF5);
-    m.write(0x02, 0x00);
+    _memory->write(0x00, 0xA9);
+    _memory->write(0x01, 0xF5);
+    _memory->write(0x02, 0x00);
     
-    nes_registers r;
-    r.programCounter = 0x01;
-    r.statusRegister = 0x00;
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
     
-    nes_emu::CPU::lda(nes_emu::AddressMode::Immediate, r, m);
+    lda(nes_emu::AddressMode::Immediate);
     
-    EXPECT_EQ(r.accumulator, 0xF5);
-    EXPECT_EQ(r.statusRegister, 0b10000000);
+    EXPECT_EQ(_registers->accumulator, 0xF5);
+    EXPECT_EQ(_registers->statusRegister, 0b10000000);
 }
 
 TEST_F(CPUTest, LDA_Z_PositiveInteger) {
-    nes_memory m;
-    m.write(0x00, 0xA5);
-    m.write(0x01, 0xDB);
-    m.write(0xDB, 0x05);
+    _memory->write(0x00, 0xA5);
+    _memory->write(0x01, 0xDB);
+    _memory->write(0xDB, 0x05);
 
-    nes_registers r;
-    r.programCounter = 0x01;
-    r.statusRegister = 0x00;
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
     
-    nes_emu::CPU::lda(nes_emu::AddressMode::ZeroPage, r, m);
+    lda(nes_emu::AddressMode::ZeroPage);
     
-    EXPECT_EQ(r.accumulator, 0x05);
-    EXPECT_EQ(r.statusRegister, 0b00000000);
+    EXPECT_EQ(_registers->accumulator, 0x05);
+    EXPECT_EQ(_registers->statusRegister, 0b00000000);
 }
 
 
 TEST_F(CPUTest, TAX_PositiveInteger) {
-    nes_registers r;
-    r.accumulator = 0x05;
-    r.x = 0xDB;
-    r.statusRegister = 0x00;
+    _registers->accumulator = 0x05;
+    _registers->x = 0xDB;
+    _registers->statusRegister = 0x00;
     
-    nes_emu::CPU::tax(r);
+    tax();
     
-    EXPECT_EQ(r.accumulator, 0x05);
-    EXPECT_EQ(r.x, 0x05);
-    EXPECT_EQ(r.statusRegister, 0b00000000);
+    EXPECT_EQ(_registers->accumulator, 0x05);
+    EXPECT_EQ(_registers->x, 0x05);
+    EXPECT_EQ(_registers->statusRegister, 0b00000000);
 }
 }

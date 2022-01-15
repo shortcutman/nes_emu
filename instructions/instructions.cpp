@@ -21,22 +21,22 @@ nes_emu::CPU::CPU() :
 nes_emu::CPU::~CPU() {
 }
 
-unsigned int nes_emu::CPU::brk(nes_registers& registers) {
+unsigned int nes_emu::CPU::brk() {
     return 7;
 }
 
-unsigned int nes_emu::CPU::lda(AddressMode mode, nes_registers& registers, nes_memory& memory) {
-    uint16_t opAddress = decodeOperandAddress(mode, registers, memory);
-    auto value = memory.read_uint8(opAddress);
-    registers.accumulator = value;
-    registers.statusRegister = statusFlagsOnByteValue(registers.accumulator, registers.statusRegister);
+unsigned int nes_emu::CPU::lda(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress);
+    _registers->accumulator = value;
+    _registers->statusRegister = statusFlagsOnByteValue(_registers->accumulator, _registers->statusRegister);
     
     return 2;
 }
 
-unsigned int nes_emu::CPU::tax(nes_registers &registers) {
-    registers.x = registers.accumulator;
-    registers.statusRegister = statusFlagsOnByteValue(registers.x, registers.statusRegister);
+unsigned int nes_emu::CPU::tax() {
+    _registers->x = _registers->accumulator;
+    _registers->statusRegister = statusFlagsOnByteValue(_registers->x, _registers->statusRegister);
     
     return 2;
 }

@@ -30,9 +30,9 @@ namespace nes_emu {
         ~CPU();
         
     protected:
-        unsigned int brk(nes_registers& registers); //opcode 0x00
-        unsigned int lda(AddressMode mode, nes_registers& registers, nes_memory& memory);
-        unsigned int tax(nes_registers& registers); //opcode 0xAA
+        unsigned int brk(); //opcode 0x00
+        unsigned int lda(AddressMode mode);
+        unsigned int tax(); //opcode 0xAA
     };
 }
 
