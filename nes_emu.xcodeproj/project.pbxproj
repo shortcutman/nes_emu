@@ -12,11 +12,33 @@
 		65156C1827902233004211A0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65156C1727902233004211A0 /* main.cpp */; };
 		65ADF1CE279023BD00D83639 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF1CC2790235000D83639 /* SDL2.framework */; };
 		65ADF1CF279023BD00D83639 /* SDL2.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF1CC2790235000D83639 /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		65ADF1E12790296300D83639 /* registers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1DF2790296300D83639 /* registers.cpp */; };
-		65ADF1E427902D8800D83639 /* instructions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1E227902D8800D83639 /* instructions.cpp */; };
 		65ADF1EC2791588A00D83639 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1EB2791588A00D83639 /* main.cpp */; };
-		65ADF1F12791599900D83639 /* math_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1F02791599900D83639 /* math_test.cpp */; };
+		65ADF21F27924BFD00D83639 /* instructions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1E227902D8800D83639 /* instructions.cpp */; };
+		65ADF22527924C2000D83639 /* libinstructions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF21427924BDE00D83639 /* libinstructions.a */; };
+		65ADF22627924C2E00D83639 /* registers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1DF2790296300D83639 /* registers.cpp */; };
+		65ADF2282792521200D83639 /* lda_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2272792521200D83639 /* lda_test.cpp */; };
+		65ADF22B2792660E00D83639 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2292792660E00D83639 /* memory.cpp */; };
+		65ADF22C2792660E00D83639 /* memory.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF22A2792660E00D83639 /* memory.hpp */; };
+		65ADF22F27926F9900D83639 /* cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF22D27926F9900D83639 /* cpu.cpp */; };
+		65ADF23027926F9900D83639 /* cpu.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF22E27926F9900D83639 /* cpu.hpp */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		65ADF22027924C1300D83639 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 65156BFA27902232004211A0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 65ADF21327924BDE00D83639;
+			remoteInfo = instructions;
+		};
+		65ADF22227924C1900D83639 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 65156BFA27902232004211A0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 65ADF21327924BDE00D83639;
+			remoteInfo = instructions;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		65ADF1D0279023BD00D83639 /* Copy Bundle Frameworks */ = {
@@ -54,7 +76,12 @@
 		65ADF1E327902D8800D83639 /* instructions.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = instructions.hpp; sourceTree = "<group>"; };
 		65ADF1E92791588A00D83639 /* nes_emu-tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "nes_emu-tests"; sourceTree = BUILT_PRODUCTS_DIR; };
 		65ADF1EB2791588A00D83639 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		65ADF1F02791599900D83639 /* math_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = math_test.cpp; sourceTree = "<group>"; };
+		65ADF21427924BDE00D83639 /* libinstructions.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libinstructions.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		65ADF2272792521200D83639 /* lda_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lda_test.cpp; sourceTree = "<group>"; };
+		65ADF2292792660E00D83639 /* memory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = memory.cpp; sourceTree = "<group>"; };
+		65ADF22A2792660E00D83639 /* memory.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = memory.hpp; sourceTree = "<group>"; };
+		65ADF22D27926F9900D83639 /* cpu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpu.cpp; sourceTree = "<group>"; };
+		65ADF22E27926F9900D83639 /* cpu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = cpu.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +97,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65ADF22527924C2000D83639 /* libinstructions.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		65ADF21227924BDE00D83639 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +117,9 @@
 				65ADF1CB2790233500D83639 /* 3rdParty */,
 				65156C0427902232004211A0 /* nes_emu */,
 				65ADF1EA2791588A00D83639 /* nes_emu-tests */,
+				65ADF21527924BDE00D83639 /* instructions */,
 				65156C0327902232004211A0 /* Products */,
+				65ADF22427924C2000D83639 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,6 +128,7 @@
 			children = (
 				65156C0227902232004211A0 /* nes_emu.app */,
 				65ADF1E92791588A00D83639 /* nes_emu-tests */,
+				65ADF21427924BDE00D83639 /* libinstructions.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,10 +140,6 @@
 				65156C1427902233004211A0 /* Main.storyboard */,
 				65156C1727902233004211A0 /* main.cpp */,
 				65156C1927902233004211A0 /* nes_emu.entitlements */,
-				65ADF1DF2790296300D83639 /* registers.cpp */,
-				65ADF1E02790296300D83639 /* registers.hpp */,
-				65ADF1E227902D8800D83639 /* instructions.cpp */,
-				65ADF1E327902D8800D83639 /* instructions.hpp */,
 			);
 			path = nes_emu;
 			sourceTree = "<group>";
@@ -122,12 +156,46 @@
 			isa = PBXGroup;
 			children = (
 				65ADF1EB2791588A00D83639 /* main.cpp */,
-				65ADF1F02791599900D83639 /* math_test.cpp */,
+				65ADF2272792521200D83639 /* lda_test.cpp */,
 			);
 			path = "nes_emu-tests";
 			sourceTree = "<group>";
 		};
+		65ADF21527924BDE00D83639 /* instructions */ = {
+			isa = PBXGroup;
+			children = (
+				65ADF1DF2790296300D83639 /* registers.cpp */,
+				65ADF1E02790296300D83639 /* registers.hpp */,
+				65ADF1E227902D8800D83639 /* instructions.cpp */,
+				65ADF1E327902D8800D83639 /* instructions.hpp */,
+				65ADF2292792660E00D83639 /* memory.cpp */,
+				65ADF22A2792660E00D83639 /* memory.hpp */,
+				65ADF22D27926F9900D83639 /* cpu.cpp */,
+				65ADF22E27926F9900D83639 /* cpu.hpp */,
+			);
+			path = instructions;
+			sourceTree = "<group>";
+		};
+		65ADF22427924C2000D83639 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		65ADF21027924BDE00D83639 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				65ADF22C2792660E00D83639 /* memory.hpp in Headers */,
+				65ADF23027926F9900D83639 /* cpu.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		65156C0127902232004211A0 /* nes_emu */ = {
@@ -142,6 +210,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				65ADF22127924C1300D83639 /* PBXTargetDependency */,
 			);
 			name = nes_emu;
 			productName = nes_emu;
@@ -159,11 +228,29 @@
 			buildRules = (
 			);
 			dependencies = (
+				65ADF22327924C1900D83639 /* PBXTargetDependency */,
 			);
 			name = "nes_emu-tests";
 			productName = "nes_emu-tests";
 			productReference = 65ADF1E92791588A00D83639 /* nes_emu-tests */;
 			productType = "com.apple.product-type.tool";
+		};
+		65ADF21327924BDE00D83639 /* instructions */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 65ADF21C27924BDE00D83639 /* Build configuration list for PBXNativeTarget "instructions" */;
+			buildPhases = (
+				65ADF21027924BDE00D83639 /* Headers */,
+				65ADF21127924BDE00D83639 /* Sources */,
+				65ADF21227924BDE00D83639 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = instructions;
+			productName = instructions;
+			productReference = 65ADF21427924BDE00D83639 /* libinstructions.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
@@ -178,6 +265,9 @@
 						CreatedOnToolsVersion = 13.2.1;
 					};
 					65ADF1E82791588A00D83639 = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+					65ADF21327924BDE00D83639 = {
 						CreatedOnToolsVersion = 13.2.1;
 					};
 				};
@@ -197,6 +287,7 @@
 			targets = (
 				65156C0127902232004211A0 /* nes_emu */,
 				65ADF1E82791588A00D83639 /* nes_emu-tests */,
+				65ADF21327924BDE00D83639 /* instructions */,
 			);
 		};
 /* End PBXProject section */
@@ -218,8 +309,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65ADF1E12790296300D83639 /* registers.cpp in Sources */,
-				65ADF1E427902D8800D83639 /* instructions.cpp in Sources */,
 				65156C1827902233004211A0 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,12 +317,36 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65ADF2282792521200D83639 /* lda_test.cpp in Sources */,
 				65ADF1EC2791588A00D83639 /* main.cpp in Sources */,
-				65ADF1F12791599900D83639 /* math_test.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		65ADF21127924BDE00D83639 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				65ADF22F27926F9900D83639 /* cpu.cpp in Sources */,
+				65ADF22627924C2E00D83639 /* registers.cpp in Sources */,
+				65ADF21F27924BFD00D83639 /* instructions.cpp in Sources */,
+				65ADF22B2792660E00D83639 /* memory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		65ADF22127924C1300D83639 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 65ADF21327924BDE00D83639 /* instructions */;
+			targetProxy = 65ADF22027924C1300D83639 /* PBXContainerItemProxy */;
+		};
+		65ADF22327924C1900D83639 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 65ADF21327924BDE00D83639 /* instructions */;
+			targetProxy = 65ADF22227924C1900D83639 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		65156C1427902233004211A0 /* Main.storyboard */ = {
@@ -440,6 +553,30 @@
 			};
 			name = Release;
 		};
+		65ADF21D27924BDE00D83639 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		65ADF21E27924BDE00D83639 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -466,6 +603,15 @@
 			buildConfigurations = (
 				65ADF1EE2791588A00D83639 /* Debug */,
 				65ADF1EF2791588A00D83639 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		65ADF21C27924BDE00D83639 /* Build configuration list for PBXNativeTarget "instructions" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				65ADF21D27924BDE00D83639 /* Debug */,
+				65ADF21E27924BDE00D83639 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-typedef struct {
+struct nes_registers {
     
     union {
         uint16_t programCounter;
@@ -35,6 +35,6 @@ typedef struct {
     uint8_t x;
     uint8_t y;
     
-} nes_registers;
+};
 
 #endif /* registers_hpp */
