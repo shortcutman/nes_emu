@@ -17,6 +17,11 @@ uint16_t readAndIncrementu16(nes_registers& registers, const nes_memory& memory,
     return memory.read_uint16(address);
 }
 
+uint16_t readAndIncrementu8(nes_registers& registers, const nes_memory& memory, uint16_t address) {
+    registers.programCounter += 1;
+    return memory.read_uint8(address);
+}
+
 }
 
 uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
@@ -36,28 +41,19 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::ZeroPage:
-        {
-            auto pc = registers.programCounter;
-            registers.programCounter += 1;
-            return memory.read_uint8(pc);
-
-        }
+            return readAndIncrementu8(registers, memory, registers.programCounter);
             break;
             
         case AddressMode::ZeroPageX:
-            return memory.read_uint8(registers.programCounter) + registers.x;
+            return readAndIncrementu8(registers, memory, registers.programCounter + registers.x);
             break;
             
         case AddressMode::ZeroPageY:
-            return memory.read_uint8(registers.programCounter) + registers.y;
+            return readAndIncrementu8(registers, memory, registers.programCounter + registers.y);
             break;
             
         case AddressMode::Immediate:
-        {
-            auto pc = registers.programCounter;
-            registers.programCounter += 1;
-            return pc;
-        }
+            return registers.programCounter++;
             break;
             
         case AddressMode::IndexedIndirect:
