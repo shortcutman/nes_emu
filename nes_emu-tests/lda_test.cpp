@@ -12,7 +12,11 @@
 #include "memory.hpp"
 
 namespace {
-TEST(Instructions, LDA_PositiveInteger) {
+
+class CPUTest : public nes_emu::CPU, public ::testing::Test {
+};
+
+TEST_F(CPUTest, LDA_PositiveInteger) {
     nes_memory m;
     m.write(0x00, 0xA9);
     m.write(0x01, 0x05);
@@ -22,14 +26,14 @@ TEST(Instructions, LDA_PositiveInteger) {
     r.programCounter = 0x01;
     r.statusRegister = 0x00;
     
-    nes_emu::lda(nes_emu::AddressMode::Immediate, r, m);
+    nes_emu::CPU::lda(nes_emu::AddressMode::Immediate, r, m);
     
     EXPECT_EQ(r.programCounter, 0x02);
     EXPECT_EQ(r.accumulator, 0x05);
     EXPECT_EQ(r.statusRegister, 0b00000000);
 }
 
-TEST(Instructions, LDA_Zero) {
+TEST_F(CPUTest, LDA_Zero) {
     nes_memory m;
     m.write(0x00, 0xA9);
     m.write(0x01, 0x00);
@@ -39,13 +43,13 @@ TEST(Instructions, LDA_Zero) {
     r.programCounter = 0x01;
     r.statusRegister = 0x00;
     
-    nes_emu::lda(nes_emu::AddressMode::Immediate, r, m);
+    nes_emu::CPU::lda(nes_emu::AddressMode::Immediate, r, m);
     
     EXPECT_EQ(r.accumulator, 0x00);
     EXPECT_EQ(r.statusRegister, 0b00000010);
 }
 
-TEST(Instructions, LDA_Immediate_NegativeInteger) {
+TEST_F(CPUTest, LDA_Immediate_NegativeInteger) {
     nes_memory m;
     m.write(0x00, 0xA9);
     m.write(0x01, 0xF5);
@@ -55,13 +59,13 @@ TEST(Instructions, LDA_Immediate_NegativeInteger) {
     r.programCounter = 0x01;
     r.statusRegister = 0x00;
     
-    nes_emu::lda(nes_emu::AddressMode::Immediate, r, m);
+    nes_emu::CPU::lda(nes_emu::AddressMode::Immediate, r, m);
     
     EXPECT_EQ(r.accumulator, 0xF5);
     EXPECT_EQ(r.statusRegister, 0b10000000);
 }
 
-TEST(Instructions, LDA_Z_PositiveInteger) {
+TEST_F(CPUTest, LDA_Z_PositiveInteger) {
     nes_memory m;
     m.write(0x00, 0xA5);
     m.write(0x01, 0xDB);
@@ -71,20 +75,20 @@ TEST(Instructions, LDA_Z_PositiveInteger) {
     r.programCounter = 0x01;
     r.statusRegister = 0x00;
     
-    nes_emu::lda(nes_emu::AddressMode::ZeroPage, r, m);
+    nes_emu::CPU::lda(nes_emu::AddressMode::ZeroPage, r, m);
     
     EXPECT_EQ(r.accumulator, 0x05);
     EXPECT_EQ(r.statusRegister, 0b00000000);
 }
 
 
-TEST(Instructions, TAX_PositiveInteger) {
+TEST_F(CPUTest, TAX_PositiveInteger) {
     nes_registers r;
     r.accumulator = 0x05;
     r.x = 0xDB;
     r.statusRegister = 0x00;
     
-    nes_emu::tax(r);
+    nes_emu::CPU::tax(r);
     
     EXPECT_EQ(r.accumulator, 0x05);
     EXPECT_EQ(r.x, 0x05);

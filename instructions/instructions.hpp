@@ -9,6 +9,7 @@
 #define instructions_hpp
 
 #include <cstdint>
+#include <memory>
 
 #include "instruction_utils.hpp"
 
@@ -17,11 +18,22 @@ class nes_memory;
 
 namespace nes_emu {
 
-unsigned int brk(nes_registers& registers); //opcode 0x00
-
-unsigned int lda(AddressMode mode, nes_registers& registers, nes_memory& memory); //opcode 0xA5
-
-unsigned int tax(nes_registers& registers); //opcode 0xAA
+    class CPU {
+        friend class CPUTest;
+        
+    public:
+        std::unique_ptr<nes_registers> _registers;
+        std::unique_ptr<nes_memory> _memory;
+        
+    public:
+        CPU();
+        ~CPU();
+        
+    protected:
+        static unsigned int brk(nes_registers& registers); //opcode 0x00
+        static unsigned int lda(AddressMode mode, nes_registers& registers, nes_memory& memory);
+        static unsigned int tax(nes_registers& registers); //opcode 0xAA
+    };
 }
 
 #endif /* instructions_hpp */
