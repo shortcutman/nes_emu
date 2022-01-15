@@ -7,34 +7,66 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		65156C0727902232004211A0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 65156C0627902232004211A0 /* AppDelegate.m */; };
-		65156C0927902232004211A0 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 65156C0827902232004211A0 /* GameScene.sks */; };
-		65156C0B27902232004211A0 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 65156C0A27902232004211A0 /* Actions.sks */; };
-		65156C0E27902232004211A0 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 65156C0D27902232004211A0 /* GameScene.m */; };
-		65156C1127902232004211A0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65156C1027902232004211A0 /* ViewController.m */; };
 		65156C1327902233004211A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65156C1227902233004211A0 /* Assets.xcassets */; };
 		65156C1627902233004211A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65156C1427902233004211A0 /* Main.storyboard */; };
-		65156C1827902233004211A0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 65156C1727902233004211A0 /* main.m */; };
+		65156C1827902233004211A0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65156C1727902233004211A0 /* main.cpp */; };
+		65ADF1CE279023BD00D83639 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF1CC2790235000D83639 /* SDL2.framework */; };
+		65ADF1CF279023BD00D83639 /* SDL2.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF1CC2790235000D83639 /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		65ADF1E12790296300D83639 /* registers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1DF2790296300D83639 /* registers.cpp */; };
+		65ADF1E427902D8800D83639 /* instructions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1E227902D8800D83639 /* instructions.cpp */; };
+		65ADF1EC2791588A00D83639 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1EB2791588A00D83639 /* main.cpp */; };
+		65ADF1F12791599900D83639 /* math_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1F02791599900D83639 /* math_test.cpp */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		65ADF1D0279023BD00D83639 /* Copy Bundle Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				65ADF1CF279023BD00D83639 /* SDL2.framework in Copy Bundle Frameworks */,
+			);
+			name = "Copy Bundle Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		65ADF1E72791588A00D83639 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		65156C0227902232004211A0 /* nes_emu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nes_emu.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		65156C0527902232004211A0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		65156C0627902232004211A0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		65156C0827902232004211A0 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		65156C0A27902232004211A0 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
-		65156C0C27902232004211A0 /* GameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
-		65156C0D27902232004211A0 /* GameScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
-		65156C0F27902232004211A0 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		65156C1027902232004211A0 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		65156C1227902233004211A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		65156C1527902233004211A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		65156C1727902233004211A0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		65156C1727902233004211A0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		65156C1927902233004211A0 /* nes_emu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = nes_emu.entitlements; sourceTree = "<group>"; };
+		65ADF1CC2790235000D83639 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
+		65ADF1DF2790296300D83639 /* registers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = registers.cpp; sourceTree = "<group>"; };
+		65ADF1E02790296300D83639 /* registers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = registers.hpp; sourceTree = "<group>"; };
+		65ADF1E227902D8800D83639 /* instructions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instructions.cpp; sourceTree = "<group>"; };
+		65ADF1E327902D8800D83639 /* instructions.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = instructions.hpp; sourceTree = "<group>"; };
+		65ADF1E92791588A00D83639 /* nes_emu-tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "nes_emu-tests"; sourceTree = BUILT_PRODUCTS_DIR; };
+		65ADF1EB2791588A00D83639 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		65ADF1F02791599900D83639 /* math_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = math_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		65156BFF27902232004211A0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				65ADF1CE279023BD00D83639 /* SDL2.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		65ADF1E62791588A00D83639 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -47,7 +79,9 @@
 		65156BF927902232004211A0 = {
 			isa = PBXGroup;
 			children = (
+				65ADF1CB2790233500D83639 /* 3rdParty */,
 				65156C0427902232004211A0 /* nes_emu */,
+				65ADF1EA2791588A00D83639 /* nes_emu-tests */,
 				65156C0327902232004211A0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				65156C0227902232004211A0 /* nes_emu.app */,
+				65ADF1E92791588A00D83639 /* nes_emu-tests */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -63,20 +98,33 @@
 		65156C0427902232004211A0 /* nes_emu */ = {
 			isa = PBXGroup;
 			children = (
-				65156C0527902232004211A0 /* AppDelegate.h */,
-				65156C0627902232004211A0 /* AppDelegate.m */,
-				65156C0827902232004211A0 /* GameScene.sks */,
-				65156C0A27902232004211A0 /* Actions.sks */,
-				65156C0C27902232004211A0 /* GameScene.h */,
-				65156C0D27902232004211A0 /* GameScene.m */,
-				65156C0F27902232004211A0 /* ViewController.h */,
-				65156C1027902232004211A0 /* ViewController.m */,
 				65156C1227902233004211A0 /* Assets.xcassets */,
 				65156C1427902233004211A0 /* Main.storyboard */,
-				65156C1727902233004211A0 /* main.m */,
+				65156C1727902233004211A0 /* main.cpp */,
 				65156C1927902233004211A0 /* nes_emu.entitlements */,
+				65ADF1DF2790296300D83639 /* registers.cpp */,
+				65ADF1E02790296300D83639 /* registers.hpp */,
+				65ADF1E227902D8800D83639 /* instructions.cpp */,
+				65ADF1E327902D8800D83639 /* instructions.hpp */,
 			);
 			path = nes_emu;
+			sourceTree = "<group>";
+		};
+		65ADF1CB2790233500D83639 /* 3rdParty */ = {
+			isa = PBXGroup;
+			children = (
+				65ADF1CC2790235000D83639 /* SDL2.framework */,
+			);
+			path = 3rdParty;
+			sourceTree = "<group>";
+		};
+		65ADF1EA2791588A00D83639 /* nes_emu-tests */ = {
+			isa = PBXGroup;
+			children = (
+				65ADF1EB2791588A00D83639 /* main.cpp */,
+				65ADF1F02791599900D83639 /* math_test.cpp */,
+			);
+			path = "nes_emu-tests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -89,6 +137,7 @@
 				65156BFE27902232004211A0 /* Sources */,
 				65156BFF27902232004211A0 /* Frameworks */,
 				65156C0027902232004211A0 /* Resources */,
+				65ADF1D0279023BD00D83639 /* Copy Bundle Frameworks */,
 			);
 			buildRules = (
 			);
@@ -98,6 +147,23 @@
 			productName = nes_emu;
 			productReference = 65156C0227902232004211A0 /* nes_emu.app */;
 			productType = "com.apple.product-type.application";
+		};
+		65ADF1E82791588A00D83639 /* nes_emu-tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 65ADF1ED2791588A00D83639 /* Build configuration list for PBXNativeTarget "nes_emu-tests" */;
+			buildPhases = (
+				65ADF1E52791588A00D83639 /* Sources */,
+				65ADF1E62791588A00D83639 /* Frameworks */,
+				65ADF1E72791588A00D83639 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "nes_emu-tests";
+			productName = "nes_emu-tests";
+			productReference = 65ADF1E92791588A00D83639 /* nes_emu-tests */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -109,6 +175,9 @@
 				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					65156C0127902232004211A0 = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+					65ADF1E82791588A00D83639 = {
 						CreatedOnToolsVersion = 13.2.1;
 					};
 				};
@@ -127,6 +196,7 @@
 			projectRoot = "";
 			targets = (
 				65156C0127902232004211A0 /* nes_emu */,
+				65ADF1E82791588A00D83639 /* nes_emu-tests */,
 			);
 		};
 /* End PBXProject section */
@@ -136,9 +206,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65156C0927902232004211A0 /* GameScene.sks in Resources */,
 				65156C1327902233004211A0 /* Assets.xcassets in Resources */,
-				65156C0B27902232004211A0 /* Actions.sks in Resources */,
 				65156C1627902233004211A0 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,10 +218,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65156C1127902232004211A0 /* ViewController.m in Sources */,
-				65156C0E27902232004211A0 /* GameScene.m in Sources */,
-				65156C1827902233004211A0 /* main.m in Sources */,
-				65156C0727902232004211A0 /* AppDelegate.m in Sources */,
+				65ADF1E12790296300D83639 /* registers.cpp in Sources */,
+				65ADF1E427902D8800D83639 /* instructions.cpp in Sources */,
+				65156C1827902233004211A0 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		65ADF1E52791588A00D83639 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				65ADF1EC2791588A00D83639 /* main.cpp in Sources */,
+				65ADF1F12791599900D83639 /* math_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +284,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/3rdParty/";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -267,6 +344,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/3rdParty/";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -291,10 +369,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rdParty",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -315,10 +395,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rdParty",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -327,6 +409,34 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "daniel.nes-emu";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+		65ADF1EE2791588A00D83639 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /opt/homebrew/include;
+				LIBRARY_SEARCH_PATHS = /opt/homebrew/lib;
+				OTHER_LDFLAGS = (
+					"-l",
+					gtest,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		65ADF1EF2791588A00D83639 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /opt/homebrew/include;
+				LIBRARY_SEARCH_PATHS = /opt/homebrew/lib;
+				OTHER_LDFLAGS = (
+					"-l",
+					gtest,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -347,6 +457,15 @@
 			buildConfigurations = (
 				65156C1D27902233004211A0 /* Debug */,
 				65156C1E27902233004211A0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		65ADF1ED2791588A00D83639 /* Build configuration list for PBXNativeTarget "nes_emu-tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				65ADF1EE2791588A00D83639 /* Debug */,
+				65ADF1EF2791588A00D83639 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
