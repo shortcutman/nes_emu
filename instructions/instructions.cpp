@@ -6,7 +6,6 @@
 //
 
 #include "instructions.hpp"
-#include "instruction_utils.hpp"
 
 #include "registers.hpp"
 #include "memory.hpp"

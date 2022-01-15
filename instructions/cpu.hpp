@@ -15,20 +15,20 @@ class nes_memory;
 
 namespace nes_emu {
 
-enum AddressMode {
-    Absolute,
-    AbsoluteX,
-    AbsoluteY,
-    ZeroPage,
-    ZeroPageX,
-    ZeroPageY,
-    Immediate,
-    IndexedIndirect,
-    IndirectIndexed,
-    Relative
-};
-
-uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, const nes_memory& memory);
+//enum AddressMode {
+//    Absolute,
+//    AbsoluteX,
+//    AbsoluteY,
+//    ZeroPage,
+//    ZeroPageX,
+//    ZeroPageY,
+//    Immediate,
+//    IndexedIndirect,
+//    IndirectIndexed,
+//    Relative
+//};
+//
+//uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, const nes_memory& memory);
 
 }
 

@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-#include "cpu.hpp"
+#include "instruction_utils.hpp"
 
 struct nes_registers;
 class nes_memory;
