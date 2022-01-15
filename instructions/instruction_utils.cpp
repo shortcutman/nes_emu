@@ -10,24 +10,29 @@
 #include "registers.hpp"
 #include "memory.hpp"
 
+namespace {
+
+uint16_t readAndIncrementu16(nes_registers& registers, const nes_memory& memory, uint16_t address) {
+    registers.programCounter += 2;
+    return memory.read_uint16(address);
+}
+
+}
+
 uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
                                        nes_registers& registers,
                                        const nes_memory& memory) {
     switch (mode) {
         case AddressMode::Absolute:
-        {
-            auto pc = registers.programCounter;
-            registers.programCounter += 2;
-            return memory.read_uint16(pc);
-        }
+            return readAndIncrementu16(registers, memory, registers.programCounter);
             break;
             
         case AddressMode::AbsoluteX:
-            return memory.read_uint16(registers.programCounter + registers.x);
+            return readAndIncrementu16(registers, memory, registers.programCounter + registers.x);
             break;
             
         case AddressMode::AbsoluteY:
-            return memory.read_uint16(registers.programCounter + registers.y);
+            return readAndIncrementu16(registers, memory, registers.programCounter + registers.y);
             break;
             
         case AddressMode::ZeroPage:
