@@ -22,7 +22,7 @@ TEST(Instructions, LDA_PositiveInteger) {
     r.programCounter = 0x01;
     r.statusRegister = 0x00;
     
-    nes_emu::lda_immediate(r, m);
+    nes_emu::lda(nes_emu::AddressMode::Immediate, r, m);
     
     EXPECT_EQ(r.programCounter, 0x02);
     EXPECT_EQ(r.accumulator, 0x05);
@@ -39,7 +39,7 @@ TEST(Instructions, LDA_Zero) {
     r.programCounter = 0x01;
     r.statusRegister = 0x00;
     
-    nes_emu::lda_immediate(r, m);
+    nes_emu::lda(nes_emu::AddressMode::Immediate, r, m);
     
     EXPECT_EQ(r.accumulator, 0x00);
     EXPECT_EQ(r.statusRegister, 0b00000010);
@@ -55,7 +55,7 @@ TEST(Instructions, LDA_Immediate_NegativeInteger) {
     r.programCounter = 0x01;
     r.statusRegister = 0x00;
     
-    nes_emu::lda_immediate(r, m);
+    nes_emu::lda(nes_emu::AddressMode::Immediate, r, m);
     
     EXPECT_EQ(r.accumulator, 0xF5);
     EXPECT_EQ(r.statusRegister, 0b10000000);
@@ -71,7 +71,7 @@ TEST(Instructions, LDA_Z_PositiveInteger) {
     r.programCounter = 0x01;
     r.statusRegister = 0x00;
     
-    nes_emu::lda_zero(r, m);
+    nes_emu::lda(nes_emu::AddressMode::ZeroPage, r, m);
     
     EXPECT_EQ(r.accumulator, 0x05);
     EXPECT_EQ(r.statusRegister, 0b00000000);
