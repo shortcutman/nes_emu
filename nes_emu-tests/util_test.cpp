@@ -98,6 +98,22 @@ TEST(Instruction_Utils, decodeOperandAddress_ZeroPageX) {
     EXPECT_EQ(r.programCounter, 0x02);
 }
 
+TEST(Instruction_Utils, decodeOperandAddress_ZeroPageXWrap) {
+    nes_registers r;
+    r.programCounter = 0x01;
+    r.x = 0x02;
+    nes_memory m;
+    m.write(0x00, 0x00);
+    m.write(0x01, 0xFE);
+    m.write(0x03, 0xDB);
+    m.write(0xDB, 0xCC);
+    
+    auto result = decodeOperandAddress(nes_emu::AddressMode::ZeroPageX, r, m);
+    
+    EXPECT_EQ(result, 0xDB);
+    EXPECT_EQ(r.programCounter, 0x02);
+}
+
 TEST(Instruction_Utils, decodeOperandAddress_ZeroPageY) {
     nes_registers r;
     r.programCounter = 0x01;
@@ -111,6 +127,22 @@ TEST(Instruction_Utils, decodeOperandAddress_ZeroPageY) {
     auto result = decodeOperandAddress(nes_emu::AddressMode::ZeroPageY, r, m);
     
     EXPECT_EQ(result, 0xFE);
+    EXPECT_EQ(r.programCounter, 0x02);
+}
+
+TEST(Instruction_Utils, decodeOperandAddress_ZeroPageYWrap) {
+    nes_registers r;
+    r.programCounter = 0x01;
+    r.y = 0x02;
+    nes_memory m;
+    m.write(0x00, 0x00);
+    m.write(0x01, 0xFE);
+    m.write(0x03, 0xDB);
+    m.write(0xDB, 0xCC);
+    
+    auto result = decodeOperandAddress(nes_emu::AddressMode::ZeroPageY, r, m);
+    
+    EXPECT_EQ(result, 0xDB);
     EXPECT_EQ(r.programCounter, 0x02);
 }
 

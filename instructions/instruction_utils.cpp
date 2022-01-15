@@ -45,11 +45,11 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::ZeroPageX:
-            return readAndIncrementu8(registers, memory, registers.programCounter + registers.x);
+            return readAndIncrementu8(registers, memory, static_cast<uint8_t>(registers.programCounter) + registers.x);
             break;
             
         case AddressMode::ZeroPageY:
-            return readAndIncrementu8(registers, memory, registers.programCounter + registers.y);
+            return readAndIncrementu8(registers, memory, static_cast<uint8_t>(registers.programCounter) + registers.y);
             break;
             
         case AddressMode::Immediate:
