@@ -19,10 +19,7 @@ namespace nes_emu {
 
 unsigned int brk(nes_registers& registers); //opcode 0x00
 
-unsigned int lda_immediate(nes_registers& registers, nes_memory& memory); //opcode 0xA9
-unsigned int lda_zero(nes_registers& registers, nes_memory& memory); //opcode 0xA5
 unsigned int lda(AddressMode mode, nes_registers& registers, nes_memory& memory); //opcode 0xA5
-unsigned int lda_base(nes_registers& registers, uint16_t value);
 
 unsigned int tax(nes_registers& registers); //opcode 0xAA
 }
