@@ -23,6 +23,7 @@
 		65ADF23027926F9900D83639 /* cpu.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF22E27926F9900D83639 /* cpu.hpp */; };
 		65ADF2332792DF7800D83639 /* instruction_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2312792DF7800D83639 /* instruction_utils.cpp */; };
 		65ADF2342792DF7800D83639 /* instruction_utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF2322792DF7800D83639 /* instruction_utils.hpp */; };
+		65ADF2362792E00000D83639 /* util_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2352792E00000D83639 /* util_test.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,7 @@
 		65ADF22E27926F9900D83639 /* cpu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = cpu.hpp; sourceTree = "<group>"; };
 		65ADF2312792DF7800D83639 /* instruction_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instruction_utils.cpp; sourceTree = "<group>"; };
 		65ADF2322792DF7800D83639 /* instruction_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = instruction_utils.hpp; sourceTree = "<group>"; };
+		65ADF2352792E00000D83639 /* util_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = util_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 			children = (
 				65ADF1EB2791588A00D83639 /* main.cpp */,
 				65ADF2272792521200D83639 /* lda_test.cpp */,
+				65ADF2352792E00000D83639 /* util_test.cpp */,
 			);
 			path = "nes_emu-tests";
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65ADF2362792E00000D83639 /* util_test.cpp in Sources */,
 				65ADF2282792521200D83639 /* lda_test.cpp in Sources */,
 				65ADF1EC2791588A00D83639 /* main.cpp in Sources */,
 			);
