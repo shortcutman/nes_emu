@@ -250,7 +250,7 @@ void nes_emu::CPU::pha() {
 }
 
 void nes_emu::CPU::php() {
-    stack_push(_registers->statusRegister);
+    stack_push(_registers->statusRegister |= nes_registers::StatusFlags::BreakCommand | nes_registers::StatusFlags::BFlag);
 }
 
 void nes_emu::CPU::pla() {
@@ -260,6 +260,8 @@ void nes_emu::CPU::pla() {
 
 void nes_emu::CPU::plp() {
     _registers->statusRegister = stack_pop();
+    _registers->statusRegister &= ~nes_registers::StatusFlags::BreakCommand;
+    _registers->statusRegister &= ~nes_registers::StatusFlags::BFlag;
 }
 
 void nes_emu::CPU::rol(AddressMode mode) {
@@ -318,6 +320,9 @@ void nes_emu::CPU::ror(AddressMode mode) {
 
 void nes_emu::CPU::rti() {
     _registers->statusRegister = stack_pop();
+    _registers->statusRegister &= ~nes_registers::StatusFlags::BreakCommand;
+    _registers->statusRegister &= ~nes_registers::StatusFlags::BFlag;
+    
     _registers->programCounter = stack_popu16();
 }
 
