@@ -66,6 +66,7 @@ namespace nes_emu {
         void iny();
         
         void jmp(AddressMode mode);
+        void jsr();
         
         void lda(AddressMode mode);
         void ldx(AddressMode mode);
@@ -84,6 +85,8 @@ namespace nes_emu {
         void adc_impl(uint8_t argument);
         void branch_impl(bool test);
         void compare_impl(AddressMode mode, uint8_t registerInput);
+        
+        void stack_push(uint8_t value);
     };
 }
 

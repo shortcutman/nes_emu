@@ -22,6 +22,8 @@ public:
     uint16_t read_uint16(const uint16_t address) const;
     
     void write(const uint16_t address, const uint8_t value);
+    
+    static const uint16_t StackStart = 0x0100;
 };
 
 #endif /* memory_hpp */
