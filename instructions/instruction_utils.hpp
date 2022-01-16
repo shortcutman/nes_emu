@@ -16,6 +16,7 @@ class nes_memory;
 namespace nes_emu {
 
 enum AddressMode {
+    Accumulator,
     Absolute,
     AbsoluteX,
     AbsoluteY,

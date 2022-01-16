@@ -28,6 +28,11 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
                                        nes_registers& registers,
                                        const nes_memory& memory) {
     switch (mode) {
+        case AddressMode::Accumulator:
+            throw std::runtime_error("Accumulator address mode does not get values from memory");
+            return 0xFFFF;
+            break;
+            
         case AddressMode::Absolute:
             return readAndIncrementu16(registers, memory, registers.programCounter);
             break;
@@ -57,17 +62,17 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::IndexedIndirect:
-            throw std::runtime_error("unimplemented");
+            throw std::runtime_error("Unimplemented");
             return 0xDB;
             break;
             
         case AddressMode::IndirectIndexed:
-            throw std::runtime_error("unimplemented");
+            throw std::runtime_error("Unimplemented");
             return 0xDB;
             break;
             
         case AddressMode::Relative:
-            throw std::runtime_error("unimplemented");
+            throw std::runtime_error("Unimplemented");
             return 0xDB;
             break;
     }
