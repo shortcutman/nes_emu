@@ -75,6 +75,20 @@ void nes_emu::CPU::beq() {
     branch_impl(_registers->statusRegister & nes_registers::StatusFlags::ZeroFlag);
 }
 
+void nes_emu::CPU::bit(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    uint8_t value  = _memory->read_uint8(opAddress);
+    
+    if (value & _registers->accumulator) {
+        _registers->statusRegister &= ~nes_registers::StatusFlags::ZeroFlag;
+    } else {
+        _registers->statusRegister |= nes_registers::StatusFlags::ZeroFlag;
+    }
+    
+    _registers->setStatusFlag(nes_registers::StatusFlags::NegativeFlag, value & 0b10000000);
+    _registers->setStatusFlag(nes_registers::StatusFlags::OverflowFlag, value & 0b01000000);
+}
+
 void nes_emu::CPU::bne() {
     branch_impl(!(_registers->statusRegister & nes_registers::StatusFlags::ZeroFlag));
 }

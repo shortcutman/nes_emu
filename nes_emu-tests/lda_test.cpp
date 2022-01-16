@@ -200,6 +200,62 @@ TEST_F(CPUTest, BCC_Branch16bit) {
     EXPECT_EQ(_registers->statusRegister, 0x00);
 }
 
+TEST_F(CPUTest, BIT_Fail_ZeroPage) {
+    _memory->write(0x00, 0x24);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
+    _memory->write(0x05, 0xFF);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x0F;
+    
+    bit(nes_emu::AddressMode::ZeroPage);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::ZeroFlag), false);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::NegativeFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::OverflowFlag), true);
+}
+
+TEST_F(CPUTest, BIT_Pass_ZeroPage) {
+    _memory->write(0x00, 0x24);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
+    _memory->write(0x05, 0xF0);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x0F;
+    
+    bit(nes_emu::AddressMode::ZeroPage);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::ZeroFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::NegativeFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::OverflowFlag), true);
+}
+
+TEST_F(CPUTest, BIT_Pass_Absolute) {
+    _memory->write(0x00, 0x24);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x05);
+    _memory->write(0x03, 0x00);
+    _memory->write(0x0505, 0xF0);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x0F;
+    
+    bit(nes_emu::AddressMode::Absolute);
+    
+    EXPECT_EQ(_registers->programCounter, 0x03);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::ZeroFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::NegativeFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::OverflowFlag), true);
+}
+
+
 TEST_F(CPUTest, LDA_PositiveInteger) {
     _memory->write(0x00, 0xA9);
     _memory->write(0x01, 0x05);

@@ -40,6 +40,7 @@ namespace nes_emu {
         void beq();
         void bne();
 
+        void bit(AddressMode mode);
         void brk(); //opcode 0x00
         
         void lda(AddressMode mode);
