@@ -78,6 +78,14 @@ namespace nes_emu {
         
         void ora(AddressMode mode);
         
+        void pha();
+        void php();
+        void pla();
+        void plp();
+        
+        void rol(AddressMode mode);
+        void ror(AddressMode mode);
+        
         void sbc(AddressMode mode);
         
         void sta(AddressMode mode);
@@ -93,6 +101,7 @@ namespace nes_emu {
         void compare_impl(AddressMode mode, uint8_t registerInput);
         
         void stack_push(uint8_t value);
+        uint8_t stack_pop();
     };
 }
 

@@ -251,6 +251,77 @@ void nes_emu::CPU::ora(AddressMode mode) {
     setNumberFlags(_registers->accumulator);
 }
 
+void nes_emu::CPU::pha() {
+    stack_push(_registers->accumulator);
+}
+
+void nes_emu::CPU::php() {
+    stack_push(_registers->statusRegister);
+}
+
+void nes_emu::CPU::pla() {
+    _registers->accumulator = stack_pop();
+    setNumberFlags(_registers->accumulator);
+}
+
+void nes_emu::CPU::plp() {
+    _registers->statusRegister = stack_pop();
+}
+
+void nes_emu::CPU::rol(AddressMode mode) {
+    uint8_t value;
+
+    if (mode == AddressMode::Accumulator) {
+        value = _registers->accumulator;
+    } else {
+        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        value = _memory->read_uint8(opAddress);
+    }
+
+    auto oldCarryFlag = _registers->getStatusFlag(nes_registers::StatusFlags::CarryFlag);
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, value & 0x80);
+    
+    value = value << 1;
+    if (oldCarryFlag) {
+        value |= 0x01;
+    }
+    setNumberFlags(value);
+    
+    if (mode == AddressMode::Accumulator) {
+        _registers->accumulator = value;
+    } else {
+        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        _memory->write(opAddress, value);
+    }
+}
+
+void nes_emu::CPU::ror(AddressMode mode) {
+    uint8_t value;
+
+    if (mode == AddressMode::Accumulator) {
+        value = _registers->accumulator;
+    } else {
+        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        value = _memory->read_uint8(opAddress);
+    }
+
+    auto oldCarryFlag = _registers->getStatusFlag(nes_registers::StatusFlags::CarryFlag);
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, value & 0x01);
+    
+    value = value >> 1;
+    if (oldCarryFlag) {
+        value |= 0x80;
+    }
+    setNumberFlags(value);
+    
+    if (mode == AddressMode::Accumulator) {
+        _registers->accumulator = value;
+    } else {
+        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        _memory->write(opAddress, value);
+    }
+}
+
 void nes_emu::CPU::sbc(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     uint8_t argument = _memory->read_uint8(opAddress);
@@ -334,4 +405,10 @@ void nes_emu::CPU::compare_impl(AddressMode mode, uint8_t registerInput) {
 void nes_emu::CPU::stack_push(uint8_t value) {
     _memory->write(nes_memory::StackStart + _registers->stackPointer, value);
     _registers->stackPointer += 1;
+}
+
+uint8_t nes_emu::CPU::stack_pop() {
+    auto value = _memory->read_uint8(nes_memory::StackStart + _registers->stackPointer);
+    _registers->stackPointer -= 1;
+    return value;
 }
