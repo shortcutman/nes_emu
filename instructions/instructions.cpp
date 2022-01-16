@@ -217,6 +217,40 @@ void nes_emu::CPU::ldy(AddressMode mode) {
     setNumberFlags(_registers->y);
 }
 
+void nes_emu::CPU::lsr(AddressMode mode) {
+    uint8_t value;
+
+    if (mode == AddressMode::Accumulator) {
+        value = _registers->accumulator;
+    } else {
+        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        value = _memory->read_uint8(opAddress);
+    }
+
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, value & 0x01);
+    
+    value = value >> 1;
+    setNumberFlags(value);
+    
+    if (mode == AddressMode::Accumulator) {
+        _registers->accumulator = value;
+    } else {
+        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        _memory->write(opAddress, value);
+    }
+}
+
+void nes_emu::CPU::nop() {
+}
+
+void nes_emu::CPU::ora(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress);
+
+    _registers->accumulator |= value;
+    setNumberFlags(_registers->accumulator);
+}
+
 void nes_emu::CPU::sbc(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     uint8_t argument = _memory->read_uint8(opAddress);

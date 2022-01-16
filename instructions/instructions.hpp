@@ -72,6 +72,12 @@ namespace nes_emu {
         void ldx(AddressMode mode);
         void ldy(AddressMode mode);
         
+        void lsr(AddressMode mode);
+        
+        void nop();
+        
+        void ora(AddressMode mode);
+        
         void sbc(AddressMode mode);
         
         void sta(AddressMode mode);
