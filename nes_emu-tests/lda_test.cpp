@@ -304,3 +304,21 @@ TEST_F(CPUTest, TAX_PositiveInteger) {
     EXPECT_EQ(_registers->statusRegister, 0b00000000);
 }
 }
+
+TEST_F(CPUTest, numberFlags_PositiveInt) {
+    _registers->statusRegister = 0x00;
+    setNumberFlags(0x05);
+    EXPECT_EQ(_registers->statusRegister, 0b00000000);
+}
+
+TEST_F(CPUTest, numberFlags_Zero) {
+    _registers->statusRegister = 0x00;
+    setNumberFlags(0x00);
+    EXPECT_EQ(_registers->statusRegister, 0b00000010);
+}
+
+TEST_F(CPUTest, numberFlags_NegativeInt) {
+    _registers->statusRegister = 0x00;
+    setNumberFlags(0xF5);
+    EXPECT_EQ(_registers->statusRegister, 0b10000000);
+}

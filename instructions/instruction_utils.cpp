@@ -77,21 +77,3 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
     }
 }
-
-uint8_t nes_emu::statusFlagsOnByteValue(const uint8_t value, const uint8_t currentStatus) {
-    uint8_t updatedStatus = currentStatus;
-    
-    if (value == 0) {
-        updatedStatus |= nes_registers::StatusFlags::ZeroFlag;
-    } else {
-        updatedStatus &= ~nes_registers::StatusFlags::ZeroFlag;
-    }
-    
-    if ((value & 0b10000000) != 0) {
-        updatedStatus |= nes_registers::StatusFlags::NegativeFlag;
-    } else {
-        updatedStatus &= ~nes_registers::StatusFlags::NegativeFlag;
-    }
-    
-    return updatedStatus;
-}

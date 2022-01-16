@@ -34,7 +34,7 @@ unsigned int nes_emu::CPU::instrAnd(AddressMode mode) {
 
     _registers->accumulator &= argument;
     
-    _registers->statusRegister = statusFlagsOnByteValue(_registers->accumulator, _registers->statusRegister);
+    setNumberFlags(_registers->accumulator);
     
     return 2;
 }
@@ -47,7 +47,7 @@ unsigned int nes_emu::CPU::lda(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
     _registers->accumulator = value;
-    _registers->statusRegister = statusFlagsOnByteValue(_registers->accumulator, _registers->statusRegister);
+    setNumberFlags(_registers->accumulator);
     
     return 2;
 }
@@ -56,7 +56,7 @@ unsigned int nes_emu::CPU::ldx(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
     _registers->x = value;
-    _registers->statusRegister = statusFlagsOnByteValue(_registers->x, _registers->statusRegister);
+    setNumberFlags(_registers->x);
     
     return 2;
 }
@@ -65,7 +65,7 @@ unsigned int nes_emu::CPU::ldy(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
     _registers->y = value;
-    _registers->statusRegister = statusFlagsOnByteValue(_registers->y, _registers->statusRegister);
+    setNumberFlags(_registers->y);
     
     return 2;
 }
@@ -100,9 +100,23 @@ unsigned int nes_emu::CPU::sty(AddressMode mode) {
 
 unsigned int nes_emu::CPU::tax() {
     _registers->x = _registers->accumulator;
-    _registers->statusRegister = statusFlagsOnByteValue(_registers->x, _registers->statusRegister);
+    setNumberFlags(_registers->x);
     
     return 2;
+}
+
+void nes_emu::CPU::setNumberFlags(uint8_t lastOperationValue) {
+    if (lastOperationValue == 0) {
+        _registers->statusRegister |= nes_registers::StatusFlags::ZeroFlag;
+    } else {
+        _registers->statusRegister &= ~nes_registers::StatusFlags::ZeroFlag;
+    }
+    
+    if ((lastOperationValue & 0x80) != 0) {
+        _registers->statusRegister |= nes_registers::StatusFlags::NegativeFlag;
+    } else {
+        _registers->statusRegister &= ~nes_registers::StatusFlags::NegativeFlag;
+    }
 }
 
 void nes_emu::CPU::adc_impl(uint8_t argument) {
@@ -123,5 +137,5 @@ void nes_emu::CPU::adc_impl(uint8_t argument) {
     
     _registers->accumulator = addResult;
     
-    _registers->statusRegister = statusFlagsOnByteValue(_registers->accumulator, _registers->statusRegister);
+    setNumberFlags(_registers->accumulator);
 }

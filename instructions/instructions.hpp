@@ -48,7 +48,8 @@ namespace nes_emu {
         
         unsigned int tax(); //opcode 0xAA
         
-    private:
+    protected:
+        void setNumberFlags(uint8_t lastOperationValue);
         void adc_impl(uint8_t argument);
     };
 }

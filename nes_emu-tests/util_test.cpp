@@ -146,19 +146,4 @@ TEST(Instruction_Utils, decodeOperandAddress_ZeroPageYWrap) {
     EXPECT_EQ(r.programCounter, 0x02);
 }
 
-TEST(Instruction_Utils, statusFlags_PositiveInt) {
-    auto result = nes_emu::statusFlagsOnByteValue(0x05, 0x00);
-    EXPECT_EQ(result, 0b00000000);
-}
-
-TEST(Instruction_Utils, statusFlags_Zero) {
-    auto result = nes_emu::statusFlagsOnByteValue(0x00, 0x00);
-    EXPECT_EQ(result, 0b00000010);
-}
-
-TEST(Instruction_Utils, statusFlags_NegativeInt) {
-    auto result = nes_emu::statusFlagsOnByteValue(0xF5, 0x00);
-    EXPECT_EQ(result, 0b10000000);
-}
-
 }
