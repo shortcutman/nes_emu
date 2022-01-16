@@ -46,6 +46,8 @@ struct nes_registers {
     uint8_t x;
     uint8_t y;
     
+    void setStatusFlag(StatusFlags flag, bool value);
+    bool getStatusFlag(StatusFlags flag);
 };
 
 #endif /* registers_hpp */
