@@ -89,11 +89,28 @@ void nes_emu::CPU::bit(AddressMode mode) {
     _registers->setStatusFlag(nes_registers::StatusFlags::OverflowFlag, value & 0b01000000);
 }
 
+void nes_emu::CPU::bmi() {
+    branch_impl(_registers->statusRegister & nes_registers::StatusFlags::NegativeFlag);
+}
+
 void nes_emu::CPU::bne() {
     branch_impl(!(_registers->statusRegister & nes_registers::StatusFlags::ZeroFlag));
 }
 
+void nes_emu::CPU::bpl() {
+    branch_impl(!(_registers->statusRegister & nes_registers::StatusFlags::NegativeFlag));
+}
+
 void nes_emu::CPU::brk() {
+    throw std::runtime_error("Not implemented");
+}
+
+void nes_emu::CPU::bvc() {
+    branch_impl(!(_registers->statusRegister & nes_registers::StatusFlags::OverflowFlag));
+}
+
+void nes_emu::CPU::bvs() {
+    branch_impl(_registers->statusRegister & nes_registers::StatusFlags::OverflowFlag);
 }
 
 void nes_emu::CPU::lda(AddressMode mode) {

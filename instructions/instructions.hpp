@@ -38,10 +38,13 @@ namespace nes_emu {
         void bcc();
         void bcs();
         void beq();
-        void bne();
-
         void bit(AddressMode mode);
+        void bmi();
+        void bne();
+        void bpl();
         void brk(); //opcode 0x00
+        void bvc();
+        void bvs();
         
         void lda(AddressMode mode);
         void ldx(AddressMode mode);
