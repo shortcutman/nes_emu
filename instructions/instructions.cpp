@@ -186,13 +186,7 @@ void nes_emu::CPU::jmp(AddressMode mode) {
 
 void nes_emu::CPU::jsr() {
     uint16_t opAddress = decodeOperandAddress(AddressMode::Absolute, *_registers, *_memory);
-    
-    uint8_t hiByte = ((_registers->programCounter - 1) >> 8);
-    uint8_t loByte = (_registers->programCounter - 1);
-    
-    stack_push(hiByte);
-    stack_push(loByte);
-    
+    stack_pushu16(_registers->programCounter - 1);
     _registers->programCounter = opAddress;
 }
 
@@ -322,10 +316,31 @@ void nes_emu::CPU::ror(AddressMode mode) {
     }
 }
 
+void nes_emu::CPU::rti() {
+    _registers->statusRegister = stack_pop();
+    _registers->programCounter = stack_popu16();
+}
+
+void nes_emu::CPU::rts() {
+    _registers->programCounter = stack_popu16() - 1;
+}
+
 void nes_emu::CPU::sbc(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     uint8_t argument = _memory->read_uint8(opAddress);
     adc_impl(~argument);
+}
+
+void nes_emu::CPU::sec() {
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, true);
+}
+
+void nes_emu::CPU::sed() {
+    _registers->setStatusFlag(nes_registers::StatusFlags::DecimalModeFlag, true);
+}
+
+void nes_emu::CPU::sei() {
+    _registers->setStatusFlag(nes_registers::StatusFlags::InterruptDisable, true);
 }
 
 void nes_emu::CPU::sta(AddressMode mode) {
@@ -346,6 +361,30 @@ void nes_emu::CPU::sty(AddressMode mode) {
 void nes_emu::CPU::tax() {
     _registers->x = _registers->accumulator;
     setNumberFlags(_registers->x);
+}
+
+void nes_emu::CPU::tay() {
+    _registers->y = _registers->accumulator;
+    setNumberFlags(_registers->y);
+}
+
+void nes_emu::CPU::tsx() {
+    _registers->x = _registers->stackPointer;
+    setNumberFlags(_registers->x);
+}
+
+void nes_emu::CPU::txa() {
+    _registers->accumulator = _registers->x;
+    setNumberFlags(_registers->accumulator);
+}
+
+void nes_emu::CPU::txs() {
+    _registers->stackPointer = _registers->x;
+}
+
+void nes_emu::CPU::tya() {
+    _registers->accumulator = _registers->y;
+    setNumberFlags(_registers->accumulator);
 }
 
 void nes_emu::CPU::setNumberFlags(uint8_t lastOperationValue) {
@@ -410,5 +449,23 @@ void nes_emu::CPU::stack_push(uint8_t value) {
 uint8_t nes_emu::CPU::stack_pop() {
     auto value = _memory->read_uint8(nes_memory::StackStart + _registers->stackPointer);
     _registers->stackPointer -= 1;
+    return value;
+}
+
+void nes_emu::CPU::stack_pushu16(uint16_t value) {
+    uint8_t hiByte = (value >> 8);
+    uint8_t loByte = (value - 1);
+    
+    stack_push(hiByte);
+    stack_push(loByte);
+}
+
+uint16_t nes_emu::CPU::stack_popu16() {
+    auto loByte = stack_pop();
+    auto hiByte = stack_pop();
+    
+    uint16_t value = hiByte;
+    value = value << 8;
+    value += loByte;
     return value;
 }

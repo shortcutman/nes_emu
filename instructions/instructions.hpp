@@ -86,13 +86,25 @@ namespace nes_emu {
         void rol(AddressMode mode);
         void ror(AddressMode mode);
         
+        void rti();
+        void rts();
+        
         void sbc(AddressMode mode);
+        
+        void sec();
+        void sed();
+        void sei();
         
         void sta(AddressMode mode);
         void stx(AddressMode mode);
         void sty(AddressMode mode);
         
-        void tax(); //opcode 0xAA
+        void tax();
+        void tay();
+        void tsx();
+        void txa();
+        void txs();
+        void tya();
         
     protected:
         void setNumberFlags(uint8_t lastOperationValue);
@@ -102,6 +114,9 @@ namespace nes_emu {
         
         void stack_push(uint8_t value);
         uint8_t stack_pop();
+        
+        void stack_pushu16(uint16_t value);
+        uint16_t stack_popu16();
     };
 }
 
