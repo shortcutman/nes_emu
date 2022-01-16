@@ -255,6 +255,56 @@ TEST_F(CPUTest, BIT_Pass_Absolute) {
     EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::OverflowFlag), true);
 }
 
+TEST_F(CPUTest, CMP_GreaterThan) {
+    _memory->write(0x00, 0xE0);
+    _memory->write(0x01, 0x03);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x05;
+    
+    cmp(nes_emu::AddressMode::Immediate);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::CarryFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::ZeroFlag), false);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::NegativeFlag), false);
+}
+
+TEST_F(CPUTest, CMP_EqualTo) {
+    _memory->write(0x00, 0xE0);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x05;
+    
+    cmp(nes_emu::AddressMode::Immediate);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::CarryFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::ZeroFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::NegativeFlag), false);
+}
+
+TEST_F(CPUTest, CMP_EqualToHighBit) {
+    _memory->write(0x00, 0xE0);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x85;
+    
+    cmp(nes_emu::AddressMode::Immediate);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::CarryFlag), true);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::ZeroFlag), false);
+    EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::NegativeFlag), true);
+}
 
 TEST_F(CPUTest, LDA_PositiveInteger) {
     _memory->write(0x00, 0xA9);

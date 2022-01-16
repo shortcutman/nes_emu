@@ -46,6 +46,15 @@ namespace nes_emu {
         void bvc();
         void bvs();
         
+        void clc();
+        void cld();
+        void cli();
+        void clv();
+        
+        void cmp(AddressMode mode);
+        void cpx(AddressMode mode);
+        void cpy(AddressMode mode);
+        
         void lda(AddressMode mode);
         void ldx(AddressMode mode);
         void ldy(AddressMode mode);
@@ -62,6 +71,7 @@ namespace nes_emu {
         void setNumberFlags(uint8_t lastOperationValue);
         void adc_impl(uint8_t argument);
         void branch_impl(bool test);
+        void compare_impl(AddressMode mode, uint8_t registerInput);
     };
 }
 

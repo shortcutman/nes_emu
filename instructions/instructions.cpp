@@ -113,6 +113,30 @@ void nes_emu::CPU::bvs() {
     branch_impl(_registers->statusRegister & nes_registers::StatusFlags::OverflowFlag);
 }
 
+void nes_emu::CPU::clc() {
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, false);
+}
+
+void nes_emu::CPU::cld() {
+    _registers->setStatusFlag(nes_registers::StatusFlags::DecimalModeFlag, false);
+}
+
+void nes_emu::CPU::clv() {
+    _registers->setStatusFlag(nes_registers::StatusFlags::OverflowFlag, false);
+}
+
+void nes_emu::CPU::cmp(AddressMode mode) {
+    compare_impl(mode, _registers->accumulator);
+}
+
+void nes_emu::CPU::cpx(AddressMode mode) {
+    compare_impl(mode, _registers->x);
+}
+
+void nes_emu::CPU::cpy(AddressMode mode) {
+    compare_impl(mode, _registers->y);
+}
+
 void nes_emu::CPU::lda(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
@@ -202,4 +226,14 @@ void nes_emu::CPU::branch_impl(bool test) {
     if (test) {
         _registers->programCounter += incrementValue;
     }
+}
+
+void nes_emu::CPU::compare_impl(AddressMode mode, uint8_t registerInput) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress);
+    
+    uint8_t result = registerInput - value;
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, registerInput >= value);
+    _registers->setStatusFlag(nes_registers::StatusFlags::ZeroFlag, registerInput == value);
+    _registers->setStatusFlag(nes_registers::StatusFlags::NegativeFlag, result & 0x80);
 }
