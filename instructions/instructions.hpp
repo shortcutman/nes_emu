@@ -30,24 +30,24 @@ namespace nes_emu {
         ~CPU();
         
     protected:
-        unsigned int adc(AddressMode mode);
+        void adc(AddressMode mode);
         
-        unsigned int instrAnd(AddressMode mode);
-        unsigned int asl(AddressMode mode);
+        void instrAnd(AddressMode mode);
+        void asl(AddressMode mode);
         
-        unsigned int brk(); //opcode 0x00
+        void brk(); //opcode 0x00
         
-        unsigned int lda(AddressMode mode);
-        unsigned int ldx(AddressMode mode);
-        unsigned int ldy(AddressMode mode);
+        void lda(AddressMode mode);
+        void ldx(AddressMode mode);
+        void ldy(AddressMode mode);
         
-        unsigned int sbc(AddressMode mode);
+        void sbc(AddressMode mode);
         
-        unsigned int sta(AddressMode mode);
-        unsigned int stx(AddressMode mode);
-        unsigned int sty(AddressMode mode);
+        void sta(AddressMode mode);
+        void stx(AddressMode mode);
+        void sty(AddressMode mode);
         
-        unsigned int tax(); //opcode 0xAA
+        void tax(); //opcode 0xAA
         
     protected:
         void setNumberFlags(uint8_t lastOperationValue);

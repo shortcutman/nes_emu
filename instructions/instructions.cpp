@@ -21,25 +21,22 @@ nes_emu::CPU::CPU() :
 nes_emu::CPU::~CPU() {
 }
 
-unsigned int nes_emu::CPU::adc(AddressMode mode) {
+void nes_emu::CPU::adc(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     uint8_t argument = _memory->read_uint8(opAddress);
     adc_impl(argument);
-    return 2;
 }
 
-unsigned int nes_emu::CPU::instrAnd(AddressMode mode) {
+void nes_emu::CPU::instrAnd(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     uint8_t argument = _memory->read_uint8(opAddress);
 
     _registers->accumulator &= argument;
     
     setNumberFlags(_registers->accumulator);
-    
-    return 2;
 }
 
-unsigned int nes_emu::CPU::asl(AddressMode mode) {
+void nes_emu::CPU::asl(AddressMode mode) {
     uint8_t value;
 
     if (mode == AddressMode::Accumulator) {
@@ -64,74 +61,56 @@ unsigned int nes_emu::CPU::asl(AddressMode mode) {
         uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         _memory->write(opAddress, value);
     }
-
-    return 2;
 }
 
-unsigned int nes_emu::CPU::brk() {
-    return 7;
+void nes_emu::CPU::brk() {
 }
 
-unsigned int nes_emu::CPU::lda(AddressMode mode) {
+void nes_emu::CPU::lda(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
     _registers->accumulator = value;
     setNumberFlags(_registers->accumulator);
-    
-    return 2;
 }
 
-unsigned int nes_emu::CPU::ldx(AddressMode mode) {
+void nes_emu::CPU::ldx(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
     _registers->x = value;
     setNumberFlags(_registers->x);
-    
-    return 2;
 }
 
-unsigned int nes_emu::CPU::ldy(AddressMode mode) {
+void nes_emu::CPU::ldy(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
     _registers->y = value;
     setNumberFlags(_registers->y);
-    
-    return 2;
 }
 
-unsigned int nes_emu::CPU::sbc(AddressMode mode) {
+void nes_emu::CPU::sbc(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     uint8_t argument = _memory->read_uint8(opAddress);
     adc_impl(~argument);
-    return 2;
 }
 
-unsigned int nes_emu::CPU::sta(AddressMode mode) {
+void nes_emu::CPU::sta(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     _memory->write(opAddress, _registers->accumulator);
-    
-    return 2;
 }
 
-unsigned int nes_emu::CPU::stx(AddressMode mode) {
+void nes_emu::CPU::stx(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     _memory->write(opAddress, _registers->x);
-    
-    return 2;
 }
 
-unsigned int nes_emu::CPU::sty(AddressMode mode) {
+void nes_emu::CPU::sty(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     _memory->write(opAddress, _registers->y);
-    
-    return 2;
 }
 
-unsigned int nes_emu::CPU::tax() {
+void nes_emu::CPU::tax() {
     _registers->x = _registers->accumulator;
     setNumberFlags(_registers->x);
-    
-    return 2;
 }
 
 void nes_emu::CPU::setNumberFlags(uint8_t lastOperationValue) {
