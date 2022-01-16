@@ -21,6 +21,14 @@ nes_emu::CPU::CPU() :
 nes_emu::CPU::~CPU() {
 }
 
+unsigned int nes_emu::CPU::adc(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    uint8_t argument = _memory->read_uint8(opAddress);
+    adc_impl(argument);
+    return 2;
+}
+
+
 unsigned int nes_emu::CPU::brk() {
     return 7;
 }
@@ -52,6 +60,13 @@ unsigned int nes_emu::CPU::ldy(AddressMode mode) {
     return 2;
 }
 
+unsigned int nes_emu::CPU::sbc(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    uint8_t argument = _memory->read_uint8(opAddress);
+    adc_impl(~argument);
+    return 2;
+}
+
 unsigned int nes_emu::CPU::sta(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     _memory->write(opAddress, _registers->accumulator);
@@ -78,4 +93,25 @@ unsigned int nes_emu::CPU::tax() {
     _registers->statusRegister = statusFlagsOnByteValue(_registers->x, _registers->statusRegister);
     
     return 2;
+}
+
+void nes_emu::CPU::adc_impl(uint8_t argument) {
+    uint16_t addResult = argument + _registers->accumulator + (_registers->statusRegister & nes_registers::StatusFlags::CarryFlag);
+
+    if (addResult > 0xFF) {
+        _registers->statusRegister |= nes_registers::StatusFlags::CarryFlag;
+    } else {
+        _registers->statusRegister &= ~nes_registers::StatusFlags::CarryFlag;
+    }
+    
+    //overflow flag logic from: https://stackoverflow.com/a/29224684
+    if (~(_registers->accumulator ^ argument) & (_registers->accumulator ^ addResult) & 0x80) {
+        _registers->statusRegister |= nes_registers::StatusFlags::OverflowFlag;
+    } else {
+        _registers->statusRegister &= ~nes_registers::StatusFlags::OverflowFlag;
+    }
+    
+    _registers->accumulator = addResult;
+    
+    _registers->statusRegister = statusFlagsOnByteValue(_registers->accumulator, _registers->statusRegister);
 }
