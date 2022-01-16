@@ -28,6 +28,16 @@ unsigned int nes_emu::CPU::adc(AddressMode mode) {
     return 2;
 }
 
+unsigned int nes_emu::CPU::instrAnd(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    uint8_t argument = _memory->read_uint8(opAddress);
+
+    _registers->accumulator &= argument;
+    
+    _registers->statusRegister = statusFlagsOnByteValue(_registers->accumulator, _registers->statusRegister);
+    
+    return 2;
+}
 
 unsigned int nes_emu::CPU::brk() {
     return 7;

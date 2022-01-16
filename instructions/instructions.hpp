@@ -32,6 +32,8 @@ namespace nes_emu {
     protected:
         unsigned int adc(AddressMode mode);
         
+        unsigned int instrAnd(AddressMode mode);
+        
         unsigned int brk(); //opcode 0x00
         
         unsigned int lda(AddressMode mode);

@@ -80,6 +80,54 @@ TEST_F(CPUTest, ADC_NegativeOverflow) {
     EXPECT_EQ(_registers->statusRegister, nes_registers::StatusFlags::CarryFlag | nes_registers::StatusFlags::OverflowFlag);
 }
 
+TEST_F(CPUTest, AND_Zero) {
+    _memory->write(0x00, 0x29);
+    _memory->write(0x01, 0xAA);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x55;
+    
+    instrAnd(nes_emu::AddressMode::Immediate);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->accumulator, 0x00);
+    EXPECT_EQ(_registers->statusRegister, nes_registers::StatusFlags::ZeroFlag);
+}
+
+TEST_F(CPUTest, AND_Equal) {
+    _memory->write(0x00, 0x29);
+    _memory->write(0x01, 0xDB);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0xDB;
+    
+    instrAnd(nes_emu::AddressMode::Immediate);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->accumulator, 0xDB);
+    EXPECT_EQ(_registers->statusRegister, nes_registers::StatusFlags::NegativeFlag);
+}
+
+TEST_F(CPUTest, AND_Diff) {
+    _memory->write(0x00, 0x29);
+    _memory->write(0x01, 0x04);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x0C;
+    
+    instrAnd(nes_emu::AddressMode::Immediate);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->accumulator, 0x04);
+    EXPECT_EQ(_registers->statusRegister, 0);
+}
+
 TEST_F(CPUTest, LDA_PositiveInteger) {
     _memory->write(0x00, 0xA9);
     _memory->write(0x01, 0x05);
