@@ -137,6 +137,23 @@ void nes_emu::CPU::cpy(AddressMode mode) {
     compare_impl(mode, _registers->y);
 }
 
+void nes_emu::CPU::dec(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress) - 1;
+    _memory->write(opAddress, value);
+    setNumberFlags(value);
+}
+
+void nes_emu::CPU::dex() {
+    _registers->x -= 1;
+    setNumberFlags(_registers->x);
+}
+
+void nes_emu::CPU::dey() {
+    _registers->y -= 1;
+    setNumberFlags(_registers->y);
+}
+
 void nes_emu::CPU::lda(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);

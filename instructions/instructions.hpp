@@ -55,6 +55,10 @@ namespace nes_emu {
         void cpx(AddressMode mode);
         void cpy(AddressMode mode);
         
+        void dec(AddressMode mode);
+        void dex();
+        void dey();
+        
         void lda(AddressMode mode);
         void ldx(AddressMode mode);
         void ldy(AddressMode mode);
