@@ -77,15 +77,15 @@ uint8_t nes_emu::statusFlagsOnByteValue(const uint8_t value, const uint8_t curre
     uint8_t updatedStatus = currentStatus;
     
     if (value == 0) {
-        updatedStatus |= 0b00000010;
+        updatedStatus |= nes_registers::StatusFlags::ZeroFlag;
     } else {
-        updatedStatus &= 0b11111101;
+        updatedStatus &= ~nes_registers::StatusFlags::ZeroFlag;
     }
     
     if ((value & 0b10000000) != 0) {
-        updatedStatus |= 0b10000000;
+        updatedStatus |= nes_registers::StatusFlags::NegativeFlag;
     } else {
-        updatedStatus &= 0b01111111;
+        updatedStatus &= ~nes_registers::StatusFlags::NegativeFlag;
     }
     
     return updatedStatus;
