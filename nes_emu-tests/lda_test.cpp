@@ -128,6 +128,36 @@ TEST_F(CPUTest, AND_Diff) {
     EXPECT_EQ(_registers->statusRegister, 0);
 }
 
+TEST_F(CPUTest, ASL_NoCarry) {
+    _memory->write(0x00, 0x0A);
+    _memory->write(0x01, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x0A;
+    
+    asl(nes_emu::AddressMode::Accumulator);
+    
+    EXPECT_EQ(_registers->programCounter, 0x01);
+    EXPECT_EQ(_registers->accumulator, 0x14);
+    EXPECT_EQ(_registers->statusRegister, 0);
+}
+
+TEST_F(CPUTest, ASL_Carry) {
+    _memory->write(0x00, 0x0A);
+    _memory->write(0x01, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0xC0;
+    
+    asl(nes_emu::AddressMode::Accumulator);
+    
+    EXPECT_EQ(_registers->programCounter, 0x01);
+    EXPECT_EQ(_registers->accumulator, 0x80);
+    EXPECT_EQ(_registers->statusRegister, nes_registers::StatusFlags::CarryFlag | nes_registers::StatusFlags::NegativeFlag);
+}
+
 TEST_F(CPUTest, LDA_PositiveInteger) {
     _memory->write(0x00, 0xA9);
     _memory->write(0x01, 0x05);

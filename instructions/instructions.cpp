@@ -39,6 +39,35 @@ unsigned int nes_emu::CPU::instrAnd(AddressMode mode) {
     return 2;
 }
 
+unsigned int nes_emu::CPU::asl(AddressMode mode) {
+    uint8_t value;
+
+    if (mode == AddressMode::Accumulator) {
+        value = _registers->accumulator;
+    } else {
+        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        value = _memory->read_uint8(opAddress);
+    }
+
+    if (value & 0x80) {
+        _registers->statusRegister |= nes_registers::StatusFlags::CarryFlag;
+    } else {
+        _registers->statusRegister &= ~nes_registers::StatusFlags::CarryFlag;
+    }
+    
+    value = value << 1;
+    setNumberFlags(value);
+    
+    if (mode == AddressMode::Accumulator) {
+        _registers->accumulator = value;
+    } else {
+        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        _memory->write(opAddress, value);
+    }
+
+    return 2;
+}
+
 unsigned int nes_emu::CPU::brk() {
     return 7;
 }
