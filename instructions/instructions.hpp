@@ -35,6 +35,11 @@ namespace nes_emu {
         void instrAnd(AddressMode mode);
         void asl(AddressMode mode);
         
+        void bcc();
+        void bcs();
+        void beq();
+        void bne();
+
         void brk(); //opcode 0x00
         
         void lda(AddressMode mode);
@@ -52,6 +57,7 @@ namespace nes_emu {
     protected:
         void setNumberFlags(uint8_t lastOperationValue);
         void adc_impl(uint8_t argument);
+        void branch_impl(bool test);
     };
 }
 

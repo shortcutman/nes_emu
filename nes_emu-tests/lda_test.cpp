@@ -158,6 +158,48 @@ TEST_F(CPUTest, ASL_Carry) {
     EXPECT_EQ(_registers->statusRegister, nes_registers::StatusFlags::CarryFlag | nes_registers::StatusFlags::NegativeFlag);
 }
 
+TEST_F(CPUTest, BCC_NoBranch) {
+    _memory->write(0x00, 0x90);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = nes_registers::StatusFlags::CarryFlag;
+    
+    bcc();
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->statusRegister, nes_registers::StatusFlags::CarryFlag);
+}
+
+TEST_F(CPUTest, BCC_Branch8bit) {
+    _memory->write(0x00, 0x90);
+    _memory->write(0x01, 0x05);
+    _memory->write(0x02, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    
+    bcc();
+    
+    EXPECT_EQ(_registers->programCounter, 0x07);
+    EXPECT_EQ(_registers->statusRegister, 0x00);
+}
+
+TEST_F(CPUTest, BCC_Branch16bit) {
+    _memory->write(0x0100, 0x90);
+    _memory->write(0x0101, 0x05);
+    _memory->write(0x0102, 0x00);
+    
+    _registers->programCounter = 0x0101;
+    _registers->statusRegister = 0x00;
+    
+    bcc();
+    
+    EXPECT_EQ(_registers->programCounter, 0x0107);
+    EXPECT_EQ(_registers->statusRegister, 0x00);
+}
+
 TEST_F(CPUTest, LDA_PositiveInteger) {
     _memory->write(0x00, 0xA9);
     _memory->write(0x01, 0x05);

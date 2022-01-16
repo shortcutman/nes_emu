@@ -63,6 +63,22 @@ void nes_emu::CPU::asl(AddressMode mode) {
     }
 }
 
+void nes_emu::CPU::bcc() {
+    branch_impl(!(_registers->statusRegister & nes_registers::StatusFlags::CarryFlag));
+}
+
+void nes_emu::CPU::bcs() {
+    branch_impl(_registers->statusRegister & nes_registers::StatusFlags::CarryFlag);
+}
+
+void nes_emu::CPU::beq() {
+    branch_impl(_registers->statusRegister & nes_registers::StatusFlags::ZeroFlag);
+}
+
+void nes_emu::CPU::bne() {
+    branch_impl(!(_registers->statusRegister & nes_registers::StatusFlags::ZeroFlag));
+}
+
 void nes_emu::CPU::brk() {
 }
 
@@ -146,4 +162,13 @@ void nes_emu::CPU::adc_impl(uint8_t argument) {
     _registers->accumulator = addResult;
     
     setNumberFlags(_registers->accumulator);
+}
+
+void nes_emu::CPU::branch_impl(bool test) {
+    auto incrementValue = _memory->read_uint8(_registers->programCounter);
+    _registers->programCounter++;
+    
+    if (test) {
+        _registers->programCounter += incrementValue;
+    }
 }
