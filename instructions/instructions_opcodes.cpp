@@ -9,6 +9,7 @@
 
 nes_emu::CPU::OpCodeMap nes_emu::CPU::buildOpCodeMap(nes_emu::CPU* cpu) {
     return {
+        //{ opcode, { opcode, bytes, cycles, assembly shorthand, function call with addres mode } }
         {0x69, {0x69, 2, 2, "ADC", [cpu] { cpu->adc(AddressMode::Immediate); }}},
         {0x65, {0x65, 2, 3, "ADC", [cpu] { cpu->adc(AddressMode::ZeroPage); }}},
         {0x75, {0x75, 2, 4, "ADC", [cpu] { cpu->adc(AddressMode::ZeroPageX); }}},
