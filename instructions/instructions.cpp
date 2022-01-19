@@ -121,6 +121,10 @@ void nes_emu::CPU::cld() {
     _registers->setStatusFlag(nes_registers::StatusFlags::DecimalModeFlag, false);
 }
 
+void nes_emu::CPU::cli() {
+    _registers->setStatusFlag(nes_registers::StatusFlags::InterruptDisable, false);
+}
+
 void nes_emu::CPU::clv() {
     _registers->setStatusFlag(nes_registers::StatusFlags::OverflowFlag, false);
 }
