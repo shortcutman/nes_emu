@@ -15,7 +15,7 @@ class nes_memory;
 
 namespace nes_emu {
 
-enum AddressMode {
+enum class AddressMode : uint8_t {
     Accumulator,
     Absolute,
     AbsoluteX,
@@ -24,8 +24,9 @@ enum AddressMode {
     ZeroPageX,
     ZeroPageY,
     Immediate,
-    IndexedIndirect,
-    IndirectIndexed,
+    Indirect_X,
+    Indirect_Y,
+    Indirect, //used by jmp
     Relative
 };
 
