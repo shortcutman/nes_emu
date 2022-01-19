@@ -61,12 +61,17 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             return registers.programCounter++;
             break;
             
-        case AddressMode::IndexedIndirect:
+        case AddressMode::Indirect_X:
             throw std::runtime_error("Unimplemented");
             return 0xDB;
             break;
             
-        case AddressMode::IndirectIndexed:
+        case AddressMode::Indirect_Y:
+            throw std::runtime_error("Unimplemented");
+            return 0xDB;
+            break;
+            
+        case AddressMode::Indirect:
             throw std::runtime_error("Unimplemented");
             return 0xDB;
             break;
