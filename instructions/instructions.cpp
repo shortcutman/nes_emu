@@ -14,7 +14,8 @@
 
 nes_emu::CPU::CPU() :
     _registers(new nes_registers()),
-    _memory(new nes_memory())
+    _memory(new nes_memory()),
+    _ops(CPU::buildOpCodeMap(this))
 {
 }
 

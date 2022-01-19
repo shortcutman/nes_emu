@@ -10,6 +10,9 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
+#include <unordered_map>
+#include <functional>
 
 #include "instruction_utils.hpp"
 
@@ -21,9 +24,20 @@ namespace nes_emu {
     class CPU {
         friend class CPUTest;
         
-    public:
+        struct OpCode {
+            uint8_t code;
+            uint8_t bytes;
+            uint8_t cycles;
+            std::string shortHand;
+            std::function<void(void)> func;
+        };
+        typedef std::unordered_map<uint8_t, OpCode> OpCodeMap;
+        static OpCodeMap buildOpCodeMap(CPU* cpu);
+        
+    protected:
         std::unique_ptr<nes_registers> _registers;
         std::unique_ptr<nes_memory> _memory;
+        OpCodeMap _ops;
         
     public:
         CPU();
