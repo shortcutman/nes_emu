@@ -31,12 +31,14 @@ nes_emu::Cartridge::MirrorType nes_emu::Cartridge::mirrorType() const {
     }
 }
 
-uint16_t nes_emu::Cartridge::prgROMSize() const {
-    return _prgROM.size();
-}
-
-uint8_t nes_emu::Cartridge::readPRGROM(const uint16_t address) const {
-    return _prgROM[address];
+uint8_t nes_emu::Cartridge::readCart(const uint16_t address) const {
+    if (address < 0x8000) {
+        throw std::runtime_error("reading from unimplemented cartridge address space");
+    }
+    
+    auto addrOffset = address - 0x8000;
+    addrOffset = addrOffset % _prgROM.size();
+    return _prgROM[addrOffset];
 }
 
 std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std::istream& input) {
