@@ -15,6 +15,13 @@
 namespace nes_emu {
 
 class Cartridge {
+public:
+    enum class MirrorType {
+      Horizontal,
+      Vertical,
+      FourScreen
+    };
+    
 private:
     constexpr static const char iNesTag[4] = {0x4E, 0x45, 0x53, 0x1A};
     static const uint16_t PRGROMPageSize = 16384;
@@ -35,6 +42,11 @@ private:
 public:
     Cartridge();
     ~Cartridge();
+    
+    MirrorType mirrorType() const;
+    
+    uint16_t prgROMSize() const;
+    uint8_t readPRGROM(const uint16_t address) const;
     
     static std::unique_ptr<Cartridge> cartridgeFromStream(std::istream& input);
 };

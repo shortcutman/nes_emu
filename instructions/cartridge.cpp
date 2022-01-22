@@ -21,6 +21,24 @@ nes_emu::Cartridge::~Cartridge() {
     
 }
 
+nes_emu::Cartridge::MirrorType nes_emu::Cartridge::mirrorType() const {
+    if (_controlByteOne & 0x08) {
+        return MirrorType::FourScreen;
+    } else if (_controlByteOne & 0x01) {
+        return MirrorType::Vertical;
+    } else {
+        return MirrorType::Horizontal;
+    }
+}
+
+uint16_t nes_emu::Cartridge::prgROMSize() const {
+    return _prgROM.size();
+}
+
+uint8_t nes_emu::Cartridge::readPRGROM(const uint16_t address) const {
+    return _prgROM[address];
+}
+
 std::unique_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std::istream& input) {
     auto cart = std::make_unique<nes_emu::Cartridge>();
     
