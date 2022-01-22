@@ -7,6 +7,8 @@
 
 #include "memory.hpp"
 
+#include "cartridge.hpp"
+
 nes_emu::Memory::Memory() {
     
 }
@@ -28,8 +30,7 @@ uint8_t nes_emu::Memory::read_uint8(const uint16_t address) const {
         throw std::runtime_error("apu/io test mode not implemented");
         return 0x00;
     } else if (address <= nes_emu::Memory::LastCartridgeSpaceMemory) {
-        throw std::runtime_error("catridge space not implemented");
-        return 0x00;
+        return _cartridge->readCart(address);;
     } else {
         throw std::logic_error("something is wrong");
         return 0x00;
