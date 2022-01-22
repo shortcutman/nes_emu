@@ -17,7 +17,7 @@ namespace {
 TEST(Instruction_Utils, decodeOperandAddress_Immediate) {
     nes_registers r;
     r.programCounter = 0x01;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x01, 0xDB);
     
     auto result = decodeOperandAddress(nes_emu::AddressMode::Immediate, r, m);
@@ -29,7 +29,7 @@ TEST(Instruction_Utils, decodeOperandAddress_Immediate) {
 TEST(Instruction_Utils, decodeOperandAddress_Absolute) {
     nes_registers r;
     r.programCounter = 0x01;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x01, 0xDB);
     m.write(0x02, 0xFE);
     
@@ -43,7 +43,7 @@ TEST(Instruction_Utils, decodeOperandAddress_AbsoluteX) {
     nes_registers r;
     r.programCounter = 0x01;
     r.x = 0x02;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x03, 0xDB);
     m.write(0x04, 0xFE);
     
@@ -57,7 +57,7 @@ TEST(Instruction_Utils, decodeOperandAddress_AbsoluteY) {
     nes_registers r;
     r.programCounter = 0x01;
     r.y = 0x02;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x03, 0xDB);
     m.write(0x04, 0xFE);
     
@@ -70,7 +70,7 @@ TEST(Instruction_Utils, decodeOperandAddress_AbsoluteY) {
 TEST(Instruction_Utils, decodeOperandAddress_ZeroPage) {
     nes_registers r;
     r.programCounter = 0x01;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x00, 0x00);
     m.write(0x01, 0xDB);
     m.write(0x02, 0xFE);
@@ -86,7 +86,7 @@ TEST(Instruction_Utils, decodeOperandAddress_ZeroPageX) {
     nes_registers r;
     r.programCounter = 0x01;
     r.x = 0x02;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x00, 0x00);
     m.write(0x01, 0xDB);
     m.write(0x03, 0xFE);
@@ -102,7 +102,7 @@ TEST(Instruction_Utils, decodeOperandAddress_ZeroPageXWrap) {
     nes_registers r;
     r.programCounter = 0x01;
     r.x = 0x02;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x00, 0x00);
     m.write(0x01, 0xFE);
     m.write(0x03, 0xDB);
@@ -118,7 +118,7 @@ TEST(Instruction_Utils, decodeOperandAddress_ZeroPageY) {
     nes_registers r;
     r.programCounter = 0x01;
     r.y = 0x02;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x00, 0x00);
     m.write(0x01, 0xDB);
     m.write(0x03, 0xFE);
@@ -134,7 +134,7 @@ TEST(Instruction_Utils, decodeOperandAddress_ZeroPageYWrap) {
     nes_registers r;
     r.programCounter = 0x01;
     r.y = 0x02;
-    nes_memory m;
+    nes_emu::Memory m;
     m.write(0x00, 0x00);
     m.write(0x01, 0xFE);
     m.write(0x03, 0xDB);

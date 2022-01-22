@@ -14,7 +14,7 @@
 
 nes_emu::CPU::CPU() :
     _registers(new nes_registers()),
-    _memory(new nes_memory()),
+    _memory(new nes_emu::Memory()),
     _ops(CPU::buildOpCodeMap(this))
 {
 }
@@ -452,12 +452,12 @@ void nes_emu::CPU::compare_impl(AddressMode mode, uint8_t registerInput) {
 }
 
 void nes_emu::CPU::stack_push(uint8_t value) {
-    _memory->write(nes_memory::StackStart + _registers->stackPointer, value);
+    _memory->write(nes_emu::Memory::StackStart + _registers->stackPointer, value);
     _registers->stackPointer += 1;
 }
 
 uint8_t nes_emu::CPU::stack_pop() {
-    auto value = _memory->read_uint8(nes_memory::StackStart + _registers->stackPointer);
+    auto value = _memory->read_uint8(nes_emu::Memory::StackStart + _registers->stackPointer);
     _registers->stackPointer -= 1;
     return value;
 }

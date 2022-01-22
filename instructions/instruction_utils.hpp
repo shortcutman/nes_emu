@@ -11,9 +11,9 @@
 #include <cstdint>
 
 struct nes_registers;
-class nes_memory;
 
 namespace nes_emu {
+    class Memory;
 
 enum class AddressMode : uint8_t {
     Accumulator,
@@ -30,7 +30,7 @@ enum class AddressMode : uint8_t {
     Relative
 };
 
-uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, const nes_memory& memory);
+uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, const nes_emu::Memory& memory);
 }
 
 #endif /* instruction_utils_hpp */

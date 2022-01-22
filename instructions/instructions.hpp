@@ -17,9 +17,9 @@
 #include "instruction_utils.hpp"
 
 struct nes_registers;
-class nes_memory;
 
 namespace nes_emu {
+    class Memory;
 
     class CPU {
         friend class CPUTest;
@@ -36,7 +36,7 @@ namespace nes_emu {
         
     protected:
         std::unique_ptr<nes_registers> _registers;
-        std::unique_ptr<nes_memory> _memory;
+        std::unique_ptr<nes_emu::Memory> _memory;
         OpCodeMap _ops;
         
     public:

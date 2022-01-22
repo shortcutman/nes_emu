@@ -11,7 +11,7 @@
 #include <cstdint>
 
 struct nes_registers;
-class nes_memory;
+//class nes_emu::Memory;
 
 namespace nes_emu {
 
@@ -28,7 +28,7 @@ namespace nes_emu {
 //    Relative
 //};
 //
-//uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, const nes_memory& memory);
+//uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, const nes_emu::Memory& memory);
 
 }
 
