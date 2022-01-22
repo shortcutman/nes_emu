@@ -14,7 +14,7 @@
 namespace {
 
 TEST(CartridgeTest, readCart) {
-    std::unique_ptr<nes_emu::Cartridge> cart;
+    std::shared_ptr<nes_emu::Cartridge> cart;
         
     std::ifstream cartFile("/Users/daniel/Projects.nosync/nes_emu/nes_emu/nes_emu-tests/nestest/nestest.nes", std::fstream::in | std::fstream::binary);
     
