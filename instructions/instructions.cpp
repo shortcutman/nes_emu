@@ -10,8 +10,6 @@
 #include "registers.hpp"
 #include "memory.hpp"
 
-#include "cpu.hpp"
-
 nes_emu::CPU::CPU() :
     _registers(new nes_registers()),
     _memory(new nes_emu::Memory()),

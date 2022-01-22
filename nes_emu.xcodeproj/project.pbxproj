@@ -19,8 +19,6 @@
 		65ADF2282792521200D83639 /* instructions_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2272792521200D83639 /* instructions_test.cpp */; };
 		65ADF22B2792660E00D83639 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2292792660E00D83639 /* memory.cpp */; };
 		65ADF22C2792660E00D83639 /* memory.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF22A2792660E00D83639 /* memory.hpp */; };
-		65ADF22F27926F9900D83639 /* cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF22D27926F9900D83639 /* cpu.cpp */; };
-		65ADF23027926F9900D83639 /* cpu.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF22E27926F9900D83639 /* cpu.hpp */; };
 		65ADF2332792DF7800D83639 /* instruction_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2312792DF7800D83639 /* instruction_utils.cpp */; };
 		65ADF2342792DF7800D83639 /* instruction_utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF2322792DF7800D83639 /* instruction_utils.hpp */; };
 		65ADF2362792E00000D83639 /* util_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2352792E00000D83639 /* util_test.cpp */; };
@@ -87,8 +85,6 @@
 		65ADF2272792521200D83639 /* instructions_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instructions_test.cpp; sourceTree = "<group>"; };
 		65ADF2292792660E00D83639 /* memory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = memory.cpp; sourceTree = "<group>"; };
 		65ADF22A2792660E00D83639 /* memory.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = memory.hpp; sourceTree = "<group>"; };
-		65ADF22D27926F9900D83639 /* cpu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpu.cpp; sourceTree = "<group>"; };
-		65ADF22E27926F9900D83639 /* cpu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = cpu.hpp; sourceTree = "<group>"; };
 		65ADF2312792DF7800D83639 /* instruction_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instruction_utils.cpp; sourceTree = "<group>"; };
 		65ADF2322792DF7800D83639 /* instruction_utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = instruction_utils.hpp; sourceTree = "<group>"; };
 		65ADF2352792E00000D83639 /* util_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = util_test.cpp; sourceTree = "<group>"; };
@@ -190,8 +186,6 @@
 				65ADF1E327902D8800D83639 /* instructions.hpp */,
 				65ADF2292792660E00D83639 /* memory.cpp */,
 				65ADF22A2792660E00D83639 /* memory.hpp */,
-				65ADF22D27926F9900D83639 /* cpu.cpp */,
-				65ADF22E27926F9900D83639 /* cpu.hpp */,
 				65ADF2312792DF7800D83639 /* instruction_utils.cpp */,
 				65ADF2322792DF7800D83639 /* instruction_utils.hpp */,
 				65ADF23A2798176100D83639 /* instructions_opcodes.cpp */,
@@ -228,7 +222,6 @@
 				65ADF2412799789000D83639 /* cartridge.hpp in Headers */,
 				65ADF22C2792660E00D83639 /* memory.hpp in Headers */,
 				65ADF2342792DF7800D83639 /* instruction_utils.hpp in Headers */,
-				65ADF23027926F9900D83639 /* cpu.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,7 +358,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65ADF22F27926F9900D83639 /* cpu.cpp in Sources */,
 				65ADF22627924C2E00D83639 /* registers.cpp in Sources */,
 				65ADF21F27924BFD00D83639 /* instructions.cpp in Sources */,
 				65ADF2402799789000D83639 /* cartridge.cpp in Sources */,
