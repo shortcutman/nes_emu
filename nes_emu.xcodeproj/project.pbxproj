@@ -13,10 +13,10 @@
 		65ADF1CE279023BD00D83639 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF1CC2790235000D83639 /* SDL2.framework */; };
 		65ADF1CF279023BD00D83639 /* SDL2.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF1CC2790235000D83639 /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		65ADF1EC2791588A00D83639 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1EB2791588A00D83639 /* main.cpp */; };
-		65ADF21F27924BFD00D83639 /* instructions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1E227902D8800D83639 /* instructions.cpp */; };
+		65ADF21F27924BFD00D83639 /* cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1E227902D8800D83639 /* cpu.cpp */; };
 		65ADF22527924C2000D83639 /* libinstructions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF21427924BDE00D83639 /* libinstructions.a */; };
 		65ADF22627924C2E00D83639 /* registers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1DF2790296300D83639 /* registers.cpp */; };
-		65ADF2282792521200D83639 /* instructions_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2272792521200D83639 /* instructions_test.cpp */; };
+		65ADF2282792521200D83639 /* cpu_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2272792521200D83639 /* cpu_test.cpp */; };
 		65ADF22B2792660E00D83639 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2292792660E00D83639 /* memory.cpp */; };
 		65ADF22C2792660E00D83639 /* memory.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF22A2792660E00D83639 /* memory.hpp */; };
 		65ADF2332792DF7800D83639 /* instruction_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF2312792DF7800D83639 /* instruction_utils.cpp */; };
@@ -77,12 +77,12 @@
 		65ADF1CC2790235000D83639 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 		65ADF1DF2790296300D83639 /* registers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = registers.cpp; sourceTree = "<group>"; };
 		65ADF1E02790296300D83639 /* registers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = registers.hpp; sourceTree = "<group>"; };
-		65ADF1E227902D8800D83639 /* instructions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instructions.cpp; sourceTree = "<group>"; };
-		65ADF1E327902D8800D83639 /* instructions.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = instructions.hpp; sourceTree = "<group>"; };
+		65ADF1E227902D8800D83639 /* cpu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpu.cpp; sourceTree = "<group>"; };
+		65ADF1E327902D8800D83639 /* cpu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = cpu.hpp; sourceTree = "<group>"; };
 		65ADF1E92791588A00D83639 /* nes_emu-tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "nes_emu-tests"; sourceTree = BUILT_PRODUCTS_DIR; };
 		65ADF1EB2791588A00D83639 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		65ADF21427924BDE00D83639 /* libinstructions.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libinstructions.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		65ADF2272792521200D83639 /* instructions_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instructions_test.cpp; sourceTree = "<group>"; };
+		65ADF2272792521200D83639 /* cpu_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cpu_test.cpp; sourceTree = "<group>"; };
 		65ADF2292792660E00D83639 /* memory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = memory.cpp; sourceTree = "<group>"; };
 		65ADF22A2792660E00D83639 /* memory.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = memory.hpp; sourceTree = "<group>"; };
 		65ADF2312792DF7800D83639 /* instruction_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instruction_utils.cpp; sourceTree = "<group>"; };
@@ -170,7 +170,7 @@
 			children = (
 				65ADF242279A747900D83639 /* nestest */,
 				65ADF1EB2791588A00D83639 /* main.cpp */,
-				65ADF2272792521200D83639 /* instructions_test.cpp */,
+				65ADF2272792521200D83639 /* cpu_test.cpp */,
 				65ADF2352792E00000D83639 /* util_test.cpp */,
 				65ADF246279A74A600D83639 /* cart_test.cpp */,
 			);
@@ -182,8 +182,8 @@
 			children = (
 				65ADF1DF2790296300D83639 /* registers.cpp */,
 				65ADF1E02790296300D83639 /* registers.hpp */,
-				65ADF1E227902D8800D83639 /* instructions.cpp */,
-				65ADF1E327902D8800D83639 /* instructions.hpp */,
+				65ADF1E227902D8800D83639 /* cpu.cpp */,
+				65ADF1E327902D8800D83639 /* cpu.hpp */,
 				65ADF2292792660E00D83639 /* memory.cpp */,
 				65ADF22A2792660E00D83639 /* memory.hpp */,
 				65ADF2312792DF7800D83639 /* instruction_utils.cpp */,
@@ -348,7 +348,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65ADF2362792E00000D83639 /* util_test.cpp in Sources */,
-				65ADF2282792521200D83639 /* instructions_test.cpp in Sources */,
+				65ADF2282792521200D83639 /* cpu_test.cpp in Sources */,
 				65ADF1EC2791588A00D83639 /* main.cpp in Sources */,
 				65ADF247279A74A600D83639 /* cart_test.cpp in Sources */,
 			);
@@ -359,7 +359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65ADF22627924C2E00D83639 /* registers.cpp in Sources */,
-				65ADF21F27924BFD00D83639 /* instructions.cpp in Sources */,
+				65ADF21F27924BFD00D83639 /* cpu.cpp in Sources */,
 				65ADF2402799789000D83639 /* cartridge.cpp in Sources */,
 				65ADF23C2798176100D83639 /* instructions_opcodes.cpp in Sources */,
 				65ADF22B2792660E00D83639 /* memory.cpp in Sources */,

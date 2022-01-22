@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-#include "instructions.hpp"
+#include "cpu.hpp"
 #include "registers.hpp"
 #include "memory.hpp"
 

@@ -5,7 +5,7 @@
 //  Created by Daniel Burke on 19/1/2022.
 //
 
-#include "instructions.hpp"
+#include "cpu.hpp"
 
 nes_emu::CPU::OpCodeMap nes_emu::CPU::buildOpCodeMap(nes_emu::CPU* cpu) {
     return {

@@ -5,7 +5,7 @@
 //  Created by Daniel Burke on 13/1/2022.
 //
 
-#include "instructions.hpp"
+#include "cpu.hpp"
 
 #include "registers.hpp"
 #include "memory.hpp"
