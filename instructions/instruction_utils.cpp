@@ -62,13 +62,29 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::Indirect_X:
-            throw std::runtime_error("Unimplemented");
-            return 0xDB;
+        {
+            uint8_t base = readAndIncrementu8(registers, memory, registers.programCounter);
+            auto pointer = base + registers.x;
+            auto lo = memory.read_uint8(pointer);
+            auto hi = memory.read_uint8(pointer + 1);
+            uint16_t address = hi;
+            address = address << 8;
+            address += lo;
+            return address;
+        }
             break;
             
         case AddressMode::Indirect_Y:
-            throw std::runtime_error("Unimplemented");
-            return 0xDB;
+        {
+            uint8_t base = readAndIncrementu8(registers, memory, registers.programCounter);
+            uint8_t lo = memory.read_uint8(base);
+            uint8_t hi = memory.read_uint8(base + 1);
+            uint16_t deref_base = hi;
+            deref_base = deref_base << 8;
+            deref_base += lo;
+            uint16_t deref = deref_base + registers.y;
+            return deref;
+        }
             break;
             
         case AddressMode::Indirect:
