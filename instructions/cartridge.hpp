@@ -48,7 +48,7 @@ public:
     uint16_t prgROMSize() const;
     uint8_t readPRGROM(const uint16_t address) const;
     
-    static std::unique_ptr<Cartridge> cartridgeFromStream(std::istream& input);
+    static std::shared_ptr<Cartridge> cartridgeFromStream(std::istream& input);
 };
 
 }

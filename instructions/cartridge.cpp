@@ -39,8 +39,8 @@ uint8_t nes_emu::Cartridge::readPRGROM(const uint16_t address) const {
     return _prgROM[address];
 }
 
-std::unique_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std::istream& input) {
-    auto cart = std::make_unique<nes_emu::Cartridge>();
+std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std::istream& input) {
+    auto cart = std::make_shared<nes_emu::Cartridge>();
     
     char magicWord[4];
     input.read(reinterpret_cast<char*>(&magicWord), sizeof(magicWord));
