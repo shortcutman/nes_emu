@@ -27,7 +27,6 @@ enum class AddressMode : uint8_t {
     Indirect_X,
     Indirect_Y,
     Indirect, //used by jmp
-    Relative
 };
 
 uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, const nes_emu::Memory& memory);

@@ -72,13 +72,8 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::Indirect:
-            throw std::runtime_error("Unimplemented");
-            return 0xDB;
-            break;
-            
-        case AddressMode::Relative:
-            throw std::runtime_error("Unimplemented");
-            return 0xDB;
+            auto addrLoc = readAndIncrementu16(registers, memory, registers.programCounter);
+            return readAndIncrementu16(registers, memory, addrLoc);
             break;
     }
 }
