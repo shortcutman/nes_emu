@@ -37,9 +37,7 @@ uint8_t nes_emu::Memory::read_uint8(const uint16_t address) const {
     }
 }
 
-uint16_t nes_emu::Memory::read_uint16(const uint16_t address) const {
-    assert(address < 2048);
-    
+uint16_t nes_emu::Memory::read_uint16(const uint16_t address) const {    
     uint16_t loByte = read_uint8(address);
     uint16_t hiByte = read_uint8(address + 1);
     
