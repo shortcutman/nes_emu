@@ -43,7 +43,7 @@ uint8_t nes_emu::Cartridge::readCart(const uint16_t address) const {
 
 std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std::istream& input) {
     auto cart = std::make_shared<nes_emu::Cartridge>();
-    
+        
     char magicWord[4];
     input.read(reinterpret_cast<char*>(&magicWord), sizeof(magicWord));
     
@@ -59,9 +59,10 @@ std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std:
     .read(reinterpret_cast<char*>(&cart->_chrRomBanks), sizeof(cart->_chrRomBanks))
     .read(reinterpret_cast<char*>(&cart->_controlByteOne), sizeof(cart->_controlByteOne))
     .read(reinterpret_cast<char*>(&cart->_controlByteTwo), sizeof(cart->_controlByteTwo))
-    .read(reinterpret_cast<char*>(&cart->_prgRamUnits), sizeof(cart->_prgRamUnits))
-    .read(reinterpret_cast<char*>(&headerRemainder), sizeof(headerRemainder.size()));
-    
+    .read(reinterpret_cast<char*>(&cart->_prgRamUnits), sizeof(cart->_prgRamUnits));
+        
+    input.read(reinterpret_cast<char*>(&headerRemainder), headerRemainder.size());
+        
     if (!input.good()) {
         throw std::runtime_error("");
     }
