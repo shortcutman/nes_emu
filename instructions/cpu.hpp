@@ -43,6 +43,8 @@ namespace nes_emu {
         CPU();
         ~CPU();
         
+        void executeOne();
+        
     protected:
         void adc(AddressMode mode);
         

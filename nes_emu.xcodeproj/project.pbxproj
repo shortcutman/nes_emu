@@ -26,6 +26,7 @@
 		65ADF2402799789000D83639 /* cartridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF23E2799789000D83639 /* cartridge.cpp */; };
 		65ADF2412799789000D83639 /* cartridge.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF23F2799789000D83639 /* cartridge.hpp */; };
 		65ADF247279A74A600D83639 /* cart_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF246279A74A600D83639 /* cart_test.cpp */; };
+		65ADF249279BD93B00D83639 /* integration_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF248279BD93B00D83639 /* integration_test.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		65ADF244279A748F00D83639 /* nestest.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nestest.txt; sourceTree = "<group>"; };
 		65ADF245279A749000D83639 /* nestest.nes */ = {isa = PBXFileReference; lastKnownFileType = file; path = nestest.nes; sourceTree = "<group>"; };
 		65ADF246279A74A600D83639 /* cart_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cart_test.cpp; sourceTree = "<group>"; };
+		65ADF248279BD93B00D83639 /* integration_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = integration_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +175,7 @@
 				65ADF2272792521200D83639 /* cpu_test.cpp */,
 				65ADF2352792E00000D83639 /* util_test.cpp */,
 				65ADF246279A74A600D83639 /* cart_test.cpp */,
+				65ADF248279BD93B00D83639 /* integration_test.cpp */,
 			);
 			path = "nes_emu-tests";
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65ADF249279BD93B00D83639 /* integration_test.cpp in Sources */,
 				65ADF2362792E00000D83639 /* util_test.cpp in Sources */,
 				65ADF2282792521200D83639 /* cpu_test.cpp in Sources */,
 				65ADF1EC2791588A00D83639 /* main.cpp in Sources */,

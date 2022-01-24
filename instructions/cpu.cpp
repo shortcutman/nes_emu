@@ -7,6 +7,8 @@
 
 #include "cpu.hpp"
 
+#include <sstream>
+
 #include "registers.hpp"
 #include "memory.hpp"
 
@@ -18,6 +20,20 @@ nes_emu::CPU::CPU() :
 }
 
 nes_emu::CPU::~CPU() {
+}
+
+void nes_emu::CPU::executeOne() {
+    auto opCode = _memory->read_uint8(_registers->programCounter);
+    auto opCodeComponents = _ops[opCode];
+    _registers->programCounter++;
+    
+    if (!opCodeComponents.func) {
+        std::stringstream ss;
+        ss << "Unimplemented instruction, opcode: 0x" << std::hex << (int)opCode;
+        throw std::runtime_error(ss.str());
+    } else {
+        opCodeComponents.func();
+    }
 }
 
 void nes_emu::CPU::adc(AddressMode mode) {
