@@ -8,6 +8,7 @@
 #include "cpu.hpp"
 
 #include <sstream>
+#include <iomanip>
 
 #include "registers.hpp"
 #include "memory.hpp"
@@ -27,12 +28,12 @@ void nes_emu::CPU::executeOne() {
     auto opCodeComponents = _ops[opCode];
     _registers->programCounter++;
     
-    if (!opCodeComponents.func) {
-        std::stringstream ss;
-        ss << "Unimplemented instruction, opcode: 0x" << std::hex << (int)opCode;
-        throw std::runtime_error(ss.str());
-    } else {
+    if (opCodeComponents.func) {
         opCodeComponents.func();
+    } else {
+        std::stringstream ss;
+        ss << "Unimplemented instruction, opcode: 0x" << std::hex << std::setfill('0') << std::setw(2) << (int)opCode;
+        throw std::runtime_error(ss.str());
     }
 }
 

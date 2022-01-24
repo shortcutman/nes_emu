@@ -32,15 +32,10 @@ TEST_F(IntegrationTest, nestest) {
 
     uint64_t count = 0;
     
-    try {
-    while (1) {
+    EXPECT_NO_THROW(while (1) {
         executeOne();
         count++;
-    }
-    } catch (std::exception& e) {
-        
-        std::cout << "Exception after " << count << " instructions: " << e.what() << std::endl;
-    }
+    });
 }
 
 }
