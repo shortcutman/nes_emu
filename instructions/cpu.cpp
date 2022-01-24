@@ -101,7 +101,10 @@ void nes_emu::CPU::bpl() {
 }
 
 void nes_emu::CPU::brk() {
-    throw std::runtime_error("Not implemented");
+    stack_pushu16(_registers->programCounter);
+    stack_push(_registers->statusRegister);
+    _registers->programCounter = _memory->read_uint16(0xFFFE);
+    _registers->setStatusFlag(nes_registers::StatusFlags::BreakCommand, true);
 }
 
 void nes_emu::CPU::bvc() {
