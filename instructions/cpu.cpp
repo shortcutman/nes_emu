@@ -260,6 +260,16 @@ void nes_emu::CPU::lsr(AddressMode mode) {
 void nes_emu::CPU::nop() {
 }
 
+void nes_emu::CPU::dop(AddressMode mode) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-value"
+
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    (uint16_t)opAddress;
+    
+#pragma clang diagnostic pop
+}
+
 void nes_emu::CPU::ora(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);

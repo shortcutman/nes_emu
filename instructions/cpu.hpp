@@ -91,6 +91,7 @@ namespace nes_emu {
         void lsr(AddressMode mode);
         
         void nop();
+        void dop(AddressMode mode);
         
         void ora(AddressMode mode);
         

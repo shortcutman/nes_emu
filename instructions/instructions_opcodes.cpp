@@ -216,5 +216,29 @@ nes_emu::CPU::OpCodeMap nes_emu::CPU::buildOpCodeMap(nes_emu::CPU* cpu) {
         {0x9A, {0x9A, 1, 2, "TXS", [cpu] { cpu->txs(); }}},
         
         {0x98, {0x98, 1, 2, "TYA", [cpu] { cpu->tya(); }}},
+        
+        //unofficial opcodes
+        {0x1A, {0x1A, 1, 2, "NOP", [cpu] { cpu->nop(); }}},
+        {0x3A, {0x3A, 1, 2, "NOP", [cpu] { cpu->nop(); }}},
+        {0x5A, {0x5A, 1, 2, "NOP", [cpu] { cpu->nop(); }}},
+        {0x7A, {0x7A, 1, 2, "NOP", [cpu] { cpu->nop(); }}},
+        {0xDA, {0xDA, 1, 2, "NOP", [cpu] { cpu->nop(); }}},
+        {0xFA, {0xFA, 1, 2, "NOP", [cpu] { cpu->nop(); }}},
+        
+        {0x04, {0x04, 2, 3, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPage); }}},
+        {0x14, {0x14, 2, 4, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPageX); }}},
+        {0x34, {0x34, 2, 4, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPageX); }}},
+        {0x44, {0x44, 2, 3, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPage); }}},
+        {0x54, {0x54, 2, 4, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPageX); }}},
+        {0x64, {0x64, 2, 3, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPage); }}},
+        {0x74, {0x74, 2, 4, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPageX); }}},
+        {0x80, {0x80, 2, 2, "DOP", [cpu] { cpu->dop(AddressMode::Immediate); }}},
+        {0x82, {0x82, 2, 2, "DOP", [cpu] { cpu->dop(AddressMode::Immediate); }}},
+        {0x89, {0x89, 2, 2, "DOP", [cpu] { cpu->dop(AddressMode::Immediate); }}},
+        {0xC2, {0xC2, 2, 2, "DOP", [cpu] { cpu->dop(AddressMode::Immediate); }}},
+        {0xD4, {0xD4, 2, 4, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPageX); }}},
+        {0xE2, {0xE2, 2, 2, "DOP", [cpu] { cpu->dop(AddressMode::Immediate); }}},
+        {0xF4, {0xF4, 2, 4, "DOP", [cpu] { cpu->dop(AddressMode::ZeroPageX); }}},
+
     };
 }
