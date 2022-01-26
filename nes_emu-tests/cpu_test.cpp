@@ -80,6 +80,23 @@ TEST_F(CPUTest, ADC_NegativeOverflow) {
     EXPECT_EQ(_registers->statusRegister, nes_registers::StatusFlags::CarryFlag | nes_registers::StatusFlags::OverflowFlag);
 }
 
+TEST_F(CPUTest, ISC) {
+    _memory->write(0x00, 0xE7);
+    _memory->write(0x01, 0x02);
+    _memory->write(0x02, 0xEB);
+    _memory->write(0x03, 0x00);
+    
+    _registers->programCounter = 0x01;
+    _registers->statusRegister = 0x00;
+    _registers->accumulator = 0x40;
+    
+    isc(nes_emu::AddressMode::ZeroPage);
+    
+    EXPECT_EQ(_registers->programCounter, 0x02);
+    EXPECT_EQ(_registers->accumulator, 0x53);
+    EXPECT_EQ(_registers->statusRegister, 0b00000000);
+}
+
 TEST_F(CPUTest, AND_Zero) {
     _memory->write(0x00, 0x29);
     _memory->write(0x01, 0xAA);
