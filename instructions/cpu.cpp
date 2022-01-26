@@ -481,12 +481,12 @@ void nes_emu::CPU::compare_impl(AddressMode mode, uint8_t registerInput) {
 
 void nes_emu::CPU::stack_push(uint8_t value) {
     _memory->write(nes_emu::Memory::StackStart + _registers->stackPointer, value);
-    _registers->stackPointer += 1;
+    _registers->stackPointer -= 1;
 }
 
 uint8_t nes_emu::CPU::stack_pop() {
     auto value = _memory->read_uint8(nes_emu::Memory::StackStart + _registers->stackPointer);
-    _registers->stackPointer -= 1;
+    _registers->stackPointer += 1;
     return value;
 }
 
