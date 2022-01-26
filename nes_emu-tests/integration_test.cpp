@@ -139,7 +139,7 @@ TEST_F(IntegrationTest, nestest) {
     while (1) {
         std::string statusLine = printStatus();
         std::getline(logFile, logLine);
-        ASSERT_TRUE(statusCompare(statusLine, count));
+        ASSERT_TRUE(statusCompare(logLine, count));
         executeOne();
         count++;
     }
