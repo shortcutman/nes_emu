@@ -381,7 +381,7 @@ void nes_emu::CPU::rti() {
 }
 
 void nes_emu::CPU::rts() {
-    _registers->programCounter = stack_popu16() - 1;
+    _registers->programCounter = stack_popu16() + 1;
 }
 
 void nes_emu::CPU::sbc(AddressMode mode) {
@@ -517,14 +517,14 @@ void nes_emu::CPU::stack_push(uint8_t value) {
 }
 
 uint8_t nes_emu::CPU::stack_pop() {
-    auto value = _memory->read_uint8(nes_emu::Memory::StackStart + _registers->stackPointer);
     _registers->stackPointer += 1;
+    auto value = _memory->read_uint8(nes_emu::Memory::StackStart + _registers->stackPointer);
     return value;
 }
 
 void nes_emu::CPU::stack_pushu16(uint16_t value) {
     uint8_t hiByte = (value >> 8);
-    uint8_t loByte = (value - 1);
+    uint8_t loByte = value;
     
     stack_push(hiByte);
     stack_push(loByte);
