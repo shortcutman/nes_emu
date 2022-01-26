@@ -75,11 +75,15 @@ namespace nes_emu {
         void dex();
         void dey();
         
+        void dop(AddressMode mode);
+        
         void eor(AddressMode mode);
         
         void inc(AddressMode mode);
         void inx();
         void iny();
+        
+        void isc(AddressMode mode);
         
         void jmp(AddressMode mode);
         void jsr();
@@ -91,7 +95,6 @@ namespace nes_emu {
         void lsr(AddressMode mode);
         
         void nop();
-        void dop(AddressMode mode);
         
         void ora(AddressMode mode);
         
@@ -102,6 +105,7 @@ namespace nes_emu {
         
         void rol(AddressMode mode);
         void ror(AddressMode mode);
+        void rra(AddressMode mode);
         
         void rti();
         void rts();
@@ -111,6 +115,8 @@ namespace nes_emu {
         void sec();
         void sed();
         void sei();
+        
+        void slo(AddressMode mode);
         
         void sta(AddressMode mode);
         void stx(AddressMode mode);

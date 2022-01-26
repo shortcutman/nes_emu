@@ -202,6 +202,14 @@ void nes_emu::CPU::iny() {
     setNumberFlags(_registers->y);
 }
 
+void nes_emu::CPU::isc(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress) + 1;
+    _memory->write(opAddress, value);
+    
+    adc_impl(~value);
+}
+
 void nes_emu::CPU::jmp(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     _registers->programCounter = opAddress;
@@ -351,6 +359,19 @@ void nes_emu::CPU::ror(AddressMode mode) {
     }
 }
 
+void nes_emu::CPU::rra(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress);
+    auto newValue = value >> 1;
+    if (value & 0x01) {
+        newValue |= 0x80;
+    }
+    _memory->write(opAddress, newValue);
+    
+    adc_impl(newValue);
+}
+
+
 void nes_emu::CPU::rti() {
     _registers->statusRegister = stack_pop();
     _registers->statusRegister &= ~nes_registers::StatusFlags::BreakCommand;
@@ -379,6 +400,17 @@ void nes_emu::CPU::sed() {
 
 void nes_emu::CPU::sei() {
     _registers->setStatusFlag(nes_registers::StatusFlags::InterruptDisable, true);
+}
+
+void nes_emu::CPU::slo(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress);
+    value = value << 1;
+    _memory->write(opAddress, value);
+    
+    _registers->accumulator |= value;
+    
+    setNumberFlags(_registers->accumulator);
 }
 
 void nes_emu::CPU::sta(AddressMode mode) {
