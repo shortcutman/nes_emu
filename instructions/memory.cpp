@@ -46,7 +46,7 @@ uint16_t nes_emu::Memory::read_uint16(const uint16_t address) const {
 
 void nes_emu::Memory::write(const uint16_t address, const uint8_t value) {
     if (address <= nes_emu::Memory::MaxInternalRamMirrorAddress) {
-        _internalRAM[address & 0x08FF] = value;
+        _internalRAM[address & 0x07FF] = value;
     } else if (address <= nes_emu::Memory::MaxPPURegisterMirrorAddress) {
         throw std::runtime_error("ppu not implemented");
     } else if (address <= nes_emu::Memory::LastAPUIORegister) {
