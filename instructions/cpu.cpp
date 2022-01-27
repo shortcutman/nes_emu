@@ -291,7 +291,7 @@ void nes_emu::CPU::pha() {
 }
 
 void nes_emu::CPU::php() {
-    stack_push(_registers->statusRegister);
+    stack_push(_registers->statusRegister | nes_registers::StatusFlags::BFlag | nes_registers::StatusFlags::BreakCommand);
 }
 
 void nes_emu::CPU::pla() {
