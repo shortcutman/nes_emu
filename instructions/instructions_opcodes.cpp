@@ -26,7 +26,7 @@ nes_emu::CPU::OpCodeMap nes_emu::CPU::buildOpCodeMap(nes_emu::CPU* cpu) {
         {0x39, {0x39, 3, 4, "AND", [cpu] { cpu->instrAnd(AddressMode::AbsoluteY); }}},
         {0x21, {0x21, 2, 6, "AND", [cpu] { cpu->instrAnd(AddressMode::Indirect_X); }}},
         {0x31, {0x31, 2, 5, "AND", [cpu] { cpu->instrAnd(AddressMode::Indirect_Y); }}},
-        {0x0A, {0x0A, 1, 2, "ASL", [cpu] { cpu->asl(AddressMode::Immediate); }}},
+        {0x0A, {0x0A, 1, 2, "ASL", [cpu] { cpu->asl(AddressMode::Accumulator); }}},
         {0x06, {0x06, 2, 5, "ASL", [cpu] { cpu->asl(AddressMode::ZeroPage); }}},
         {0x16, {0x16, 2, 6, "ASL", [cpu] { cpu->asl(AddressMode::ZeroPageX); }}},
         {0x0E, {0x0E, 3, 6, "ASL", [cpu] { cpu->asl(AddressMode::Absolute); }}},
