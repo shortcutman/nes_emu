@@ -301,9 +301,9 @@ void nes_emu::CPU::pla() {
 
 void nes_emu::CPU::plp() {
     auto statusFlags = stack_pop();
-    statusFlags &= ~nes_registers::StatusFlags::BreakCommand;
-    statusFlags &= ~nes_registers::StatusFlags::BFlag;
-    _registers->statusRegister |= statusFlags;
+    statusFlags |= (_registers->statusRegister & nes_registers::StatusFlags::BreakCommand);
+    statusFlags |= (_registers->statusRegister & nes_registers::StatusFlags::BFlag);
+    _registers->statusRegister = statusFlags;
 }
 
 void nes_emu::CPU::rol(AddressMode mode) {
