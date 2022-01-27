@@ -517,3 +517,63 @@ TEST_F(CPUTest, numberFlags_NegativeInt) {
     setNumberFlags(0xF5);
     EXPECT_EQ(_registers->statusRegister, 0b10000000);
 }
+
+TEST_F(CPUTest, simpleStackTest_uint8) {
+
+    _registers->stackPointer = 0xFF;
+    
+    stack_push(0xDB);
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFE);
+    
+    auto value = stack_pop();
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFF);
+    EXPECT_EQ(value, 0xDB);
+}
+
+TEST_F(CPUTest, complexStackTest_uint8) {
+
+    _registers->stackPointer = 0xFF;
+    
+    stack_push(0xDB);
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFE);
+    
+    stack_push(0xAB);
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFD);
+    
+    auto value = stack_pop();
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFE);
+    EXPECT_EQ(value, 0xAB);
+    
+    stack_push(0x12);
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFD);
+    
+    auto value2 = stack_pop();
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFE);
+    EXPECT_EQ(value2, 0x12);
+    
+    auto value3 = stack_pop();
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFF);
+    EXPECT_EQ(value3, 0xDB);
+}
+
+TEST_F(CPUTest, simpleStackTest_uint16) {
+
+    _registers->stackPointer = 0xFF;
+    
+    stack_pushu16(0xABCD);
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFD);
+    
+    auto value = stack_popu16();
+    
+    EXPECT_EQ(_registers->stackPointer, 0xFF);
+    EXPECT_EQ(value, 0xABCD);
+}
