@@ -301,8 +301,19 @@ void nes_emu::CPU::pla() {
 
 void nes_emu::CPU::plp() {
     auto statusFlags = stack_pop();
-    statusFlags |= (_registers->statusRegister & nes_registers::StatusFlags::BreakCommand);
-    statusFlags |= (_registers->statusRegister & nes_registers::StatusFlags::BFlag);
+    
+    if (_registers->statusRegister & nes_registers::StatusFlags::BreakCommand) {
+        statusFlags |= nes_registers::StatusFlags::BreakCommand;
+    } else {
+        statusFlags &= ~nes_registers::StatusFlags::BreakCommand;
+    }
+    
+    if (_registers->statusRegister & nes_registers::StatusFlags::BFlag) {
+        statusFlags |= nes_registers::StatusFlags::BFlag;
+    } else {
+        statusFlags &= ~nes_registers::StatusFlags::BFlag;
+    }
+    
     _registers->statusRegister = statusFlags;
 }
 

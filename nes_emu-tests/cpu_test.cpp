@@ -412,18 +412,18 @@ TEST_F(CPUTest, LDY_PositiveInteger) {
 
 TEST_F(CPUTest, PLP) {
     _registers->stackPointer = 0xFF;
-    _registers->accumulator = 0x04;
-    _registers->statusRegister = 0x6D;
+    _registers->accumulator = 0xFF;
+    _registers->statusRegister = 0xAD;
     
     pha();
     
-    EXPECT_EQ(_registers->accumulator, 0x04);
-    EXPECT_EQ(_registers->statusRegister, 0x6D);
+    EXPECT_EQ(_registers->accumulator, 0xFF);
+    EXPECT_EQ(_registers->statusRegister, 0xAD);
     
     plp();
     
-    EXPECT_EQ(_registers->accumulator, 0x04);
-    EXPECT_EQ(_registers->statusRegister, 0x24);
+    EXPECT_EQ(_registers->accumulator, 0xFF);
+    EXPECT_EQ(_registers->statusRegister, 0xEF);
 }
 
 TEST_F(CPUTest, SBC_PositiveInteger) {
