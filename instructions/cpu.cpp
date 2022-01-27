@@ -300,21 +300,7 @@ void nes_emu::CPU::pla() {
 }
 
 void nes_emu::CPU::plp() {
-    auto statusFlags = stack_pop();
-    
-    if (_registers->statusRegister & nes_registers::StatusFlags::BreakCommand) {
-        statusFlags |= nes_registers::StatusFlags::BreakCommand;
-    } else {
-        statusFlags &= ~nes_registers::StatusFlags::BreakCommand;
-    }
-    
-    if (_registers->statusRegister & nes_registers::StatusFlags::BFlag) {
-        statusFlags |= nes_registers::StatusFlags::BFlag;
-    } else {
-        statusFlags &= ~nes_registers::StatusFlags::BFlag;
-    }
-    
-    _registers->statusRegister = statusFlags;
+    popStackAndSetStatus();
 }
 
 void nes_emu::CPU::rol(AddressMode mode) {
@@ -385,10 +371,7 @@ void nes_emu::CPU::rra(AddressMode mode) {
 
 
 void nes_emu::CPU::rti() {
-    _registers->statusRegister = stack_pop();
-    _registers->statusRegister &= ~nes_registers::StatusFlags::BreakCommand;
-    _registers->statusRegister &= ~nes_registers::StatusFlags::BFlag;
-    
+    popStackAndSetStatus();
     _registers->programCounter = stack_popu16();
 }
 
@@ -521,6 +504,25 @@ void nes_emu::CPU::compare_impl(AddressMode mode, uint8_t registerInput) {
     _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, registerInput >= value);
     _registers->setStatusFlag(nes_registers::StatusFlags::ZeroFlag, registerInput == value);
     _registers->setStatusFlag(nes_registers::StatusFlags::NegativeFlag, result & 0x80);
+}
+
+void nes_emu::CPU::popStackAndSetStatus() {
+    auto statusFlags = stack_pop();
+    
+    if (_registers->statusRegister & nes_registers::StatusFlags::BreakCommand) {
+        statusFlags |= nes_registers::StatusFlags::BreakCommand;
+    } else {
+        statusFlags &= ~nes_registers::StatusFlags::BreakCommand;
+    }
+    
+    if (_registers->statusRegister & nes_registers::StatusFlags::BFlag) {
+        statusFlags |= nes_registers::StatusFlags::BFlag;
+    } else {
+        statusFlags &= ~nes_registers::StatusFlags::BFlag;
+    }
+    
+    _registers->statusRegister = statusFlags;
+
 }
 
 void nes_emu::CPU::stack_push(uint8_t value) {

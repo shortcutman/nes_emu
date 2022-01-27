@@ -134,6 +134,7 @@ namespace nes_emu {
         void adc_impl(uint8_t argument);
         void branch_impl(bool test);
         void compare_impl(AddressMode mode, uint8_t registerInput);
+        void popStackAndSetStatus();
         
         void stack_push(uint8_t value);
         uint8_t stack_pop();
