@@ -88,8 +88,19 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::Indirect:
+        {
             auto addrLoc = readAndIncrementu16(registers, memory, registers.programCounter);
-            return readAndIncrementu16(registers, memory, addrLoc);
+
+            if ((addrLoc & 0xFF) == 0xFF) {
+                auto lo = memory.read_uint8(addrLoc);
+                auto hi = memory.read_uint8(addrLoc & 0xFF00);
+                uint16_t indirectAddr = hi << 8;
+                indirectAddr += lo;
+                return indirectAddr;
+            } else {
+                return memory.read_uint16(addrLoc);
+            }
+        }
             break;
     }
 }
