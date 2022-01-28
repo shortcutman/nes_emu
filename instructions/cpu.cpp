@@ -54,11 +54,12 @@ void nes_emu::CPU::instrAnd(AddressMode mode) {
 
 void nes_emu::CPU::asl(AddressMode mode) {
     uint8_t value;
+    uint16_t opAddress = 0x0000;
 
     if (mode == AddressMode::Accumulator) {
         value = _registers->accumulator;
     } else {
-        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         value = _memory->read_uint8(opAddress);
     }
 
@@ -74,7 +75,6 @@ void nes_emu::CPU::asl(AddressMode mode) {
     if (mode == AddressMode::Accumulator) {
         _registers->accumulator = value;
     } else {
-        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         _memory->write(opAddress, value);
     }
 }
@@ -244,11 +244,12 @@ void nes_emu::CPU::ldy(AddressMode mode) {
 
 void nes_emu::CPU::lsr(AddressMode mode) {
     uint8_t value;
+    uint16_t opAddress = 0x0000;
 
     if (mode == AddressMode::Accumulator) {
         value = _registers->accumulator;
     } else {
-        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         value = _memory->read_uint8(opAddress);
     }
 
@@ -260,7 +261,6 @@ void nes_emu::CPU::lsr(AddressMode mode) {
     if (mode == AddressMode::Accumulator) {
         _registers->accumulator = value;
     } else {
-        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         _memory->write(opAddress, value);
     }
 }
@@ -305,11 +305,12 @@ void nes_emu::CPU::plp() {
 
 void nes_emu::CPU::rol(AddressMode mode) {
     uint8_t value;
+    uint16_t opAddress = 0x0000;
 
     if (mode == AddressMode::Accumulator) {
         value = _registers->accumulator;
     } else {
-        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         value = _memory->read_uint8(opAddress);
     }
 
@@ -325,18 +326,18 @@ void nes_emu::CPU::rol(AddressMode mode) {
     if (mode == AddressMode::Accumulator) {
         _registers->accumulator = value;
     } else {
-        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         _memory->write(opAddress, value);
     }
 }
 
 void nes_emu::CPU::ror(AddressMode mode) {
     uint8_t value;
+    uint16_t opAddress = 0x0000;
 
     if (mode == AddressMode::Accumulator) {
         value = _registers->accumulator;
     } else {
-        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+        opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         value = _memory->read_uint8(opAddress);
     }
 
@@ -352,7 +353,6 @@ void nes_emu::CPU::ror(AddressMode mode) {
     if (mode == AddressMode::Accumulator) {
         _registers->accumulator = value;
     } else {
-        uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
         _memory->write(opAddress, value);
     }
 }
