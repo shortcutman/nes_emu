@@ -498,7 +498,8 @@ void nes_emu::CPU::adc_impl(uint8_t argument) {
 }
 
 void nes_emu::CPU::branch_impl(bool test) {
-    auto incrementValue = _memory->read_uint8(_registers->programCounter);
+    auto incrementData = _memory->read_uint8(_registers->programCounter);
+    int8_t incrementValue = *reinterpret_cast<int8_t*>(&incrementData);
     _registers->programCounter++;
     
     if (test) {
