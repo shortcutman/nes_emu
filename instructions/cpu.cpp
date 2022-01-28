@@ -37,6 +37,12 @@ void nes_emu::CPU::executeOne() {
     }
 }
 
+void nes_emu::CPU::aax(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _registers->accumulator & _registers->x;
+    _memory->write(opAddress, value);
+}
+
 void nes_emu::CPU::adc(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     uint8_t argument = _memory->read_uint8(opAddress);
@@ -160,6 +166,18 @@ void nes_emu::CPU::cpy(AddressMode mode) {
     compare_impl(mode, _registers->y);
 }
 
+void nes_emu::CPU::dcp(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress);
+    value--;
+    int result = _registers->accumulator - value;
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, result >= 0);
+    _registers->setStatusFlag(nes_registers::StatusFlags::ZeroFlag, result == 0);
+    _registers->setStatusFlag(nes_registers::StatusFlags::NegativeFlag, result & 0x80);
+    
+    _memory->write(opAddress, value);
+}
+
 void nes_emu::CPU::dec(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress) - 1;
@@ -219,6 +237,14 @@ void nes_emu::CPU::jsr() {
     uint16_t opAddress = decodeOperandAddress(AddressMode::Absolute, *_registers, *_memory);
     stack_pushu16(_registers->programCounter - 1);
     _registers->programCounter = opAddress;
+}
+
+void nes_emu::CPU::lax(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    auto value = _memory->read_uint8(opAddress);
+    _registers->accumulator = value;
+    _registers->x = value;
+    setNumberFlags(_registers->accumulator);
 }
 
 void nes_emu::CPU::lda(AddressMode mode) {

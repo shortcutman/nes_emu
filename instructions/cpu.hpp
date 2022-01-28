@@ -46,6 +46,7 @@ namespace nes_emu {
         void executeOne();
         
     protected:
+        void aax(AddressMode mode);
         void adc(AddressMode mode);
         
         void instrAnd(AddressMode mode);
@@ -71,6 +72,8 @@ namespace nes_emu {
         void cpx(AddressMode mode);
         void cpy(AddressMode mode);
         
+        void dcp(AddressMode mode);
+        
         void dec(AddressMode mode);
         void dex();
         void dey();
@@ -88,6 +91,7 @@ namespace nes_emu {
         void jmp(AddressMode mode);
         void jsr();
         
+        void lax(AddressMode mode);
         void lda(AddressMode mode);
         void ldx(AddressMode mode);
         void ldy(AddressMode mode);
