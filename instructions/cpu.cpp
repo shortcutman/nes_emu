@@ -452,6 +452,16 @@ void nes_emu::CPU::tya() {
     setNumberFlags(_registers->accumulator);
 }
 
+void nes_emu::CPU::top(AddressMode mode) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-value"
+
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    (uint16_t)opAddress;
+    
+#pragma clang diagnostic pop
+}
+
 void nes_emu::CPU::setNumberFlags(uint8_t lastOperationValue) {
     if (lastOperationValue == 0) {
         _registers->statusRegister |= nes_registers::StatusFlags::ZeroFlag;

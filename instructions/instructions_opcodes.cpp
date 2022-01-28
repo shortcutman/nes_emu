@@ -196,6 +196,12 @@ nes_emu::CPU::OpCodeMap nes_emu::CPU::buildOpCodeMap(nes_emu::CPU* cpu) {
         {0x1B, {0x1B, 3, 7, "SLO", [cpu] { cpu->slo(AddressMode::AbsoluteY); }}},
         {0x03, {0x03, 2, 8, "SLO", [cpu] { cpu->slo(AddressMode::Indirect_X); }}},
         {0x13, {0x13, 2, 8, "SLO", [cpu] { cpu->slo(AddressMode::Indirect_Y); }}},
-
+        {0x0C, {0x0C, 3, 4, "TOP", [cpu] { cpu->top(AddressMode::Absolute); }}},
+        {0x1C, {0x1C, 3, 4, "TOP", [cpu] { cpu->top(AddressMode::AbsoluteX); }}},
+        {0x3C, {0x3C, 3, 4, "TOP", [cpu] { cpu->top(AddressMode::AbsoluteX); }}},
+        {0x5C, {0x5C, 3, 4, "TOP", [cpu] { cpu->top(AddressMode::AbsoluteX); }}},
+        {0x7C, {0x7C, 3, 4, "TOP", [cpu] { cpu->top(AddressMode::AbsoluteX); }}},
+        {0xDC, {0xDC, 3, 4, "TOP", [cpu] { cpu->top(AddressMode::AbsoluteX); }}},
+        {0xFC, {0xFC, 3, 4, "TOP", [cpu] { cpu->top(AddressMode::AbsoluteX); }}},
     };
 }

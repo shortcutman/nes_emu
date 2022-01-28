@@ -129,6 +129,8 @@ namespace nes_emu {
         void txs();
         void tya();
         
+        void top(AddressMode mode);
+        
     protected:
         void setNumberFlags(uint8_t lastOperationValue);
         void adc_impl(uint8_t argument);
