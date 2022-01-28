@@ -108,7 +108,9 @@ namespace nes_emu {
         void plp();
         
         void rol(AddressMode mode);
+        void rla(AddressMode mode);
         void ror(AddressMode mode);
+        void sre(AddressMode mode);
         void rra(AddressMode mode);
         
         void rti();

@@ -356,6 +356,24 @@ void nes_emu::CPU::rol(AddressMode mode) {
     }
 }
 
+void nes_emu::CPU::rla(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    uint8_t value = _memory->read_uint8(opAddress);
+
+    auto oldCarryFlag = _registers->getStatusFlag(nes_registers::StatusFlags::CarryFlag);
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, value & 0x80);
+    
+    value = value << 1;
+    if (oldCarryFlag) {
+        value |= 0x01;
+    }
+    
+    _memory->write(opAddress, value);
+    
+    _registers->accumulator &= value;
+    setNumberFlags(_registers->accumulator);
+}
+
 void nes_emu::CPU::ror(AddressMode mode) {
     uint8_t value;
     uint16_t opAddress = 0x0000;
@@ -383,15 +401,31 @@ void nes_emu::CPU::ror(AddressMode mode) {
     }
 }
 
+void nes_emu::CPU::sre(AddressMode mode) {
+    uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
+    uint8_t value = _memory->read_uint8(opAddress);
+
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, value & 0x01);
+    
+    value = value >> 1;
+    _memory->write(opAddress, value);
+    
+    _registers->accumulator ^= value;
+    setNumberFlags(_registers->accumulator);
+}
+
 void nes_emu::CPU::rra(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
+    
+    auto oldCarry = _registers->getStatusFlag(nes_registers::StatusFlags::CarryFlag);
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, value & 0x01);
     auto newValue = value >> 1;
-    if (value & 0x01) {
+    if (oldCarry) {
         newValue |= 0x80;
     }
-    _memory->write(opAddress, newValue);
     
+    _memory->write(opAddress, newValue);
     adc_impl(newValue);
 }
 
@@ -426,6 +460,7 @@ void nes_emu::CPU::sei() {
 void nes_emu::CPU::slo(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _memory->read_uint8(opAddress);
+    _registers->setStatusFlag(nes_registers::StatusFlags::CarryFlag, value & 0x80);
     value = value << 1;
     _memory->write(opAddress, value);
     
