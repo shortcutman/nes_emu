@@ -78,7 +78,7 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
         {
             uint8_t base = readAndIncrementu8(registers, memory, registers.programCounter);
             uint8_t lo = memory.read_uint8(base);
-            uint8_t hi = memory.read_uint8(base + 1);
+            uint8_t hi = memory.read_uint8((base + 1) & 0xFF);
             uint16_t deref_base = hi;
             deref_base = deref_base << 8;
             deref_base += lo;
