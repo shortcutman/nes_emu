@@ -38,11 +38,17 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::AbsoluteX:
-            return readAndIncrementu16(registers, memory, registers.programCounter + registers.x);
+        {
+            auto addr = readAndIncrementu16(registers, memory, registers.programCounter);
+            return addr + registers.x;
+        }
             break;
             
         case AddressMode::AbsoluteY:
-            return readAndIncrementu16(registers, memory, registers.programCounter + registers.y);
+        {
+            auto addr = readAndIncrementu16(registers, memory, registers.programCounter);
+            return addr + registers.y;
+        }
             break;
             
         case AddressMode::ZeroPage:
@@ -50,11 +56,17 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             break;
             
         case AddressMode::ZeroPageX:
-            return readAndIncrementu8(registers, memory, static_cast<uint8_t>(registers.programCounter) + registers.x);
+        {
+            auto addr = readAndIncrementu8(registers, memory, registers.programCounter);
+            return (addr + registers.x) & 0xFF;
+        }
             break;
             
         case AddressMode::ZeroPageY:
-            return readAndIncrementu8(registers, memory, static_cast<uint8_t>(registers.programCounter) + registers.y);
+        {
+            auto addr = readAndIncrementu8(registers, memory, registers.programCounter);
+            return (addr + registers.y) & 0xFF;
+        }
             break;
             
         case AddressMode::Immediate:
