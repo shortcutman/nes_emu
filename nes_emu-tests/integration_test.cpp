@@ -136,7 +136,7 @@ TEST_F(IntegrationTest, nestest) {
     uint64_t count = 0;
     std::string logLine;
     
-    while (1) {
+    while (count < 8991) {
         std::string statusLine = printStatus();
         std::getline(logFile, logLine);
         ASSERT_TRUE(statusCompare(logLine, count));
