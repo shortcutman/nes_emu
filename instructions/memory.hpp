@@ -30,6 +30,7 @@ namespace nes_emu {
     private:
         std::array<uint8_t, 2048> _internalRAM;
         std::array<uint8_t, 8> _ppuRegisters;
+        std::array<uint8_t, 18> _apuRegisters;
         
     public:
         std::shared_ptr<Cartridge> _cartridge;

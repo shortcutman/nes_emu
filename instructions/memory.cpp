@@ -24,8 +24,7 @@ uint8_t nes_emu::Memory::read_uint8(const uint16_t address) const {
         throw std::runtime_error("ppu not implemented");
         return 0x00;
     } else if (address <= nes_emu::Memory::LastAPUIORegister) {
-        throw std::runtime_error("apu/io not implemented");
-        return 0x00;
+        return _apuRegisters[address & 0x12];
     } else if (address <= nes_emu::Memory::LastAPUIOTestModeRegister) {
         throw std::runtime_error("apu/io test mode not implemented");
         return 0x00;
@@ -50,7 +49,7 @@ void nes_emu::Memory::write(const uint16_t address, const uint8_t value) {
     } else if (address <= nes_emu::Memory::MaxPPURegisterMirrorAddress) {
         throw std::runtime_error("ppu not implemented");
     } else if (address <= nes_emu::Memory::LastAPUIORegister) {
-        throw std::runtime_error("apu/io not implemented");
+        _apuRegisters[address & 0x12] = value;
     } else if (address <= nes_emu::Memory::LastAPUIOTestModeRegister) {
         throw std::runtime_error("apu/io test mode not implemented");
     } else if (address <= nes_emu::Memory::LastCartridgeSpaceMemory) {
