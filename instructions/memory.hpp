@@ -34,10 +34,14 @@ namespace nes_emu {
         
     public:
         std::shared_ptr<Cartridge> _cartridge;
+        uint32_t _cpuClock;
+        uint32_t _ppuClock;
         
     public:
         Memory();
         ~Memory();
+        
+        void advanceClock(uint32_t cycles);
         
         uint8_t read_uint8(const uint16_t address) const;
         uint16_t read_uint16(const uint16_t address) const;

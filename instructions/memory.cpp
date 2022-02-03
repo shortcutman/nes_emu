@@ -9,12 +9,20 @@
 
 #include "cartridge.hpp"
 
-nes_emu::Memory::Memory() {
+nes_emu::Memory::Memory() :
+_cpuClock(0),
+_ppuClock(0)
+{
     
 }
 
 nes_emu::Memory::~Memory() {
     
+}
+
+void nes_emu::Memory::advanceClock(uint32_t cycles) {
+    _cpuClock += cycles;
+    _ppuClock += cycles * 3;
 }
 
 uint8_t nes_emu::Memory::read_uint8(const uint16_t address) const {
