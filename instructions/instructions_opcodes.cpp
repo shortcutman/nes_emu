@@ -148,7 +148,7 @@ nes_emu::CPU::OpCodeMap nes_emu::CPU::buildOpCodeMap(nes_emu::CPU* cpu) {
         {0x9D, {0x9D, 3, 5, "STA", [cpu] { cpu->sta(AddressMode::AbsoluteX); }}},
         {0x99, {0x99, 3, 5, "STA", [cpu] { cpu->sta(AddressMode::AbsoluteY); }}},
         {0x81, {0x81, 2, 6, "STA", [cpu] { cpu->sta(AddressMode::Indirect_X); }}},
-        {0x91, {0x91, 2, 5, "STA", [cpu] { cpu->sta(AddressMode::Indirect_Y); }}},
+        {0x91, {0x91, 2, 6, "STA", [cpu] { cpu->sta(AddressMode::Indirect_Y); }}},
         {0x86, {0x86, 2, 3, "STX", [cpu] { cpu->stx(AddressMode::ZeroPage); }}},
         {0x96, {0x96, 2, 4, "STX", [cpu] { cpu->stx(AddressMode::ZeroPageY); }}},
         {0x8E, {0x8E, 3, 4, "STX", [cpu] { cpu->stx(AddressMode::Absolute); }}},
