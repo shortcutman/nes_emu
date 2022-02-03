@@ -566,7 +566,14 @@ void nes_emu::CPU::branch_impl(bool test) {
     _registers->programCounter++;
     
     if (test) {
-        _registers->programCounter += incrementValue;
+        uint16_t nextInstruction = _registers->programCounter += incrementValue;
+        
+        if ((nextInstruction & 0xFF00) != (_registers->programCounter & 0xFF00)) {
+            _memory->advanceClock(1); //new page
+        }
+        
+        _registers->programCounter = nextInstruction;
+        _memory->advanceClock(1);
     }
 }
 
