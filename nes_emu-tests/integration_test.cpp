@@ -116,6 +116,15 @@ public:
             throw formattedException("Registers don't match", line);
         }
         
+        uint32_t clock;
+        iss.seekg(78);
+        iss >> std::dec >> clock;
+        auto pClock = _memory->_ppuClock % 341;
+        
+        if (clock != pClock) {
+            throw formattedException("Clock doesn't match", line);
+        }
+        
         return true;
     }
 };
