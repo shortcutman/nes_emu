@@ -35,6 +35,8 @@ void nes_emu::CPU::executeOne() {
         ss << "Unimplemented instruction, opcode: 0x" << std::hex << std::setfill('0') << std::setw(2) << (int)opCode;
         throw std::runtime_error(ss.str());
     }
+    
+    _memory->advanceClock(opCodeComponents.cycles);
 }
 
 void nes_emu::CPU::aax(AddressMode mode) {
