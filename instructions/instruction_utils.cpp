@@ -24,9 +24,19 @@ uint16_t readAndIncrementu8(nes_registers& registers, const nes_emu::Memory& mem
 
 }
 
+bool nes_emu::pageCrossAdvanceClock(uint16_t addrA, uint16_t addrB, nes_emu::Memory& memory) {
+    if ((addrA & 0xFF00) != (addrB & 0xFF00)) {
+        memory.advanceClock(1);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
                                        nes_registers& registers,
-                                       const nes_emu::Memory& memory) {
+                                       nes_emu::Memory& memory,
+                                       bool advanceOnlyOnPageCross) {
     switch (mode) {
         case AddressMode::Accumulator:
             throw std::runtime_error("Accumulator address mode does not get values from memory");
@@ -40,14 +50,23 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
         case AddressMode::AbsoluteX:
         {
             auto addr = readAndIncrementu16(registers, memory, registers.programCounter);
-            return addr + registers.x;
+            auto opAddr = addr + registers.x;
+            
+            if (advanceOnlyOnPageCross) {
+                pageCrossAdvanceClock(addr, opAddr, memory);
+            }
+            return opAddr;
         }
             break;
             
         case AddressMode::AbsoluteY:
         {
             auto addr = readAndIncrementu16(registers, memory, registers.programCounter);
-            return addr + registers.y;
+            auto opAddr = addr + registers.y;
+            if (advanceOnlyOnPageCross) {
+                pageCrossAdvanceClock(addr, opAddr, memory);
+            }
+            return opAddr;
         }
             break;
             
@@ -95,6 +114,10 @@ uint16_t nes_emu::decodeOperandAddress(AddressMode mode,
             deref_base = deref_base << 8;
             deref_base += lo;
             uint16_t deref = deref_base + registers.y;
+            
+            if (advanceOnlyOnPageCross) {
+                pageCrossAdvanceClock(deref, deref_base, memory);
+            }
             return deref;
         }
             break;

@@ -29,7 +29,9 @@ enum class AddressMode : uint8_t {
     Indirect, //used by jmp
 };
 
-uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, const nes_emu::Memory& memory);
+bool pageCrossAdvanceClock(uint16_t addrA, uint16_t addrB, nes_emu::Memory& memory);
+
+uint16_t decodeOperandAddress(AddressMode mode, nes_registers& registers, nes_emu::Memory& memory, bool advanceOnlyOnPageCross = true);
 }
 
 #endif /* instruction_utils_hpp */
