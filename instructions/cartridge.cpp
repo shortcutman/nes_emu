@@ -41,6 +41,10 @@ uint8_t nes_emu::Cartridge::readCart(const uint16_t address) const {
     return _prgROM[addrOffset];
 }
 
+uint8_t nes_emu::Cartridge::readCHRRom(const uint16_t address) const {
+    return _chrROM[address];
+}
+
 std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std::istream& input) {
     auto cart = std::make_shared<nes_emu::Cartridge>();
         
