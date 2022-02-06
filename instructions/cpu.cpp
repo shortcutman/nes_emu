@@ -18,12 +18,19 @@ nes_emu::CPU::CPU() :
     _memory(new nes_emu::Memory()),
     _ops(CPU::buildOpCodeMap(this))
 {
+    _memory->setInterruptCallback([this] () {
+        _interrupt = Interrupt::NMI;
+    });
 }
 
 nes_emu::CPU::~CPU() {
 }
 
 void nes_emu::CPU::executeOne() {
+    if (checkAndSetupInterrupt()) {
+        return;
+    }
+    
     auto opCode = _memory->read_uint8(_registers->programCounter);
     auto opCodeComponents = _ops[opCode];
     _registers->programCounter++;
@@ -37,6 +44,10 @@ void nes_emu::CPU::executeOne() {
     }
     
     _memory->advanceClock(opCodeComponents.cycles);
+}
+
+void nes_emu::CPU::scheduleInterrupt(Interrupt interrupt) {
+    _interrupt = interrupt;
 }
 
 void nes_emu::CPU::aax(AddressMode mode) {
@@ -633,4 +644,25 @@ uint16_t nes_emu::CPU::stack_popu16() {
     value = value << 8;
     value += loByte;
     return value;
+}
+
+bool nes_emu::CPU::checkAndSetupInterrupt() {
+    if (_interrupt == Interrupt::None) {
+        return false;
+    } else if (_interrupt != Interrupt::NMI && _registers->getStatusFlag(nes_registers::StatusFlags::InterruptDisable)) {
+        _interrupt = Interrupt::None;
+        return false;
+    }
+    
+    stack_pushu16(_registers->programCounter);
+    stack_push(_registers->statusRegister | nes_registers::StatusFlags::BFlag | nes_registers::StatusFlags::BreakCommand);
+    
+    _registers->setStatusFlag(nes_registers::StatusFlags::InterruptDisable, true);
+    
+    _registers->programCounter = _interrupt;
+    _registers->programCounter = decodeOperandAddress(AddressMode::Absolute, *_registers, *_memory);
+    
+    _interrupt = Interrupt::None;
+    
+    return true;
 }

@@ -35,15 +35,25 @@ namespace nes_emu {
         static OpCodeMap buildOpCodeMap(CPU* cpu);
         
     protected:
+        enum Interrupt : uint16_t {
+            None = 0x0000,
+            NMI = 0xFFFA,
+            Reset = 0xFFFC,
+            IRQBRK = 0xFFFE
+        };
+        
+    protected:
         std::unique_ptr<nes_registers> _registers;
         std::unique_ptr<nes_emu::Memory> _memory;
         OpCodeMap _ops;
+        Interrupt _interrupt;
         
     public:
         CPU();
         ~CPU();
         
         void executeOne();
+        void scheduleInterrupt(Interrupt interrupt);
         
     protected:
         void aax(AddressMode mode);
@@ -149,6 +159,8 @@ namespace nes_emu {
         
         void stack_pushu16(uint16_t value);
         uint16_t stack_popu16();
+        
+        bool checkAndSetupInterrupt();
     };
 }
 

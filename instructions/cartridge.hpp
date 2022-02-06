@@ -35,6 +35,7 @@ private:
     uint8_t _controlByteTwo;
     uint8_t _prgRamUnits;
     
+public:
     std::vector<uint8_t> _prgROM;
     std::vector<uint8_t> _chrROM;
     std::vector<uint8_t> _prgRAM;

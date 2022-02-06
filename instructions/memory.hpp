@@ -12,6 +12,7 @@
 
 namespace nes_emu {
     class Cartridge;
+    class PPU;
 
     class Memory {
         
@@ -34,17 +35,22 @@ namespace nes_emu {
         
     public:
         std::shared_ptr<Cartridge> _cartridge;
-        uint32_t _cpuClock;
-        uint32_t _ppuClock;
+        std::shared_ptr<PPU> _ppu;
+        uint64_t _cpuClock;
+        uint64_t _ppuClock;
+        std::function<void(void)> _interruptCallback;
         
     public:
         Memory();
         ~Memory();
         
-        void advanceClock(uint32_t cycles);
+        void advanceClock(uint64_t cycles);
+        void setInterruptCallback(std::function<void(void)> func);
         
         uint8_t read_uint8(const uint16_t address) const;
         uint16_t read_uint16(const uint16_t address) const;
+        
+        std::array<uint8_t, 256> readPage(uint8_t pageAddress) const;
         
         void write(const uint16_t address, const uint8_t value);
         
