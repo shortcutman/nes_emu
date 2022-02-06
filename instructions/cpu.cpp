@@ -46,10 +46,6 @@ void nes_emu::CPU::executeOne() {
     _memory->advanceClock(opCodeComponents.cycles);
 }
 
-void nes_emu::CPU::scheduleInterrupt(Interrupt interrupt) {
-    _interrupt = interrupt;
-}
-
 void nes_emu::CPU::aax(AddressMode mode) {
     uint16_t opAddress = decodeOperandAddress(mode, *_registers, *_memory);
     auto value = _registers->accumulator & _registers->x;

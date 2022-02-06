@@ -53,7 +53,6 @@ namespace nes_emu {
         ~CPU();
         
         void executeOne();
-        void scheduleInterrupt(Interrupt interrupt);
         
     protected:
         void aax(AddressMode mode);
