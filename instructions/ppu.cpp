@@ -159,8 +159,7 @@ uint8_t nes_emu::PPU::readDataRegister() {
     auto dataBufferReturn = _dataRegisterBuffer;
     
     _dataRegisterBuffer = read_uint8(_addressRegister);
-    
-    if (_controlRegister | 0b00000010) {
+    if (_controlRegister & 0b00000010) {
         _addressRegister += 32;
     } else {
         _addressRegister += 1;
@@ -172,7 +171,7 @@ uint8_t nes_emu::PPU::readDataRegister() {
 void nes_emu::PPU::writeDataRegister(uint8_t input) {
     write_uint8(_addressRegister, input);
     
-    if (_controlRegister | 0b00000010) {
+    if (_controlRegister & 0b00000010) {
         _addressRegister += 32;
     } else {
         _addressRegister += 1;
@@ -228,7 +227,7 @@ uint8_t nes_emu::PPU::getVRAMWithMirror(uint16_t address) {
                 vramAddress -= 0x400;
             } else if (vramMirrorBlock == 3) {
                 vramAddress -= 0x800;
-            }            
+            }
         }
             break;
             

@@ -15,12 +15,13 @@ namespace {
 class PPUTest : public nes_emu::PPU, public ::testing::Test {
 };
 
-TEST_F(PPUTest, ReadFromVRAM) {
+TEST_F(PPUTest, BasicReadFromVRAM) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
     
-    _vram[0xDB] = 0xDB;
-    
+    for (uint32_t i = 0; i < _vram.size(); i++) {
+        _vram[i] = i;
+    }
     writeRegister_uint8(0x2006, 0x20);
     writeRegister_uint8(0x2006, 0xDB);
     
@@ -35,6 +36,53 @@ TEST_F(PPUTest, ReadFromVRAM) {
     auto actualRead = readRegister_uint8(0x2007);
     EXPECT_EQ(actualRead, 0xDB);
 }
+
+TEST_F(PPUTest, ReadFromVRAMIncrement32) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
+    this->_cartridge = cart;
+    
+    writeControlRegister(0b00000010);
+    
+    for (uint32_t i = 0; i < _vram.size(); i++) {
+        _vram[i] = i;
+    }
+    
+    writeRegister_uint8(0x2006, 0x20);
+    writeRegister_uint8(0x2006, 0xDB);
+    
+    auto dummyRead = readRegister_uint8(0x2007);
+    EXPECT_EQ(dummyRead, 0);
+    
+    auto actualRead = readRegister_uint8(0x2007);
+    EXPECT_EQ(actualRead, 0xDB);
+    
+    auto incrementRead = readRegister_uint8(0x2007);
+    EXPECT_EQ(incrementRead, 0xFB);
+}
+
+TEST_F(PPUTest, ReadFromVRAMIncrement1) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
+    this->_cartridge = cart;
+    
+    writeControlRegister(0b00000000);
+    
+    for (uint32_t i = 0; i < _vram.size(); i++) {
+        _vram[i] = i;
+    }
+    
+    writeRegister_uint8(0x2006, 0x20);
+    writeRegister_uint8(0x2006, 0xDB);
+    
+    auto dummyRead = readRegister_uint8(0x2007);
+    EXPECT_EQ(dummyRead, 0);
+    
+    auto actualRead = readRegister_uint8(0x2007);
+    EXPECT_EQ(actualRead, 0xDB);
+    
+    auto incrementRead = readRegister_uint8(0x2007);
+    EXPECT_EQ(incrementRead, 0xDC);
+}
+
 
 TEST_F(PPUTest, VRAMHorizontalMirror) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
