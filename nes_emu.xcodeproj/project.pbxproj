@@ -30,6 +30,7 @@
 		65ADF24C27ACF07400D83639 /* ppu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF24A27ACF07400D83639 /* ppu.cpp */; };
 		65ADF24D27ACF07400D83639 /* ppu.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 65ADF24B27ACF07400D83639 /* ppu.hpp */; };
 		65ADF24F27AF656400D83639 /* interrupt_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF24E27AF656400D83639 /* interrupt_test.cpp */; };
+		65CDF893286D7BC900FDE793 /* ppu_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65CDF891286D7BC900FDE793 /* ppu_test.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +104,7 @@
 		65ADF24A27ACF07400D83639 /* ppu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ppu.cpp; sourceTree = "<group>"; };
 		65ADF24B27ACF07400D83639 /* ppu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ppu.hpp; sourceTree = "<group>"; };
 		65ADF24E27AF656400D83639 /* interrupt_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = interrupt_test.cpp; sourceTree = "<group>"; };
+		65CDF891286D7BC900FDE793 /* ppu_test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ppu_test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +185,7 @@
 				65ADF246279A74A600D83639 /* cart_test.cpp */,
 				65ADF248279BD93B00D83639 /* integration_test.cpp */,
 				65ADF24E27AF656400D83639 /* interrupt_test.cpp */,
+				65CDF891286D7BC900FDE793 /* ppu_test.cpp */,
 			);
 			path = "nes_emu-tests";
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 				65ADF2282792521200D83639 /* cpu_test.cpp in Sources */,
 				65ADF1EC2791588A00D83639 /* main.cpp in Sources */,
 				65ADF247279A74A600D83639 /* cart_test.cpp in Sources */,
+				65CDF893286D7BC900FDE793 /* ppu_test.cpp in Sources */,
 				65ADF24F27AF656400D83639 /* interrupt_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

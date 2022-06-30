@@ -14,7 +14,8 @@
 nes_emu::PPU::PPU() :
     _addressRegister(0),
     _scanLine(0),
-    _scanLineCycles(0)
+    _scanLineCycles(0),
+    _dataRegisterBuffer(0)
 {
     
 }
@@ -44,7 +45,7 @@ uint8_t nes_emu::PPU::readRegister_uint8(uint16_t address) {
         return 0;
     }
     
-    address |= 0x07;
+    address &= 0x07;
     
     switch (address) {
         case 0x02:
@@ -58,10 +59,12 @@ uint8_t nes_emu::PPU::readRegister_uint8(uint16_t address) {
         case 0x07:
             return readDataRegister();
             break;
+            
+        default:
+            throw std::logic_error("Called register that cannot be read");
+            return 0;
+            break;
     }
-    
-    throw std::logic_error("Called register that cannot be read");
-    return 0;
 }
 
 void nes_emu::PPU::writeRegister_uint8(uint16_t address, uint8_t value) {
@@ -69,7 +72,7 @@ void nes_emu::PPU::writeRegister_uint8(uint16_t address, uint8_t value) {
         throw std::logic_error("Address does not relate to PPU");
     }
     
-    address |= 0x07;
+    address &= 0x07;
     
     switch (address) {
         case 0x00:
@@ -99,9 +102,11 @@ void nes_emu::PPU::writeRegister_uint8(uint16_t address, uint8_t value) {
         case 0x07:
             writeDataRegister(value);
             break;
+            
+        default:
+            throw std::logic_error("Called register that cannot be read");
+            break;
     }
-    
-    throw std::logic_error("Called register that cannot be read");
 }
 
 void nes_emu::PPU::oamDMA(std::array<uint8_t, 256> page) {
