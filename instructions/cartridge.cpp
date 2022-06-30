@@ -127,3 +127,26 @@ std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std:
     
     return cart;
 }
+
+std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::emptyCartridge(MirrorType mirrorType){
+    
+    auto cart = std::make_shared<nes_emu::Cartridge>();
+    
+    switch (mirrorType) {
+        case MirrorType::FourScreen:
+            cart->_controlByteOne |= 0x08;
+            break;
+        case MirrorType::Vertical:
+            cart->_controlByteOne |= 0x01;
+            break;
+        
+        case MirrorType::Horizontal:
+            break;
+            
+        default:
+            throw std::logic_error("unexpected mirror type");
+            break;
+    }
+
+    return cart;
+}

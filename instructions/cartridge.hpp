@@ -50,6 +50,8 @@ public:
     uint8_t readCHRRom(const uint16_t address) const;
     
     static std::shared_ptr<Cartridge> cartridgeFromStream(std::istream& input);
+    
+    static std::shared_ptr<Cartridge> emptyCartridge(MirrorType mirrorType);
 };
 
 }
