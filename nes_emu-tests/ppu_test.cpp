@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 #include "ppu.hpp"
+#include "cartridge.hpp"
 
 namespace {
 
@@ -15,6 +16,9 @@ class PPUTest : public nes_emu::PPU, public ::testing::Test {
 };
 
 TEST_F(PPUTest, ReadFromVRAM) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
+    this->_cartridge = cart;
+    
     _vram[0xDB] = 0xDB;
     
     writeRegister_uint8(0x2006, 0x20);
@@ -30,6 +34,62 @@ TEST_F(PPUTest, ReadFromVRAM) {
     
     auto actualRead = readRegister_uint8(0x2007);
     EXPECT_EQ(actualRead, 0xDB);
+}
+
+TEST_F(PPUTest, VRAMHorizontalMirror) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
+    this->_cartridge = cart;
+    
+    _vram[0x00DB] = 0xDB;
+    _vram[0x04DB] = 0xBD;
+    
+    writeRegister_uint8(0x2006, 0x20);
+    writeRegister_uint8(0x2006, 0xDB);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0xDB);
+    
+    writeRegister_uint8(0x2006, 0x24);
+    writeRegister_uint8(0x2006, 0xDB);
+    readRegister_uint8(0x2007);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0xDB);
+    
+    writeRegister_uint8(0x2006, 0x28);
+    writeRegister_uint8(0x2006, 0xDB);
+    readRegister_uint8(0x2007);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0xBD);
+    
+    writeRegister_uint8(0x2006, 0x2C);
+    writeRegister_uint8(0x2006, 0xDB);
+    readRegister_uint8(0x2007);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0xBD);
+}
+
+TEST_F(PPUTest, VRAMVerticalMirror) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Vertical);
+    this->_cartridge = cart;
+    
+    _vram[0x00DB] = 0xDB;
+    _vram[0x04DB] = 0xBD;
+    
+    writeRegister_uint8(0x2006, 0x20);
+    writeRegister_uint8(0x2006, 0xDB);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0xDB);
+    
+    writeRegister_uint8(0x2006, 0x24);
+    writeRegister_uint8(0x2006, 0xDB);
+    readRegister_uint8(0x2007);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0xBD);
+    
+    writeRegister_uint8(0x2006, 0x28);
+    writeRegister_uint8(0x2006, 0xDB);
+    readRegister_uint8(0x2007);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0xDB);
+    
+    writeRegister_uint8(0x2006, 0x2C);
+    writeRegister_uint8(0x2006, 0xDB);
+    readRegister_uint8(0x2007);
+    EXPECT_EQ(readRegister_uint8(0x2007), 0xBD);
 }
 
 }
