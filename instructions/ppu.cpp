@@ -186,7 +186,7 @@ void nes_emu::PPU::writeDataRegister(uint8_t input) {
 uint8_t nes_emu::PPU::read_uint8(uint16_t address) {
     if (address < 0x2000) {
         return _cartridge->readCHRRom(address);
-    } else if (address < 0x3000) {
+    } else if (address < 0x3EFF) {
         return _vram[demirrorVRAMAddress(address)];
     } else if (address < 0x3FFF) {
         auto addressOffset = (address - 0x3EFF) & 0x1F;
@@ -215,13 +215,12 @@ uint16_t nes_emu::PPU::demirrorVRAMAddress(uint16_t address) {
         throw std::logic_error("not a PPU VRAM memory address");
         return 0;
     } else if (address > 0x2FFF && address < 0x3F00) {
-        throw std::logic_error("PPU VRAM nametable mirroring not implemented");
-        return 0;
+        address -= 0x1000;
     }
     
     auto vramAddress = address - 0x2000;
     auto vramMirrorBlock = vramAddress / 0x400;
-        
+    
     switch (_cartridge->mirrorType()) {
         case nes_emu::Cartridge::MirrorType::Horizontal:
         {
