@@ -58,7 +58,8 @@ namespace nes_emu {
         uint8_t read_uint8(uint16_t address);
         void write_uint8(uint16_t address, uint8_t value);
         
-        uint8_t getVRAMWithMirror(uint16_t);
+    private:
+        uint16_t demirrorVRAMAddress(uint16_t);
     };
 }
 

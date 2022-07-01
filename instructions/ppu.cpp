@@ -11,6 +11,11 @@
 
 #include "cartridge.hpp"
 
+namespace {
+
+
+}
+
 nes_emu::PPU::PPU() :
     _addressRegister(0),
     _scanLine(0),
@@ -182,10 +187,7 @@ uint8_t nes_emu::PPU::read_uint8(uint16_t address) {
     if (address < 0x2000) {
         return _cartridge->readCHRRom(address);
     } else if (address < 0x3000) {
-        return getVRAMWithMirror(address);
-    } else if (address < 0x3EFF) {
-        throw std::logic_error("vram address mirrors unimplemented");
-        return 0;
+        return _vram[demirrorVRAMAddress(address)];
     } else if (address < 0x3FFF) {
         auto addressOffset = (address - 0x3EFF) & 0x1F;
         return _paletteRAM[addressOffset];
@@ -199,9 +201,7 @@ void nes_emu::PPU::write_uint8(uint16_t address, uint8_t value) {
     if (address < 0x2000) {
         throw std::logic_error("PPU CHRROM not writable");
     } else if (address < 0x3000) {
-        _vram[address & 0x0FFF] = value;
-    } else if (address < 0x3EFF) {
-        throw std::logic_error("PPU vram address mirrors unimplemented");
+        _vram[demirrorVRAMAddress(address)] = value;
     } else if (address < 0x3FFF) {
         auto addressOffset = (address - 0x3EFF) & 0x1F;
         _paletteRAM[addressOffset] = value;
@@ -210,9 +210,12 @@ void nes_emu::PPU::write_uint8(uint16_t address, uint8_t value) {
     throw std::logic_error("no PPU memory at address");
 }
 
-uint8_t nes_emu::PPU::getVRAMWithMirror(uint16_t address) {
-    if (address < 0x2000 || address > 0x2FFF) {
+uint16_t nes_emu::PPU::demirrorVRAMAddress(uint16_t address) {
+    if (address < 0x2000 || address > 0x3F00) {
         throw std::logic_error("not a PPU VRAM memory address");
+        return 0;
+    } else if (address > 0x2FFF && address < 0x3F00) {
+        throw std::logic_error("PPU VRAM nametable mirroring not implemented");
         return 0;
     }
     
@@ -220,7 +223,7 @@ uint8_t nes_emu::PPU::getVRAMWithMirror(uint16_t address) {
     auto vramMirrorBlock = vramAddress / 0x400;
         
     switch (_cartridge->mirrorType()) {
-        case Cartridge::MirrorType::Horizontal:
+        case nes_emu::Cartridge::MirrorType::Horizontal:
         {
             if (vramMirrorBlock == 1 ||
                 vramMirrorBlock == 2) {
@@ -231,7 +234,7 @@ uint8_t nes_emu::PPU::getVRAMWithMirror(uint16_t address) {
         }
             break;
             
-        case Cartridge::MirrorType::Vertical:
+        case nes_emu::Cartridge::MirrorType::Vertical:
         {
             if (vramMirrorBlock == 2 ||
                 vramMirrorBlock == 3) {
@@ -245,5 +248,5 @@ uint8_t nes_emu::PPU::getVRAMWithMirror(uint16_t address) {
             break;
     }
     
-    return _vram[vramAddress];
+    return vramAddress;
 }
