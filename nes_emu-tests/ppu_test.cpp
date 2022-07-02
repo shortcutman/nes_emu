@@ -158,10 +158,7 @@ TEST_F(PPUTest, VRAMVerticalMirror) {
     EXPECT_EQ(readRegister_uint8(0x2007), 0xBD);
 }
 
-TEST_F(PPUTest, OAMReadWrite) {
-    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
-    this->_cartridge = cart;
-    
+TEST_F(PPUTest, OAMReadWrite) {    
     writeOAMAddressRegister(0xF0);
     writeOAMDataRegister(0xAA);
     writeOAMDataRegister(0xBB);
@@ -174,6 +171,7 @@ TEST_F(PPUTest, OAMReadWrite) {
     writeOAMAddressRegister(0xF2);
     EXPECT_EQ(readOAMDataRegister(), 0xCC);
 }
+
 
 
 }
