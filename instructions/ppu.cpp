@@ -30,11 +30,16 @@ nes_emu::PPU::~PPU() {
 }
 
 void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInterrupt) {
+    
     _scanLineCycles += cycles;
     
+    if (_scanLineCycles >  (341 * 242)) {
+        throw std::runtime_error("clock will advance without triggering NMI interrupt");
+    }
+    
     if (_scanLineCycles >= 341) {
-        _scanLine++;
-        _scanLineCycles -= 341;
+        _scanLine += _scanLineCycles / 341;
+        _scanLineCycles = _scanLineCycles % 341;
         
         if (_scanLine >= 262) {
             _scanLine = 0;

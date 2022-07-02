@@ -186,4 +186,36 @@ TEST_F(PPUTest, OAMDMA) {
     }
 }
 
+TEST_F(PPUTest, ClockScanLineSingleIncrement) {
+    bool nmiInterruptTest = false;
+    
+    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    
+    EXPECT_EQ(_scanLine, 1);
+    EXPECT_EQ(nmiInterruptTest, false);
+}
+
+TEST_F(PPUTest, ClockScanLineMultipleIncrement) {
+    bool nmiInterruptTest = false;
+    
+    EXPECT_EQ(_scanLine, 0);
+    
+    for (int i = 1; i < 262; i++) {
+        advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+        EXPECT_EQ(_scanLine, i);
+        EXPECT_EQ(nmiInterruptTest, i == 241);
+    }
+    
+    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    EXPECT_EQ(_scanLine, 0);
+    EXPECT_EQ(nmiInterruptTest, false);
+}
+
+TEST_F(PPUTest, ClockScanLineNMIInterrupt) {
+    EXPECT_THROW({
+        bool nmiInterruptTest = false;
+        advanceClockAndCheckInterrupt(89344, nmiInterruptTest);
+    }, std::runtime_error);
+}
+
 }
