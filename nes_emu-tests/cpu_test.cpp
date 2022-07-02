@@ -10,6 +10,7 @@
 #include "cpu.hpp"
 #include "registers.hpp"
 #include "memory.hpp"
+#include "cartridge.hpp"
 
 namespace {
 
@@ -592,4 +593,26 @@ TEST_F(CPUTest, simpleStackTest_uint16) {
     
     EXPECT_EQ(_registers->stackPointer, 0xFF);
     EXPECT_EQ(value, 0xABCD);
+}
+
+TEST_F(CPUTest, InterruptLogic) {
+    std::vector<uint8_t> testPRGROM;
+    testPRGROM.resize(256);
+    std::fill(std::begin(testPRGROM), std::end(testPRGROM), 0xAA);
+    testPRGROM[0xFE] = 0xBB;
+    testPRGROM[0xFF] = 0xBB;
+    
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal, testPRGROM);
+    _memory->_cartridge = cart;
+        
+    _interrupt = Interrupt::IRQBRK;
+    _registers->programCounter = 0xCC;
+    
+    auto currentClock = _memory->cpuClock();
+    
+    checkAndSetupInterrupt();
+
+    EXPECT_EQ(_registers->programCounter, 0xBBBB);
+    EXPECT_EQ(_interrupt, Interrupt::None);
+    EXPECT_EQ(_memory->cpuClock(), currentClock + 7);
 }

@@ -660,5 +660,7 @@ bool nes_emu::CPU::checkAndSetupInterrupt() {
     
     _interrupt = Interrupt::None;
     
+    _memory->advanceClock(7);
+    
     return true;
 }
