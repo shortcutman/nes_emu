@@ -24,6 +24,8 @@ TEST(CartridgeTest, readCart) {
     
     EXPECT_EQ(cart->mirrorType(), nes_emu::Cartridge::MirrorType::Horizontal);
     
+    EXPECT_EQ(cart->_prgROM.size(), 0x4000);
+    
     EXPECT_EQ(cart->readCart(0x8000), 0x4c);
     EXPECT_EQ(cart->readCart(0x8001), 0xf5);
     EXPECT_EQ(cart->readCart(0x8002), 0xc5);

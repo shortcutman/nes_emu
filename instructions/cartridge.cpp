@@ -128,7 +128,9 @@ std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std:
     return cart;
 }
 
-std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::emptyCartridge(MirrorType mirrorType){
+std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::emptyCartridge(
+    MirrorType mirrorType,
+    std::vector<uint8_t> prgROM) {
     
     auto cart = std::make_shared<nes_emu::Cartridge>();
     
@@ -147,6 +149,8 @@ std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::emptyCartridge(MirrorTyp
             throw std::logic_error("unexpected mirror type");
             break;
     }
+    
+    cart->_prgROM = prgROM;
 
     return cart;
 }

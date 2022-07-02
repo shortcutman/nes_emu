@@ -51,7 +51,7 @@ public:
     
     static std::shared_ptr<Cartridge> cartridgeFromStream(std::istream& input);
     
-    static std::shared_ptr<Cartridge> emptyCartridge(MirrorType mirrorType);
+    static std::shared_ptr<Cartridge> emptyCartridge(MirrorType mirrorType, std::vector<uint8_t> prgROM = std::vector<uint8_t>());
 };
 
 }
