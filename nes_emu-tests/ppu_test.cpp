@@ -158,7 +158,7 @@ TEST_F(PPUTest, VRAMVerticalMirror) {
     EXPECT_EQ(readRegister_uint8(0x2007), 0xBD);
 }
 
-TEST_F(PPUTest, OAMReadWrite) {    
+TEST_F(PPUTest, OAMReadWrite) {
     writeOAMAddressRegister(0xF0);
     writeOAMDataRegister(0xAA);
     writeOAMDataRegister(0xBB);
@@ -172,6 +172,18 @@ TEST_F(PPUTest, OAMReadWrite) {
     EXPECT_EQ(readOAMDataRegister(), 0xCC);
 }
 
-
+TEST_F(PPUTest, OAMDMA) {
+    std::array<uint8_t, 256> testPage;
+    for (uint16_t i = 0; i < 256; i++) {
+        testPage[i] = i;
+    }
+    
+    oamDMA(testPage);
+    
+    for (uint16_t i = 0; i < 256; i++) {
+        writeOAMAddressRegister(i);
+        EXPECT_EQ(readOAMDataRegister(), i);
+    }
+}
 
 }
