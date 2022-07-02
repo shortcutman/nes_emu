@@ -135,14 +135,7 @@ void nes_emu::PPU::writeOAMAddressRegister(uint8_t input) {
 }
 
 uint8_t nes_emu::PPU::readOAMDataRegister() {
-    auto value = _oam[_oamAddressRegister];
-    
-    if (true) {
-#warning OAM Addr register incrementing should not occur during vertical or forced blanking
-        _oamAddressRegister++;
-    }
-    
-    return value;
+    return _oam[_oamAddressRegister];
 }
 
 void nes_emu::PPU::writeOAMDataRegister(uint8_t input) {
