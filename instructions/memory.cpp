@@ -22,6 +22,10 @@ nes_emu::Memory::~Memory() {
     
 }
 
+uint64_t nes_emu::Memory::cpuClock() const {
+    return _cpuClock;
+}
+
 void nes_emu::Memory::advanceClock(uint64_t cycles) {
     _cpuClock += cycles;
     
@@ -52,7 +56,7 @@ uint8_t nes_emu::Memory::read_uint8(const uint16_t address) const {
         throw std::runtime_error("apu/io test mode not implemented");
         return 0x00;
     } else if (address <= nes_emu::Memory::LastCartridgeSpaceMemory) {
-        return _cartridge->readCart(address);;
+        return _cartridge->readCart(address);
     } else {
         throw std::logic_error("something is wrong");
         return 0x00;

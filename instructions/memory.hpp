@@ -44,6 +44,7 @@ namespace nes_emu {
         Memory();
         ~Memory();
         
+        uint64_t cpuClock() const;
         void advanceClock(uint64_t cycles);
         void setInterruptCallback(std::function<void(void)> func);
         
