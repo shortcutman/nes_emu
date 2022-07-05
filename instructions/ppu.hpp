@@ -60,6 +60,9 @@ namespace nes_emu {
         uint8_t read_uint8(uint16_t address);
         void write_uint8(uint16_t address, uint8_t value);
         
+    protected:
+        std::array<uint8_t, 64> constructTile(uint8_t* data);
+        
     private:
         uint16_t demirrorVRAMAddress(uint16_t);
     };
