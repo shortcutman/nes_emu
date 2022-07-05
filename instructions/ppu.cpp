@@ -29,6 +29,10 @@ nes_emu::PPU::~PPU() {
     
 }
 
+void nes_emu::PPU::setCartridge(std::shared_ptr<const Cartridge> cartridge) {
+    _cartridge = cartridge;
+}
+
 void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInterrupt) {
     
     _scanLineCycles += cycles;

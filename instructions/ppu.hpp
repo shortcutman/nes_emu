@@ -18,7 +18,7 @@ namespace nes_emu {
     class PPU {
         
     protected:
-        std::shared_ptr<Cartridge> _cartridge;
+        std::shared_ptr<const Cartridge> _cartridge;
         std::array<uint8_t, 2048>  _vram;
         std::array<uint8_t, 32>  _paletteRAM;
         std::array<uint8_t, 256>  _oam;
@@ -35,6 +35,8 @@ namespace nes_emu {
     public:
         PPU();
         ~PPU();
+        
+        void setCartridge(std::shared_ptr<const Cartridge> cartridge);
         
         void advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInterrupt);
         
