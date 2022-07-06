@@ -11,11 +11,6 @@
 
 #include "cartridge.hpp"
 
-namespace {
-
-
-}
-
 nes_emu::PPU::PPU() :
     _addressRegister(0),
     _scanLine(0),
