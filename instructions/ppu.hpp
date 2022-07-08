@@ -32,6 +32,9 @@ namespace nes_emu {
         uint64_t _scanLine;
         uint64_t _scanLineCycles;
         
+        typedef std::tuple<uint8_t, uint8_t, uint8_t> Colour;
+        typedef std::array<Colour, 256*240> Frame;
+        
     public:
         PPU();
         ~PPU();
@@ -44,6 +47,8 @@ namespace nes_emu {
         void writeRegister_uint8(uint16_t address, uint8_t value);
         
         void oamDMA(std::array<uint8_t, 256> page);
+        
+        Frame renderFrame();
         
     protected:
         void writeControlRegister(uint8_t input);
@@ -61,7 +66,8 @@ namespace nes_emu {
         void write_uint8(uint16_t address, uint8_t value);
         
     protected:
-        std::array<uint8_t, 64> constructTile(uint8_t* data);
+        std::array<uint8_t, 64> constructTile(const uint8_t* data);
+        std::array<Colour, 64> colourTile(std::array<uint8_t, 64>& tile);
         
     private:
         uint16_t demirrorVRAMAddress(uint16_t);

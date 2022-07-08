@@ -7,6 +7,8 @@
 
 #include "ppu.hpp"
 
+#include "cartridge.hpp"
+
 #include <cstdint>
 #include <tuple>
 #include <array>
@@ -34,14 +36,31 @@ const Palette SystemPalette = {{
 
 }
 
-std::array<uint8_t, 64> nes_emu::PPU::constructTile(uint8_t* data) {
+nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
+    PPU::Frame frame;
+    
+//    uint16_t startByte = patternTable * 0x1000 + tileNumber * 0x10;
+    uint16_t startByte = 1 * 0x1000 + 0 * 0x10;
+
+    auto tile = constructTile(_cartridge->readCHRRomDirect(startByte));
+    auto colouredTile = colourTile(tile);
+    
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
+            frame[x + y * 256] = colouredTile[x + y * 8];
+        }
+    }
+    
+    return frame;
+}
+
+std::array<uint8_t, 64> nes_emu::PPU::constructTile(const uint8_t* data) {
     if (data == nullptr) {
         throw std::logic_error("require pointer to data");
     }
         
     std::array<uint8_t, 64> tile;
     
-//    uint16_t startByte = patternTable * 0x1000 + tileNumber * 0x10;
     for (uint8_t y = 0; y < 8; y++) {
         auto loByte = *(data + y);
         auto hiByte = *(data + y + 8);
@@ -54,4 +73,17 @@ std::array<uint8_t, 64> nes_emu::PPU::constructTile(uint8_t* data) {
     }
     
     return tile;
+}
+
+std::array<nes_emu::PPU::Colour, 64> nes_emu::PPU::colourTile(std::array<uint8_t, 64>& tile) {
+    std::array<nes_emu::PPU::Colour, 64> colouredTile;
+    
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
+            uint8_t index = x + y * 8;
+            colouredTile[index] = SystemPalette[tile[index]];
+        }
+    }
+    
+    return colouredTile;
 }
