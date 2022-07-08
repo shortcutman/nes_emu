@@ -48,6 +48,7 @@ public:
     
     uint8_t readCart(const uint16_t address) const;
     uint8_t readCHRRom(const uint16_t address) const;
+    const uint8_t* readCHRRomDirect(const uint16_t address) const;
     
     static std::shared_ptr<Cartridge> cartridgeFromStream(std::istream& input);
     
