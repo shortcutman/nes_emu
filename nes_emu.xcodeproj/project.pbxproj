@@ -11,6 +11,7 @@
 		65156C1627902233004211A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65156C1427902233004211A0 /* Main.storyboard */; };
 		65156C1827902233004211A0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65156C1727902233004211A0 /* main.cpp */; };
 		65405DD428745EF700453591 /* ppu_render_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65405DD328745EF700453591 /* ppu_render_test.cpp */; };
+		65405DD52875A92500453591 /* libinstructions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF21427924BDE00D83639 /* libinstructions.a */; };
 		65ADF1CE279023BD00D83639 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF1CC2790235000D83639 /* SDL2.framework */; };
 		65ADF1CF279023BD00D83639 /* SDL2.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 65ADF1CC2790235000D83639 /* SDL2.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		65ADF1EC2791588A00D83639 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65ADF1EB2791588A00D83639 /* main.cpp */; };
@@ -116,6 +117,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65405DD52875A92500453591 /* libinstructions.a in Frameworks */,
 				65ADF1CE279023BD00D83639 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
