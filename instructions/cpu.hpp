@@ -44,13 +44,15 @@ namespace nes_emu {
         
     protected:
         std::unique_ptr<nes_registers> _registers;
-        std::unique_ptr<nes_emu::Memory> _memory;
+        std::shared_ptr<nes_emu::Memory> _memory;
         OpCodeMap _ops;
         Interrupt _interrupt;
         
     public:
         CPU();
         ~CPU();
+        
+        void setMemory(std::shared_ptr<nes_emu::Memory> memory);
         
         void executeOne();
         

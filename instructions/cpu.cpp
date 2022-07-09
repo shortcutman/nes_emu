@@ -15,15 +15,19 @@
 
 nes_emu::CPU::CPU() :
     _registers(new nes_registers()),
-    _memory(new nes_emu::Memory()),
     _ops(CPU::buildOpCodeMap(this))
 {
-    _memory->setInterruptCallback([this] () {
-        _interrupt = Interrupt::NMI;
-    });
 }
 
 nes_emu::CPU::~CPU() {
+}
+
+void nes_emu::CPU::setMemory(std::shared_ptr<nes_emu::Memory> memory) {
+    _memory = memory;
+    
+    _memory->setInterruptCallback([this] () {
+        _interrupt = Interrupt::NMI;
+    });
 }
 
 void nes_emu::CPU::executeOne() {
