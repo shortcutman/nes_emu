@@ -33,7 +33,7 @@ namespace nes_emu {
         std::array<uint8_t, 8> _ppuRegisters;
         std::array<uint8_t, 18> _apuRegisters;
         
-    public:
+    private:
         std::shared_ptr<Cartridge> _cartridge;
         std::shared_ptr<PPU> _ppu;
         uint64_t _cpuClock;
@@ -43,6 +43,9 @@ namespace nes_emu {
     public:
         Memory();
         ~Memory();
+        
+        void setCartridge(std::shared_ptr<Cartridge> cartridge);
+        void setPPU(std::shared_ptr<PPU> ppu);
         
         uint64_t cpuClock() const;
         void advanceClock(uint64_t cycles);

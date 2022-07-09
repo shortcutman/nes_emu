@@ -22,6 +22,14 @@ nes_emu::Memory::~Memory() {
     
 }
 
+void nes_emu::Memory::setCartridge(std::shared_ptr<Cartridge> cartridge) {
+    _cartridge = cartridge;
+}
+
+void nes_emu::Memory::setPPU(std::shared_ptr<PPU> ppu) {
+    _ppu = ppu;
+}
+
 uint64_t nes_emu::Memory::cpuClock() const {
     return _cpuClock;
 }
