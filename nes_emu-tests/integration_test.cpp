@@ -119,7 +119,7 @@ public:
         uint32_t clock;
         iss.seekg(78);
         iss >> std::dec >> clock;
-        auto pClock = _memory->_ppuClock % 341;
+        auto pClock = _memory->ppuClock() % 341;
         
         if (clock != pClock) {
             throw formattedException("Clock doesn't match", line);
@@ -136,7 +136,8 @@ TEST_F(IntegrationTest, nestest) {
 
     ASSERT_TRUE(cartFile.good());
 
-    _memory->_cartridge = nes_emu::Cartridge::cartridgeFromStream(cartFile);
+    this->setMemory(std::make_shared<Memory>());
+    _memory->setCartridge(nes_emu::Cartridge::cartridgeFromStream(cartFile));
 
     _registers->programCounter = 0xC000;
     _registers->stackPointer = 0xFD;

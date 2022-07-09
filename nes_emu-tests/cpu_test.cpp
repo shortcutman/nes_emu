@@ -15,6 +15,9 @@
 namespace {
 
 class CPUTest : public nes_emu::CPU, public ::testing::Test {
+    void SetUp() override {
+        this->setMemory(std::make_shared<nes_emu::Memory>());
+    }
 };
 
 TEST_F(CPUTest, ADC_PositiveInteger) {
@@ -603,7 +606,7 @@ TEST_F(CPUTest, InterruptLogic) {
     testPRGROM[0xFF] = 0xBB;
     
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal, testPRGROM);
-    _memory->_cartridge = cart;
+    _memory->setCartridge(cart);
         
     _interrupt = Interrupt::IRQBRK;
     _registers->programCounter = 0xCC;

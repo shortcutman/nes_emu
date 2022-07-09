@@ -14,6 +14,9 @@
 
 namespace test {
 class InterruptTest : public nes_emu::CPU, public ::testing::Test {
+    void SetUp() override {
+        this->setMemory(std::make_shared<nes_emu::Memory>());
+    }
 };
 
 TEST_F(InterruptTest, Reset) {
@@ -22,7 +25,7 @@ TEST_F(InterruptTest, Reset) {
     cart->_prgROM[16380] = 0x01;
     cart->_prgROM[16381] = 0x02;
     
-    _memory->_cartridge = cart;
+    _memory->setCartridge(cart);
     _memory->write(0x0201, 0xEA);
     
     _interrupt = nes_emu::CPU::Interrupt::Reset;
@@ -38,7 +41,7 @@ TEST_F(InterruptTest, Reset_Disable) {
     cart->_prgROM[16380] = 0x01;
     cart->_prgROM[16381] = 0x02;
     
-    _memory->_cartridge = cart;
+    _memory->setCartridge(cart);
     _memory->write(0x00, 0xEA);
     _memory->write(0x01, 0xEA);
     _memory->write(0x0201, 0xEA);
