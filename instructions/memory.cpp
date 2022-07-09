@@ -34,6 +34,10 @@ uint64_t nes_emu::Memory::cpuClock() const {
     return _cpuClock;
 }
 
+uint64_t nes_emu::Memory::ppuClock() const {
+    return _ppuClock;
+}
+
 void nes_emu::Memory::advanceClock(uint64_t cycles) {
     _cpuClock += cycles;
     
