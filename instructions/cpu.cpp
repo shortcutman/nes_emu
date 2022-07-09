@@ -25,7 +25,7 @@ nes_emu::CPU::~CPU() {
 void nes_emu::CPU::setMemory(std::shared_ptr<nes_emu::Memory> memory) {
     _memory = memory;
     
-    _memory->setInterruptCallback([this] () {
+    _memory->setNMIInterruptCallback([this] () {
         _interrupt = Interrupt::NMI;
     });
 }

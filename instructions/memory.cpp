@@ -48,12 +48,12 @@ void nes_emu::Memory::advanceClock(uint64_t cycles) {
     _ppu->advanceClockAndCheckInterrupt(ppuCycleIncrement, nmiInterrupt);
     
     if (nmiInterrupt) {
-        _interruptCallback();
+        _nmiInterruptCallback();
     }
 }
 
-void nes_emu::Memory::setInterruptCallback(std::function<void(void)> func) {
-    _interruptCallback = std::move(func);
+void nes_emu::Memory::setNMIInterruptCallback(std::function<void(void)> func) {
+    _nmiInterruptCallback = std::move(func);
 }
 
 
