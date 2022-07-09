@@ -17,7 +17,9 @@ nes_emu::PPU::PPU() :
     _scanLineCycles(0),
     _dataRegisterBuffer(0)
 {
-    
+    _vram.fill(0);
+    _paletteRAM.fill(0);
+    _oam.fill(0);
 }
 
 nes_emu::PPU::~PPU() {
