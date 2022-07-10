@@ -164,6 +164,8 @@ void nes_emu::PPU::writeMaskRegister(uint8_t input) {
 uint8_t nes_emu::PPU::readStatusRegister() {
     auto result = _statusRegister;
     _statusRegister &= 0x7F; //vsync flag cleared after read
+    _addressRegister = 0x0000;
+    _dataRegisterBuffer = 0x00;
     return result;
 }
 
