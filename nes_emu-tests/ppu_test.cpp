@@ -15,6 +15,18 @@ namespace {
 class PPUTest : public nes_emu::PPU, public ::testing::Test {
 };
 
+TEST_F(PPUTest, ControlNoopAtPowerOn) {
+    
+    writeControlRegister(0xCD);
+    EXPECT_EQ(_controlRegister, 0x00);
+    
+    bool nmiInterrupt;
+    advanceClockAndCheckInterrupt(30001, nmiInterrupt);
+    
+    writeControlRegister(0xCD);
+    EXPECT_EQ(_controlRegister, 0xCD);
+}
+
 TEST_F(PPUTest, BasicReadFromVRAM) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
@@ -59,6 +71,7 @@ TEST_F(PPUTest, ReadFromVRAMIncrement32) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
     
+    _ppuCycles = 30001;
     writeControlRegister(0b00000010);
     
     for (uint32_t i = 0; i < _vram.size(); i++) {

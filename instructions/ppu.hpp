@@ -30,6 +30,7 @@ namespace nes_emu {
         uint16_t _addressRegister;
         uint8_t _dataRegisterBuffer;
         
+        uint64_t _ppuCycles;
         uint64_t _scanLine;
         uint64_t _scanLineCycles;
         

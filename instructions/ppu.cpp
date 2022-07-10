@@ -17,11 +17,15 @@ const uint64_t PPUNMITriggerScanLine = 241;
 }
 
 nes_emu::PPU::PPU() :
+    _controlRegister(0),
+    _maskRegister(0),
     _statusRegister(0),
+    _oamAddressRegister(0),
     _addressRegister(0),
+    _dataRegisterBuffer(0),
+    _ppuCycles(0),
     _scanLine(0),
-    _scanLineCycles(0),
-    _dataRegisterBuffer(0)
+    _scanLineCycles(0)
 {
     _vram.fill(0);
     _paletteRAM.fill(0);
@@ -38,6 +42,7 @@ void nes_emu::PPU::setCartridge(std::shared_ptr<const Cartridge> cartridge) {
 
 void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInterrupt) {
     nmiInterrupt = false;
+    _ppuCycles += cycles;
     _scanLineCycles += cycles;
     
     if (_scanLineCycles >  (PPUCyclesPerScanLine * 242)) {
@@ -133,6 +138,10 @@ void nes_emu::PPU::oamDMA(std::array<uint8_t, 256> page) {
 }
 
 void nes_emu::PPU::writeControlRegister(uint8_t input) {
+    if (_ppuCycles < 30000) {
+        return;
+    }
+    
     _controlRegister = input;
 }
 
