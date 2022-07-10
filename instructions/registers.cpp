@@ -8,7 +8,8 @@
 #include "registers.hpp"
 
 nes_registers::nes_registers() :
-    p(0x34),
+    sp(0xFD),
+    p(0x24),
     a(0x00),
     x(0x00),
     y(0x00)
