@@ -14,6 +14,8 @@
 namespace {
 const uint64_t PPUCyclesPerScanLine = 341;
 const uint64_t PPUNMITriggerScanLine = 241;
+
+const uint64_t PPUPowerUpCycles = 29658 * 3;
 }
 
 nes_emu::PPU::PPU() :
@@ -138,7 +140,7 @@ void nes_emu::PPU::oamDMA(std::array<uint8_t, 256> page) {
 }
 
 void nes_emu::PPU::writeControlRegister(uint8_t input) {
-    if (_ppuCycles < 30000) {
+    if (_ppuCycles < PPUPowerUpCycles) {
         return;
     }
     
@@ -146,6 +148,10 @@ void nes_emu::PPU::writeControlRegister(uint8_t input) {
 }
 
 void nes_emu::PPU::writeMaskRegister(uint8_t input) {
+    if (_ppuCycles < PPUPowerUpCycles) {
+        return;
+    }
+    
     _maskRegister = input;
 }
 
@@ -169,10 +175,16 @@ void nes_emu::PPU::writeOAMDataRegister(uint8_t input) {
 }
 
 void nes_emu::PPU::writeScrollRegister(uint8_t input) {
-    
+    if (_ppuCycles < PPUPowerUpCycles) {
+        return;
+    }
 }
 
 void nes_emu::PPU::writeAddressRegister(uint8_t input) {
+    if (_ppuCycles < PPUPowerUpCycles) {
+        return;
+    }
+    
     uint16_t newAddress = input;
     newAddress += _addressRegister << 8;
     _addressRegister = newAddress;
