@@ -15,7 +15,7 @@ _ppu(new PPU),
 _cpuClock(0),
 _ppuClock(0)
 {
-    
+    _internalRAM.fill(0);
 }
 
 nes_emu::Memory::~Memory() {
