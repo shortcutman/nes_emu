@@ -7,6 +7,15 @@
 
 #include "registers.hpp"
 
+nes_registers::nes_registers() :
+    p(0x34),
+    a(0x00),
+    x(0x00),
+    y(0x00)
+{
+    
+}
+
 void nes_registers::setStatusFlag(StatusFlags flag, bool value) {
     if (value) {
         this->statusRegister |= flag;
