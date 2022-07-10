@@ -144,6 +144,12 @@ void nes_emu::PPU::writeControlRegister(uint8_t input) {
         return;
     }
     
+    if (_controlRegister & 0x80 &&
+        input & 0x80 &&
+        _statusRegister & 0x80) {
+        throw std::runtime_error("unhandled condition, this should immediately trigger an NMI interrupt");
+    }
+    
     _controlRegister = input;
 }
 
