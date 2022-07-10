@@ -25,6 +25,7 @@ namespace nes_emu {
         
         uint8_t _controlRegister;
         uint8_t _maskRegister;
+        uint8_t _statusRegister;
         uint8_t _oamAddressRegister;
         uint16_t _addressRegister;
         uint8_t _dataRegisterBuffer;

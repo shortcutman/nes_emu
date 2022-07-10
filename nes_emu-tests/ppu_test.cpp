@@ -189,26 +189,50 @@ TEST_F(PPUTest, OAMDMA) {
 TEST_F(PPUTest, ClockScanLineSingleIncrement) {
     bool nmiInterruptTest = false;
     
+    EXPECT_EQ(readStatusRegister(), 0x00);
+    
     advanceClockAndCheckInterrupt(341, nmiInterruptTest);
     
     EXPECT_EQ(_scanLine, 1);
     EXPECT_EQ(nmiInterruptTest, false);
+    EXPECT_EQ(readStatusRegister(), 0x00);
 }
 
 TEST_F(PPUTest, ClockScanLineMultipleIncrement) {
     bool nmiInterruptTest = false;
     
     EXPECT_EQ(_scanLine, 0);
+    EXPECT_EQ(readStatusRegister(), 0x00);
     
     for (int i = 1; i < 262; i++) {
         advanceClockAndCheckInterrupt(341, nmiInterruptTest);
         EXPECT_EQ(_scanLine, i);
         EXPECT_EQ(nmiInterruptTest, i == 241);
+        EXPECT_EQ(readStatusRegister(), i == 241 ? 0x80 : 0x00);
     }
     
     advanceClockAndCheckInterrupt(341, nmiInterruptTest);
     EXPECT_EQ(_scanLine, 0);
     EXPECT_EQ(nmiInterruptTest, false);
+    EXPECT_EQ(readStatusRegister(), 0x00);
+}
+
+TEST_F(PPUTest, ClockScanLineVSyncFlagClear) {
+    bool nmiInterruptTest = false;
+    
+    _scanLine = 240;
+    EXPECT_EQ(readStatusRegister(), 0x00);
+    
+    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    EXPECT_EQ(_scanLine, 241);
+    EXPECT_EQ(nmiInterruptTest, true);
+    EXPECT_EQ(readStatusRegister(), 0x80);
+    EXPECT_EQ(readStatusRegister(), 0x00); //flag should be cleared after read
+    
+    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    EXPECT_EQ(_scanLine, 242);
+    EXPECT_EQ(nmiInterruptTest, false);
+    EXPECT_EQ(readStatusRegister(), 0x00);
 }
 
 TEST_F(PPUTest, ClockScanLineNMIInterrupt) {

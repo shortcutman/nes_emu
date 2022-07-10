@@ -11,7 +11,13 @@
 
 #include "cartridge.hpp"
 
+namespace {
+const uint64_t PPUCyclesPerScanLine = 341;
+const uint64_t PPUNMITriggerScanLine = 241;
+}
+
 nes_emu::PPU::PPU() :
+    _statusRegister(0),
     _addressRegister(0),
     _scanLine(0),
     _scanLineCycles(0),
@@ -31,23 +37,25 @@ void nes_emu::PPU::setCartridge(std::shared_ptr<const Cartridge> cartridge) {
 }
 
 void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInterrupt) {
-    
+    nmiInterrupt = false;
     _scanLineCycles += cycles;
     
-    if (_scanLineCycles >  (341 * 242)) {
+    if (_scanLineCycles >  (PPUCyclesPerScanLine * 242)) {
         throw std::runtime_error("clock will advance without triggering NMI interrupt");
     }
     
-    if (_scanLineCycles >= 341) {
-        _scanLine += _scanLineCycles / 341;
-        _scanLineCycles = _scanLineCycles % 341;
+    if (_scanLineCycles >= PPUCyclesPerScanLine) {
+        _scanLine += _scanLineCycles / PPUCyclesPerScanLine;
+        _scanLineCycles = _scanLineCycles % PPUCyclesPerScanLine;
         
-        if (_scanLine >= 262) {
+        if (_scanLine == PPUNMITriggerScanLine) {
+            nmiInterrupt = true;
+            _statusRegister |= 0x80;
+        } else if (_scanLine >= 262) {
             _scanLine = 0;
+            _statusRegister &= 0x7F;
         }
     }
-    
-    nmiInterrupt = _scanLine == 241;
 }
 
 uint8_t nes_emu::PPU::readRegister_uint8(uint16_t address) {
@@ -133,7 +141,9 @@ void nes_emu::PPU::writeMaskRegister(uint8_t input) {
 }
 
 uint8_t nes_emu::PPU::readStatusRegister() {
-    return 0;
+    auto result = _statusRegister;
+    _statusRegister &= 0x7F; //vsync flag cleared after read
+    return result;
 }
 
 void nes_emu::PPU::writeOAMAddressRegister(uint8_t input) {
