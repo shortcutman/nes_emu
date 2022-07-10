@@ -12,6 +12,8 @@
 
 namespace {
 
+const uint64_t PPUPowerUpCycles = 29658 * 3;
+
 class PPUTest : public nes_emu::PPU, public ::testing::Test {
 };
 
@@ -20,8 +22,7 @@ TEST_F(PPUTest, ControlNoopAtPowerOn) {
     writeControlRegister(0xCD);
     EXPECT_EQ(_controlRegister, 0x00);
     
-    bool nmiInterrupt;
-    advanceClockAndCheckInterrupt(30001, nmiInterrupt);
+    this->_ppuCycles = PPUPowerUpCycles + 1;
     
     writeControlRegister(0xCD);
     EXPECT_EQ(_controlRegister, 0xCD);
@@ -30,6 +31,7 @@ TEST_F(PPUTest, ControlNoopAtPowerOn) {
 TEST_F(PPUTest, BasicReadFromVRAM) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
     
     for (uint32_t i = 0; i < _vram.size(); i++) {
         _vram[i] = i;
@@ -52,6 +54,7 @@ TEST_F(PPUTest, BasicReadFromVRAM) {
 TEST_F(PPUTest, ReadFromVRAMx3Mirror) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
     
     for (uint32_t i = 0; i < _vram.size(); i++) {
         _vram[i] = i;
@@ -70,8 +73,8 @@ TEST_F(PPUTest, ReadFromVRAMx3Mirror) {
 TEST_F(PPUTest, ReadFromVRAMIncrement32) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
     
-    _ppuCycles = 30001;
     writeControlRegister(0b00000010);
     
     for (uint32_t i = 0; i < _vram.size(); i++) {
@@ -94,6 +97,7 @@ TEST_F(PPUTest, ReadFromVRAMIncrement32) {
 TEST_F(PPUTest, ReadFromVRAMIncrement1) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
     
     writeControlRegister(0b00000000);
     
@@ -118,6 +122,7 @@ TEST_F(PPUTest, ReadFromVRAMIncrement1) {
 TEST_F(PPUTest, VRAMHorizontalMirror) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
     
     _vram[0x00DB] = 0xDB;
     _vram[0x04DB] = 0xBD;
@@ -146,6 +151,7 @@ TEST_F(PPUTest, VRAMHorizontalMirror) {
 TEST_F(PPUTest, VRAMVerticalMirror) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Vertical);
     this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
     
     _vram[0x00DB] = 0xDB;
     _vram[0x04DB] = 0xBD;
