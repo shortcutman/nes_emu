@@ -42,8 +42,10 @@ std::string int_to_hex( uint8_t i )
 
 nes_emu::CPU::CPU() :
     _registers(new nes_registers()),
-    _ops(CPU::buildOpCodeMap(this))
+    _ops(CPU::buildOpCodeMap(this)),
+    _interrupt(Interrupt::None)
 {
+    _registers->programCounter = 0xFFFC;
 }
 
 nes_emu::CPU::~CPU() {
