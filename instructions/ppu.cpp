@@ -56,7 +56,7 @@ void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInter
         _scanLineCycles = _scanLineCycles % PPUCyclesPerScanLine;
         
         if (_scanLine == PPUNMITriggerScanLine) {
-            nmiInterrupt = true;
+            nmiInterrupt = _controlRegister & 0x80;
             _statusRegister |= 0x80;
         } else if (_scanLine >= 262) {
             _scanLine = 0;
