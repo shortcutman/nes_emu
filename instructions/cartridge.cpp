@@ -155,6 +155,9 @@ std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::emptyCartridge(
     }
     
     cart->_prgROM = prgROM;
+    
+    cart->_chrROM.resize(1024);
+    std::fill(std::begin(cart->_chrROM), std::end(cart->_chrROM), 0);
 
     return cart;
 }
