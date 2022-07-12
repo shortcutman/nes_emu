@@ -217,8 +217,9 @@ TEST_F(PPUTest, ClockScanLineSingleIncrement) {
     EXPECT_EQ(readStatusRegister(), 0x00);
 }
 
-TEST_F(PPUTest, ClockScanLineMultipleIncrement) {
+TEST_F(PPUTest, ClockScanLineMultipleIncrementEnableInterrupt) {
     bool nmiInterruptTest = false;
+    _controlRegister = 0x80;
     
     EXPECT_EQ(_scanLine, 0);
     EXPECT_EQ(readStatusRegister(), 0x00);
@@ -227,6 +228,26 @@ TEST_F(PPUTest, ClockScanLineMultipleIncrement) {
         advanceClockAndCheckInterrupt(341, nmiInterruptTest);
         EXPECT_EQ(_scanLine, i);
         EXPECT_EQ(nmiInterruptTest, i == 241);
+        EXPECT_EQ(readStatusRegister(), i == 241 ? 0x80 : 0x00);
+    }
+    
+    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    EXPECT_EQ(_scanLine, 0);
+    EXPECT_EQ(nmiInterruptTest, false);
+    EXPECT_EQ(readStatusRegister(), 0x00);
+}
+
+TEST_F(PPUTest, ClockScanLineMultipleIncrementDisableInterrupt) {
+    bool nmiInterruptTest = false;
+    _controlRegister = 0x00;
+    
+    EXPECT_EQ(_scanLine, 0);
+    EXPECT_EQ(readStatusRegister(), 0x00);
+    
+    for (int i = 1; i < 262; i++) {
+        advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+        EXPECT_EQ(_scanLine, i);
+        EXPECT_EQ(nmiInterruptTest, false);
         EXPECT_EQ(readStatusRegister(), i == 241 ? 0x80 : 0x00);
     }
     
