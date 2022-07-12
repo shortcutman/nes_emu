@@ -59,6 +59,10 @@ void nes_emu::CPU::setMemory(std::shared_ptr<nes_emu::Memory> memory) {
     });
 }
 
+void nes_emu::CPU::setPC(uint16_t addr) {
+    _registers->programCounter = addr;
+}
+
 void nes_emu::CPU::executeOne() {
     if (checkAndSetupInterrupt()) {
         return;

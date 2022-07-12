@@ -53,6 +53,7 @@ namespace nes_emu {
         ~CPU();
         
         void setMemory(std::shared_ptr<nes_emu::Memory> memory);
+        void setPC(uint16_t addr);
         
         void executeOne();
         std::string printStatus() const;
