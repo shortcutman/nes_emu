@@ -34,20 +34,57 @@ const Palette SystemPalette = {{
     {0x99, 0xFF, 0xFC}, {0xDD, 0xDD, 0xDD}, {0x11, 0x11, 0x11}, {0x11, 0x11, 0x11}
 }};
 
+const uint16_t FrameWidth = 256;
+const uint16_t FrameHeight = 240;
+
+const uint16_t TileSizeBytes = 16;
+const uint16_t TileWidthPixels = 8;
+const uint16_t TileHeightPixels = 8;
+const uint16_t BackgroundTileCount = FrameWidth / TileWidthPixels * FrameHeight / TileHeightPixels;
+
+const uint16_t PatternTableSizeBytes = 0x1000;
 }
 
 nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     PPU::Frame frame;
     
 //    uint16_t startByte = patternTable * 0x1000 + tileNumber * 0x10;
-    uint16_t startByte = 1 * 0x1000 + 0 * 0x10;
-
-    auto tile = constructTile(_cartridge->readCHRRomDirect(startByte));
-    auto colouredTile = colourTile(tile);
+//    uint16_t startByte = 1 * 0x1000 + 0 * 0x10;
     
-    for (uint8_t x = 0; x < 8; x++) {
-        for (uint8_t y = 0; y < 8; y++) {
-            frame[x + y * 256] = colouredTile[x + y * 8];
+    for (uint16_t bgIndex = 0; bgIndex < BackgroundTileCount; bgIndex++) {
+        uint16_t xOffset = bgIndex % 32 * 8;
+        uint16_t yOffset = bgIndex / 32 * 8;
+        
+        auto tileIndex = _vram[bgIndex];
+        uint8_t bank = (_controlRegister & 0x10) ? 1 : 0;
+        uint16_t tileByte = bank * PatternTableSizeBytes + tileIndex * TileSizeBytes;
+        auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
+        auto colouredTile = colourTile(tile);
+        
+        for (uint8_t x = 0; x < 8; x++) {
+            for (uint8_t y = 0; y < 8; y++) {
+                frame[x + xOffset + (y + yOffset) * FrameWidth] = colouredTile[x + y * 8];
+            }
+        }
+    }
+    
+    return frame;
+}
+
+nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
+    PPU::Frame frame;
+    
+    for (uint16_t t = 0; t < 256; t++) {
+        uint16_t xOffset = t % 20 * 8;
+        uint16_t yOffset = t / 20 * 8;
+
+        auto tile = constructTile(_cartridge->readCHRRomDirect(0 * 0x1000 + t * 0x10));
+        auto colouredTile = colourTile(tile);
+        
+        for (uint8_t x = 0; x < 8; x++) {
+            for (uint8_t y = 0; y < 8; y++) {
+                frame[x + xOffset + (y + yOffset) * 256] = colouredTile[x + y * 8];
+            }
         }
     }
     

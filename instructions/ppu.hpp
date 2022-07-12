@@ -51,6 +51,7 @@ namespace nes_emu {
         void oamDMA(std::array<uint8_t, 256> page);
         
         Frame renderFrame();
+        Frame renderPatternTableToFrame();
         
     protected:
         void writeControlRegister(uint8_t input);
