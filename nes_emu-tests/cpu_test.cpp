@@ -276,6 +276,39 @@ TEST_F(CPUTest, BIT_Pass_Absolute) {
     EXPECT_EQ(_registers->getStatusFlag(nes_registers::StatusFlags::OverflowFlag), true);
 }
 
+TEST_F(CPUTest, BPL_Branch) {
+    _memory->write(0x0049, 0xAD);
+    _memory->write(0x004a, 0x02);
+    _memory->write(0x004b, 0x01);
+    _memory->write(0x004c, 0x10);
+    _memory->write(0x004d, 0xFB);
+    
+    _memory->write(0x0102, 0x06);
+    
+    _registers->programCounter = 0x0049;
+    
+    executeOne();
+    
+    EXPECT_EQ(_registers->accumulator, 0x06);
+    EXPECT_EQ(_registers->statusRegister, 0x04);
+    
+    executeOne();
+    
+    EXPECT_EQ(_registers->programCounter, 0x0049);
+    
+    _memory->write(0x0102, 0x86);
+    
+    executeOne();
+    
+    EXPECT_EQ(_registers->accumulator, 0x86);
+    EXPECT_EQ(_registers->statusRegister, 0x84);
+    
+    executeOne();
+    
+    EXPECT_EQ(_registers->programCounter, 0x004e);
+    EXPECT_EQ(_registers->statusRegister, 0x84);
+}
+
 TEST_F(CPUTest, CMP_GreaterThan) {
     _memory->write(0x00, 0xE0);
     _memory->write(0x01, 0x03);
@@ -610,6 +643,7 @@ TEST_F(CPUTest, InterruptLogic) {
         
     _interrupt = Interrupt::IRQBRK;
     _registers->programCounter = 0xCC;
+    _registers->setStatusFlag(nes_registers::StatusFlags::InterruptDisable, false);
     
     auto currentClock = _memory->cpuClock();
     

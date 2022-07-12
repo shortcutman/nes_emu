@@ -27,7 +27,7 @@ TEST_F(InterruptTest, Reset) {
     
     _memory->setCartridge(cart);
     _memory->write(0x0201, 0xEA);
-    
+    _registers->setStatusFlag(nes_registers::StatusFlags::InterruptDisable, false);
     _interrupt = nes_emu::CPU::Interrupt::Reset;
     executeOne();
     
