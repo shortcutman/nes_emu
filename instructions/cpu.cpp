@@ -9,9 +9,36 @@
 
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 #include "registers.hpp"
 #include "memory.hpp"
+
+namespace {
+
+const std::string SPACER = "                             ";
+
+template< typename T >
+std::string int_to_hex( T i )
+{
+  std::stringstream stream;
+  stream << ""
+         << std::setfill ('0') << std::setw(sizeof(T)*2)
+         << std::hex << i;
+  return stream.str();
+}
+
+template<>
+std::string int_to_hex( uint8_t i )
+{
+  std::stringstream stream;
+  stream << ""
+         << std::setfill ('0') << std::setw(2)
+         << std::hex << static_cast<uint32_t>(i);
+  return stream.str();
+}
+
+}
 
 nes_emu::CPU::CPU() :
     _registers(new nes_registers()),
@@ -48,6 +75,33 @@ void nes_emu::CPU::executeOne() {
     }
     
     _memory->advanceClock(opCodeComponents.cycles);
+}
+
+std::string nes_emu::CPU::printStatus() const {
+    std::stringstream ss;
+    ss << int_to_hex(_registers->programCounter) << " ";
+    
+    uint8_t opCode = _memory->read_uint8(_registers->programCounter);
+    auto opCodeComponents = _ops.at(opCode);
+    
+    for (int i = 0; i < 3; i++) {
+        if (i < opCodeComponents.bytes) {
+            ss << int_to_hex(_memory->read_uint8(_registers->programCounter + i)) << " ";
+        } else {
+            ss << "   ";
+        }
+    }
+    
+    ss << " " << opCodeComponents.shortHand << " " << SPACER;
+    
+    ss << "A:" << int_to_hex(_registers->a) << " ";
+    ss << "X:" << int_to_hex(_registers->x) << " ";
+    ss << "Y:" << int_to_hex(_registers->y) << " ";
+    ss << "P:" << int_to_hex(_registers->statusRegister) << " ";
+    ss << "SP:" << int_to_hex(_registers->stackPointer) << " ";
+    ss << "CYC:" << "XXX" << " ";
+    ss << "SL:" << "XXX" << " ";
+    return ss.str();
 }
 
 void nes_emu::CPU::aax(AddressMode mode) {

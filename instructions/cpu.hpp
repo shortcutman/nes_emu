@@ -55,6 +55,7 @@ namespace nes_emu {
         void setMemory(std::shared_ptr<nes_emu::Memory> memory);
         
         void executeOne();
+        std::string printStatus() const;
         
     protected:
         void aax(AddressMode mode);
