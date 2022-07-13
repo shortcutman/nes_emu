@@ -39,6 +39,7 @@ namespace nes_emu {
         uint64_t _cpuClock;
         uint64_t _ppuClock;
         std::function<void(void)> _nmiInterruptCallback;
+        std::function<void(void)> _gameLoopCallback;
         
     public:
         Memory();
@@ -51,6 +52,7 @@ namespace nes_emu {
         uint64_t ppuClock() const;
         void advanceClock(uint64_t cycles);
         void setNMIInterruptCallback(std::function<void(void)> func);
+        void setGameLoopCallback(std::function<void(void)> func);
         
         uint8_t read_uint8(const uint16_t address) const;
         uint16_t read_uint16(const uint16_t address) const;

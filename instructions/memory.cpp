@@ -48,6 +48,7 @@ void nes_emu::Memory::advanceClock(uint64_t cycles) {
     _ppu->advanceClockAndCheckInterrupt(ppuCycleIncrement, nmiInterrupt);
     
     if (nmiInterrupt) {
+        _gameLoopCallback();
         _nmiInterruptCallback();
     }
 }
@@ -56,6 +57,9 @@ void nes_emu::Memory::setNMIInterruptCallback(std::function<void(void)> func) {
     _nmiInterruptCallback = std::move(func);
 }
 
+void nes_emu::Memory::setGameLoopCallback(std::function<void(void)> func) {
+    _gameLoopCallback = std::move(func);
+}
 
 uint8_t nes_emu::Memory::read_uint8(const uint16_t address) const {
     if (address <= nes_emu::Memory::MaxInternalRamMirrorAddress) {
