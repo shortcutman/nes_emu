@@ -56,11 +56,11 @@ void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInter
         _scanLineCycles = _scanLineCycles % PPUCyclesPerScanLine;
         
         if (_scanLine == PPUNMITriggerScanLine) {
-            nmiInterrupt = _controlRegister & 0x80;
-            _statusRegister |= 0x80;
+            nmiInterrupt = _controlRegister & PPUControl::GenerateNMI;
+            _statusRegister |= PPUStatus::VerticalBlankStarted;
         } else if (_scanLine >= 262) {
             _scanLine = 0;
-            _statusRegister &= 0x7F;
+            _statusRegister &= ~PPUStatus::VerticalBlankStarted;
         }
     }
 }
@@ -144,9 +144,10 @@ void nes_emu::PPU::writeControlRegister(uint8_t input) {
         return;
     }
     
-    if (_controlRegister & 0x80 &&
-        input & 0x80 &&
-        _statusRegister & 0x80) {
+    if (_controlRegister & PPUControl::GenerateNMI &&
+        input & PPUControl::GenerateNMI &&
+        _statusRegister & PPUStatus::VerticalBlankStarted) {
+#warning I think this logic is off
         throw std::runtime_error("unhandled condition, this should immediately trigger an NMI interrupt");
     }
     
@@ -163,7 +164,7 @@ void nes_emu::PPU::writeMaskRegister(uint8_t input) {
 
 uint8_t nes_emu::PPU::readStatusRegister() {
     auto result = _statusRegister;
-    _statusRegister &= 0x7F; //vsync flag cleared after read
+    _statusRegister &= ~PPUStatus::VerticalBlankStarted; //vsync flag cleared after read
     _addressRegister = 0x0000;
     return result;
 }
@@ -201,7 +202,7 @@ uint8_t nes_emu::PPU::readDataRegister() {
     auto dataBufferReturn = _dataRegisterBuffer;
     
     _dataRegisterBuffer = read_uint8(_addressRegister);
-    if (_controlRegister & 0b00000010) {
+    if (_controlRegister & PPUControl::VRAMAddressIncrement) {
         _addressRegister += 32;
     } else {
         _addressRegister += 1;
@@ -213,7 +214,7 @@ uint8_t nes_emu::PPU::readDataRegister() {
 void nes_emu::PPU::writeDataRegister(uint8_t input) {
     write_uint8(_addressRegister, input);
     
-    if (_controlRegister & 0b00000010) {
+    if (_controlRegister & PPUControl::VRAMAddressIncrement) {
         _addressRegister += 32;
     } else {
         _addressRegister += 1;

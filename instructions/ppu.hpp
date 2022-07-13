@@ -16,6 +16,22 @@ namespace nes_emu {
     class Cartridge;
 
     class PPU {
+    protected:
+        enum PPUControl : uint8_t {
+            NameTableAddressBits = 0x03,
+            VRAMAddressIncrement = 0x04,
+            SpritePatternTableAddress = 0x08,
+            BackgroundPatternTableAddress = 0x10,
+            SpriteSize = 0x20,
+            PPUMasterSlaveSelect = 0x40,
+            GenerateNMI = 0x80,
+        };
+        
+        enum PPUStatus : uint8_t {
+            SpriteOverflow = 0x20,
+            SpriteZeroHit = 0x40,
+            VerticalBlankStarted = 0x80
+        };
         
     protected:
         std::shared_ptr<const Cartridge> _cartridge;

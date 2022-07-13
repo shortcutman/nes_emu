@@ -75,7 +75,7 @@ TEST_F(PPUTest, ReadFromVRAMIncrement32) {
     this->_cartridge = cart;
     this->_ppuCycles = PPUPowerUpCycles + 1;
     
-    writeControlRegister(0b00000010);
+    writeControlRegister(0x04);
     
     for (uint32_t i = 0; i < _vram.size(); i++) {
         _vram[i] = i;
@@ -118,6 +118,43 @@ TEST_F(PPUTest, ReadFromVRAMIncrement1) {
     EXPECT_EQ(incrementRead, 0xDC);
 }
 
+TEST_F(PPUTest, WriteToVRAMIncrement32) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
+    this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
+    
+    std::fill(std::begin(_vram), std::end(_vram), 0xCD);
+    
+    writeControlRegister(0x04);
+    
+    writeRegister_uint8(0x2006, 0x20);
+    writeRegister_uint8(0x2006, 0x01);
+    
+    writeRegister_uint8(0x2007, 0x77);
+    EXPECT_EQ(_vram[0x01], 0x77);
+    
+    writeRegister_uint8(0x2007, 0x88);
+    EXPECT_EQ(_vram[0x21], 0x88);
+}
+
+TEST_F(PPUTest, WriteToVRAMIncrement1) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
+    this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
+    
+    std::fill(std::begin(_vram), std::end(_vram), 0xCD);
+    
+    writeControlRegister(0x00);
+    
+    writeRegister_uint8(0x2006, 0x20);
+    writeRegister_uint8(0x2006, 0x01);
+    
+    writeRegister_uint8(0x2007, 0x77);
+    EXPECT_EQ(_vram[0x01], 0x77);
+    
+    writeRegister_uint8(0x2007, 0x88);
+    EXPECT_EQ(_vram[0x02], 0x88);
+}
 
 TEST_F(PPUTest, VRAMHorizontalMirror) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
