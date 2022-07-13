@@ -257,8 +257,9 @@ TEST_F(PPUTest, ClockScanLineMultipleIncrementDisableInterrupt) {
     EXPECT_EQ(readStatusRegister(), 0x00);
 }
 
-TEST_F(PPUTest, ClockScanLineVSyncFlagClear) {
+TEST_F(PPUTest, ClockScanLineVSyncFlagClearInterruptEnable) {
     bool nmiInterruptTest = false;
+    _controlRegister = 0x80;
     
     _scanLine = 240;
     EXPECT_EQ(readStatusRegister(), 0x00);
@@ -274,6 +275,26 @@ TEST_F(PPUTest, ClockScanLineVSyncFlagClear) {
     EXPECT_EQ(nmiInterruptTest, false);
     EXPECT_EQ(readStatusRegister(), 0x00);
 }
+
+TEST_F(PPUTest, ClockScanLineVSyncFlagClearInterruptDisable) {
+    bool nmiInterruptTest = false;
+    _controlRegister = 0x00;
+    
+    _scanLine = 240;
+    EXPECT_EQ(readStatusRegister(), 0x00);
+    
+    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    EXPECT_EQ(_scanLine, 241);
+    EXPECT_EQ(nmiInterruptTest, false);
+    EXPECT_EQ(readStatusRegister(), 0x80);
+    EXPECT_EQ(readStatusRegister(), 0x00); //flag should be cleared after read
+    
+    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    EXPECT_EQ(_scanLine, 242);
+    EXPECT_EQ(nmiInterruptTest, false);
+    EXPECT_EQ(readStatusRegister(), 0x00);
+}
+
 
 TEST_F(PPUTest, ClockScanLineNMIInterrupt) {
     EXPECT_THROW({
