@@ -286,6 +286,7 @@ TEST_F(CPUTest, BPL_Branch) {
     _memory->write(0x0102, 0x06);
     
     _registers->programCounter = 0x0049;
+    _registers->statusRegister = 0x04;
     
     executeOne();
     
