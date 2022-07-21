@@ -236,10 +236,10 @@ uint8_t nes_emu::PPU::read_uint8(uint16_t address) {
 }
 
 void nes_emu::PPU::write_uint8(uint16_t address, uint8_t value) {
-    if (address >= 0x2000 && address < 0x3EFF) {
+    if (address >= 0x2000 && address < 0x3F00) {
         _vram[demirrorVRAMAddress(address)] = value;
-    } else if (address < 0x3FFF) {
-        auto addressOffset = (address - 0x3EFF) & 0x1F;
+    } else if (address < 0x3F20) {
+        auto addressOffset = address & 0x1F;
         _paletteRAM[addressOffset] = value;
     } else {
         throw std::logic_error("no PPU memory at address");
