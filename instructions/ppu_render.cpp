@@ -43,27 +43,25 @@ const uint16_t TileHeightPixels = 8;
 const uint16_t BackgroundTileCount = FrameWidth / TileWidthPixels * FrameHeight / TileHeightPixels;
 
 const uint16_t PatternTableSizeBytes = 0x1000;
+const uint16_t NameTableSizeBytes = 0x400;
 }
 
 nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     PPU::Frame frame;
     
-//    uint16_t startByte = patternTable * 0x1000 + tileNumber * 0x10;
-//    uint16_t startByte = 1 * 0x1000 + 0 * 0x10;
-    
     for (uint16_t bgIndex = 0; bgIndex < BackgroundTileCount; bgIndex++) {
-        uint16_t xOffset = bgIndex % 32 * 8;
-        uint16_t yOffset = bgIndex / 32 * 8;
-        
+        uint16_t xOffset = bgIndex % 32;
+        uint16_t yOffset = bgIndex / 32;
+
         auto tileIndex = _vram[bgIndex];
         uint8_t bank = (_controlRegister & 0x10) ? 1 : 0;
         uint16_t tileByte = bank * PatternTableSizeBytes + tileIndex * TileSizeBytes;
         auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
-        auto colouredTile = colourTile(tile);
-        
+        auto colouredTile = colourTile(bank, xOffset, yOffset, tile);
+
         for (uint8_t x = 0; x < 8; x++) {
             for (uint8_t y = 0; y < 8; y++) {
-                frame[x + xOffset + (y + yOffset) * FrameWidth] = colouredTile[x + y * 8];
+                frame[x + xOffset * 8 + (y + (yOffset*8)) * FrameWidth] = colouredTile[x + y * 8];
             }
         }
     }
@@ -79,8 +77,8 @@ nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
         uint16_t yOffset = t / 20 * 8;
 
         auto tile = constructTile(_cartridge->readCHRRomDirect(0 * 0x1000 + t * 0x10));
-        auto colouredTile = colourTile(tile);
-        
+        auto colouredTile = colourTile(0, xOffset/8, yOffset/8, tile);
+
         for (uint8_t x = 0; x < 8; x++) {
             for (uint8_t y = 0; y < 8; y++) {
                 frame[x + xOffset + (y + yOffset) * 256] = colouredTile[x + y * 8];
@@ -112,13 +110,30 @@ std::array<uint8_t, 64> nes_emu::PPU::constructTile(const uint8_t* data) {
     return tile;
 }
 
-std::array<nes_emu::PPU::Colour, 64> nes_emu::PPU::colourTile(std::array<uint8_t, 64>& tile) {
+std::array<nes_emu::PPU::Colour, 64> nes_emu::PPU::colourTile(
+                                                              uint8_t nametable,
+                                                              uint8_t tileX,
+                                                              uint8_t tileY,
+                                                              std::array<uint8_t, 64>& tile) {
     std::array<nes_emu::PPU::Colour, 64> colouredTile;
+    uint8_t attributeTableIndex = tileX / 4 + (tileY / 4) * 8;
+    uint8_t attributeTableValue = _vram[nametable * NameTableSizeBytes + BackgroundTileCount + attributeTableIndex];
+    
+    uint8_t metatileX = tileX % 4 / 2;
+    uint8_t metatileY = tileY % 4 / 2;
+    uint8_t bits = (metatileY * 2 + metatileX) * 2;
+    uint8_t paletteStartByte = ((attributeTableValue >> bits) & 0b11) * 0x04;
+    
+    std::array<PPU::Colour, 4> palette;
+    palette[0] = SystemPalette[_paletteRAM[0x00]];
+    palette[1] = SystemPalette[_paletteRAM[1 + paletteStartByte + 0]];
+    palette[2] = SystemPalette[_paletteRAM[1 + paletteStartByte + 1]];
+    palette[3] = SystemPalette[_paletteRAM[1 + paletteStartByte + 2]];
     
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
             uint8_t index = x + y * 8;
-            colouredTile[index] = SystemPalette[tile[index]];
+            colouredTile[index] = palette[tile[index]];
         }
     }
     
