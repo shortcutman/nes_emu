@@ -85,6 +85,7 @@ namespace nes_emu {
         void write_uint8(uint16_t address, uint8_t value);
         
     protected:
+        void renderBackgroundTiles(Frame& frame);
         std::array<uint8_t, 64> constructTile(const uint8_t* data);
         std::array<Colour, 64> colourTile(uint8_t nametable,
                                           uint8_t tileX,
