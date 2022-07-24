@@ -168,7 +168,9 @@ void nes_emu::PPU::renderOAMTiles(Frame &frame) {
                 }
 
                 auto colour = colouredSprite[y * 8 + x];
-                frame[framePos] = colour;
+                if (std::get<3>(colour) == 0xFF) {
+                    frame[framePos] = colour;
+                }
             }
         }
     }
