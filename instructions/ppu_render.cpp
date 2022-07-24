@@ -141,7 +141,7 @@ void nes_emu::PPU::renderOAMTiles(Frame &frame) {
     }
 }
 
-std::array<uint8_t, 64> nes_emu::PPU::constructTile(const uint8_t* data) {
+nes_emu::PPU::PaletteTile nes_emu::PPU::constructTile(const uint8_t* data) {
     if (data == nullptr) {
         throw std::logic_error("require pointer to data");
     }
@@ -162,11 +162,11 @@ std::array<uint8_t, 64> nes_emu::PPU::constructTile(const uint8_t* data) {
     return tile;
 }
 
-std::array<nes_emu::PPU::Colour, 64> nes_emu::PPU::colourTile(
-                                                              uint8_t nametable,
-                                                              uint8_t tileX,
-                                                              uint8_t tileY,
-                                                              std::array<uint8_t, 64>& tile) {
+nes_emu::PPU::ColouredTile nes_emu::PPU::colourTile(
+                                                    uint8_t nametable,
+                                                    uint8_t tileX,
+                                                    uint8_t tileY,
+                                                    std::array<uint8_t, 64>& tile) {
     std::array<nes_emu::PPU::Colour, 64> colouredTile;
     uint8_t attributeTableIndex = tileX / 4 + (tileY / 4) * 8;
     uint8_t attributeTableValue = _vram[nametable * NameTableSizeBytes + BackgroundTileCount + attributeTableIndex];
@@ -192,9 +192,9 @@ std::array<nes_emu::PPU::Colour, 64> nes_emu::PPU::colourTile(
     return colouredTile;
 }
 
-std::array<nes_emu::PPU::Colour, 64> nes_emu::PPU::colourSprite(
-                                                              uint8_t paletteIndex,
-                                                              std::array<uint8_t, 64>& tile) {
+nes_emu::PPU::ColouredTile nes_emu::PPU::colourSprite(
+                                                      uint8_t paletteIndex,
+                                                      std::array<uint8_t, 64>& tile) {
     std::array<nes_emu::PPU::Colour, 64> colouredTile;
     
     uint8_t paletteStartByte = 0x11 + paletteIndex * 4;

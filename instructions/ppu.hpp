@@ -52,6 +52,8 @@ namespace nes_emu {
         
         typedef std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> Colour;
         typedef std::array<Colour, 256*240> Frame;
+        typedef std::array<uint8_t, 8*8> PaletteTile;
+        typedef std::array<Colour, 8*8> ColouredTile;
         
     public:
         PPU();
@@ -87,13 +89,13 @@ namespace nes_emu {
     protected:
         void renderBackgroundTiles(Frame& frame);
         void renderOAMTiles(Frame& frame);
-        std::array<uint8_t, 64> constructTile(const uint8_t* data);
-        std::array<Colour, 64> colourTile(uint8_t nametable,
-                                          uint8_t tileX,
-                                          uint8_t tileY,
-                                          std::array<uint8_t, 64>& tile);
-        std::array<Colour, 64> colourSprite(uint8_t palette,
-                                          std::array<uint8_t, 64>& tile);
+        PaletteTile constructTile(const uint8_t* data);
+        ColouredTile colourTile(uint8_t nametable,
+                        uint8_t tileX,
+                        uint8_t tileY,
+                        std::array<uint8_t, 64>& tile);
+        ColouredTile colourSprite(uint8_t palette,
+                          std::array<uint8_t, 64>& tile);
         
     private:
         uint16_t demirrorVRAMAddress(uint16_t);
