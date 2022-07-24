@@ -40,7 +40,7 @@ namespace nes_emu {
     protected:
         std::shared_ptr<const Cartridge> _cartridge;
         std::array<uint8_t, 2048>  _vram;
-        std::array<uint8_t, 31>  _paletteRAM;
+        std::array<uint8_t, 32>  _paletteRAM;
         std::array<uint8_t, 256>  _oam;
         
         uint8_t _controlRegister;
