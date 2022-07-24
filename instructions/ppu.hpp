@@ -50,7 +50,7 @@ namespace nes_emu {
         uint64_t _scanLine;
         uint64_t _scanLineCycles;
         
-        typedef std::tuple<uint8_t, uint8_t, uint8_t> Colour;
+        typedef std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> Colour;
         typedef std::array<Colour, 256*240> Frame;
         
     public:
