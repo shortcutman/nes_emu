@@ -10,6 +10,9 @@
 #include "cartridge.hpp"
 #include "ppu.hpp"
 
+#include <algorithm>
+#include <iterator>
+
 nes_emu::Memory::Memory() :
 _ppu(new PPU),
 _cpuClock(0),
@@ -90,7 +93,11 @@ std::array<uint8_t, 256> nes_emu::Memory::readPage(uint8_t pageAddress) const {
     uint16_t startAddress = static_cast<uint16_t>(pageAddress) << 8;
     std::array<uint8_t, 256> page;
     
-    *page.data() = _internalRAM[startAddress];
+    std::copy_n(
+                std::next(std::begin(_internalRAM), startAddress),
+                page.size(),
+                std::begin(page));
+    
     return page;
 }
 
@@ -103,6 +110,7 @@ void nes_emu::Memory::write(const uint16_t address, const uint8_t value) {
         if (address == 0x4014) {
 #warning CPU should suspend for 513 or 514 cycles
             _ppu->oamDMA(readPage(value));
+            advanceClock(513);
         } else {
             _apuRegisters[address & 0x12] = value;
         }
