@@ -18,6 +18,8 @@ namespace {
 typedef std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> Colour;
 typedef std::array<Colour, 64> Palette;
 
+const uint8_t MaxOAMCount = 64;
+
 const Palette SystemPalette = {{
     {0x80, 0x80, 0x80, 0xFF}, {0x00, 0x3D, 0xA6, 0xFF}, {0x00, 0x12, 0xB0, 0xFF}, {0x44, 0x00, 0x96, 0xFF}, {0xA1, 0x00, 0x5E, 0xFF},
        {0xC7, 0x00, 0x28, 0xFF}, {0xBA, 0x06, 0x00, 0xFF}, {0x8C, 0x17, 0x00, 0xFF}, {0x5C, 0x2F, 0x00, 0xFF}, {0x10, 0x45, 0x00, 0xFF},
@@ -49,7 +51,13 @@ const uint16_t NameTableSizeBytes = 0x400;
 nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     PPU::Frame frame;
     
-    renderBackgroundTiles(frame);
+    if (_maskRegister & 0x08) {
+        renderBackgroundTiles(frame);
+    }
+    
+    if (_maskRegister & 0x10) {
+        renderOAMTiles(frame);
+    }
     
     return frame;
 }
@@ -88,6 +96,46 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame) {
         for (uint8_t x = 0; x < 8; x++) {
             for (uint8_t y = 0; y < 8; y++) {
                 frame[x + xOffset * 8 + (y + (yOffset*8)) * FrameWidth] = colouredTile[x + y * 8];
+            }
+        }
+    }
+}
+
+void nes_emu::PPU::renderOAMTiles(Frame &frame) {
+    if (_controlRegister & 0x20) {
+        throw std::runtime_error("8x16 sprites not yet implemented");
+    }
+    
+    uint8_t nametable = (_controlRegister & 0x08) ? 1 : 0;
+    
+    for (int8_t oamIndex = 0; oamIndex < MaxOAMCount; oamIndex++) {
+        uint8_t oamMemoryStart = oamIndex * 4;
+        uint8_t yPosition = _oam[oamMemoryStart + 0];
+        uint8_t tileIndex = _oam[oamMemoryStart + 1];
+        uint8_t attributes = _oam[oamMemoryStart + 2];
+        uint8_t xPosition = _oam[oamMemoryStart + 3];
+        
+        uint16_t tileByte = nametable * PatternTableSizeBytes + tileIndex * TileSizeBytes;
+        auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
+        auto colouredSprite  = colourSprite(attributes & 0x03, tile);
+        
+        for (uint8_t y = 0; y < 8; y++) {
+            if (yPosition + y >= FrameHeight) {
+                break;
+            }
+            
+            for (uint8_t x = 0; x < 8; x++) {
+                if (xPosition + x >= FrameWidth) {
+                    break;
+                }
+                
+                uint16_t framePos = (yPosition + y) * FrameWidth + xPosition + x;
+                if (framePos > frame.size()) {
+                    throw std::runtime_error("oops");
+                }
+
+                auto colour = colouredSprite[y * 8 + x];
+                frame[framePos] = colour;
             }
         }
     }
@@ -133,6 +181,29 @@ std::array<nes_emu::PPU::Colour, 64> nes_emu::PPU::colourTile(
     palette[1] = SystemPalette[_paletteRAM[1 + paletteStartByte + 0]];
     palette[2] = SystemPalette[_paletteRAM[1 + paletteStartByte + 1]];
     palette[3] = SystemPalette[_paletteRAM[1 + paletteStartByte + 2]];
+    
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
+            uint8_t index = x + y * 8;
+            colouredTile[index] = palette[tile[index]];
+        }
+    }
+    
+    return colouredTile;
+}
+
+std::array<nes_emu::PPU::Colour, 64> nes_emu::PPU::colourSprite(
+                                                              uint8_t paletteIndex,
+                                                              std::array<uint8_t, 64>& tile) {
+    std::array<nes_emu::PPU::Colour, 64> colouredTile;
+    
+    uint8_t paletteStartByte = 0x11 + paletteIndex * 4;
+    
+    std::array<PPU::Colour, 4> palette;
+    palette[0] = std::make_tuple(0x00, 0x00, 0x00, 0x00);
+    palette[1] = SystemPalette[_paletteRAM[paletteStartByte + 0]];
+    palette[2] = SystemPalette[_paletteRAM[paletteStartByte + 1]];
+    palette[3] = SystemPalette[_paletteRAM[paletteStartByte + 2]];
     
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {

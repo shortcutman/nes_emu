@@ -86,10 +86,13 @@ namespace nes_emu {
         
     protected:
         void renderBackgroundTiles(Frame& frame);
+        void renderOAMTiles(Frame& frame);
         std::array<uint8_t, 64> constructTile(const uint8_t* data);
         std::array<Colour, 64> colourTile(uint8_t nametable,
                                           uint8_t tileX,
                                           uint8_t tileY,
+                                          std::array<uint8_t, 64>& tile);
+        std::array<Colour, 64> colourSprite(uint8_t palette,
                                           std::array<uint8_t, 64>& tile);
         
     private:
