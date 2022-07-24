@@ -16,6 +16,10 @@ namespace nes_emu {
     class Cartridge;
 
     class PPU {
+    public:
+        typedef std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> Colour;
+        typedef std::array<Colour, 8*8> ColouredTile;
+        
     protected:
         enum PPUControl : uint8_t {
             NameTableAddressBits = 0x03,
@@ -50,10 +54,8 @@ namespace nes_emu {
         uint64_t _scanLine;
         uint64_t _scanLineCycles;
         
-        typedef std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> Colour;
         typedef std::array<Colour, 256*240> Frame;
         typedef std::array<uint8_t, 8*8> PaletteTile;
-        typedef std::array<Colour, 8*8> ColouredTile;
         
     public:
         PPU();

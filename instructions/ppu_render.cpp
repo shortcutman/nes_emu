@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <tuple>
 #include <array>
+#include <algorithm>
+#include <iterator>
 
 namespace {
 
@@ -46,6 +48,27 @@ const uint16_t BackgroundTileCount = FrameWidth / TileWidthPixels * FrameHeight 
 
 const uint16_t PatternTableSizeBytes = 0x1000;
 const uint16_t NameTableSizeBytes = 0x400;
+
+nes_emu::PPU::ColouredTile flipHorizontal(nes_emu::PPU::ColouredTile tile) {
+    nes_emu::PPU::ColouredTile flipped;
+    
+    for (uint8_t row = 0; row < 8; row++) {
+        std::copy_n(tile.begin() + row * 8, 8, flipped.rbegin() + (7 - row) * 8);
+    }
+    
+    return flipped;
+}
+
+nes_emu::PPU::ColouredTile flipVertical(nes_emu::PPU::ColouredTile tile) {
+    nes_emu::PPU::ColouredTile flipped;
+
+    for (uint8_t row = 0; row < 8; row++) {
+        std::copy_n(tile.begin() + row * 8, 8, flipped.begin() + (7 - row) * 8);
+    }
+    
+    return flipped;
+}
+
 }
 
 nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
@@ -118,6 +141,14 @@ void nes_emu::PPU::renderOAMTiles(Frame &frame) {
         uint16_t tileByte = nametable * PatternTableSizeBytes + tileIndex * TileSizeBytes;
         auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
         auto colouredSprite  = colourSprite(attributes & 0x03, tile);
+        
+        if (attributes & 0x40) {
+            colouredSprite = flipHorizontal(colouredSprite);
+        }
+        
+        if (attributes & 0x80) {
+            colouredSprite = flipVertical(colouredSprite);
+        }
         
         for (uint8_t y = 0; y < 8; y++) {
             if (yPosition + y >= FrameHeight) {
