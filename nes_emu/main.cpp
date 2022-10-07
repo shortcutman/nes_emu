@@ -8,6 +8,10 @@
 #include <iostream>
 #include <fstream>
 
+#include <chrono>
+#include <thread>
+
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wquoted-include-in-framework-header"
 
@@ -17,6 +21,8 @@
 #pragma clang diagnostic pop
 
 #include "cartridge.hpp"
+#include "cpu.hpp"
+#include "memory.hpp"
 #include "ppu.hpp"
 
 namespace {
@@ -41,11 +47,10 @@ int main(int argc, const char * argv[]) {
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,
-        SDL_PIXELFORMAT_RGB24,
+        SDL_PIXELFORMAT_RGBA32,
         SDL_TEXTUREACCESS_STREAMING,
         ScreenWidth, ScreenHeight);
     
-    SDL_Event event;
     
     std::ifstream cartFile("", std::fstream::in | std::fstream::binary);
     
@@ -55,23 +60,59 @@ int main(int argc, const char * argv[]) {
     
     auto cart = nes_emu::Cartridge::cartridgeFromStream(cartFile);
     
-    nes_emu::PPU ppu;
-    ppu.setCartridge(cart);
+    auto cpu = std::make_shared<nes_emu::CPU>();
+    auto memory = std::make_shared<nes_emu::Memory>();
+    auto ppu = std::make_shared<nes_emu::PPU>();
     
     bool run = true;
-    while (run) {
+    
+    cpu->setMemory(memory);
+    memory->setCartridge(cart);
+    memory->setPPU(ppu);
+    ppu->setCartridge(cart);
+    
+    auto result = memory->read_uint16(0xFFFC);
+    cpu->setPC(result);
+  
+//    SDL_Event event;
+//    while (run) {
+//        while (SDL_PollEvent(&event) != 0) {
+//            if (event.type == SDL_QUIT) {
+//                run = false;
+//            }
+//        }
+//
+//        auto frame = ppu->renderPatternTableToFrame();
+//        SDL_UpdateTexture(texture, NULL, &frame[0], 3 * ScreenWidth);
+//
+//        SDL_RenderClear(renderer);
+//        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+//        SDL_RenderPresent(renderer);
+//    }
+    
+    memory->setGameLoopCallback([&] () {
+        SDL_Event event;
         while (SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
                 run = false;
             }
         }
-        
-        auto frame = ppu.renderFrame();
-        SDL_UpdateTexture(texture, NULL, &frame[0], 3 * ScreenWidth);
-        
+
+        auto frame = ppu->renderFrame();
+        SDL_UpdateTexture(texture, NULL, &frame[0], 4 * ScreenWidth);
+
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
+        std::this_thread::sleep_for(std::chrono::milliseconds(33));
+
+    });
+
+    uint64_t instructionNumber = 0;
+    while (run) {
+        instructionNumber++;
+        cpu->executeOne();
+//        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     
     SDL_DestroyTexture(texture);
