@@ -31,7 +31,6 @@ namespace {
 }
 
 int main(int argc, const char * argv[]) {
-    
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cout << "failed to init sdl" << std::endl;
         return -1;
@@ -51,8 +50,7 @@ int main(int argc, const char * argv[]) {
         SDL_TEXTUREACCESS_STREAMING,
         ScreenWidth, ScreenHeight);
     
-    
-    std::ifstream cartFile("", std::fstream::in | std::fstream::binary);
+    std::ifstream cartFile(argv[1], std::fstream::in | std::fstream::binary);
     
     if (cartFile.fail()) {
         std::cout << std::strerror(errno);
@@ -112,7 +110,6 @@ int main(int argc, const char * argv[]) {
     while (run) {
         instructionNumber++;
         cpu->executeOne();
-//        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     
     SDL_DestroyTexture(texture);
