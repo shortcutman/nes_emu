@@ -88,6 +88,8 @@ int main(int argc, const char * argv[]) {
 //        SDL_RenderPresent(renderer);
 //    }
     
+    auto last = std::chrono::high_resolution_clock::now();
+    
     memory->setGameLoopCallback([&] () {
         SDL_Event event;
         while (SDL_PollEvent(&event) != 0) {
@@ -102,8 +104,14 @@ int main(int argc, const char * argv[]) {
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
-        std::this_thread::sleep_for(std::chrono::milliseconds(33));
-
+        
+        auto now = std::chrono::high_resolution_clock::now();
+        auto diff = now - last;
+        std::chrono::milliseconds frameTime(1000 / 60);
+        auto sleepTime = std::chrono::duration_cast<std::chrono::milliseconds>(frameTime - diff);
+        std::this_thread::sleep_for(sleepTime);
+        
+        last = std::chrono::high_resolution_clock::now();
     });
 
     uint64_t instructionNumber = 0;
