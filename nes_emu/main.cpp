@@ -11,14 +11,7 @@
 #include <chrono>
 #include <thread>
 
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wquoted-include-in-framework-header"
-
-//overall project setup based on: http://matthewstyles.com/set-up-an-sdl2-project-in-xcode/
-#import <SDL2/SDL.h>
-
-#pragma clang diagnostic pop
+#include <SDL3/SDL.h>
 
 #include "cartridge.hpp"
 #include "cpu.hpp"
@@ -31,18 +24,16 @@ namespace {
 }
 
 int main(int argc, const char * argv[]) {
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cout << "failed to init sdl" << std::endl;
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        std::println("Could not initialise SDL: {}", SDL_GetError());
         return -1;
     }
     
     SDL_Window* window;
     SDL_Renderer* renderer;
-    SDL_CreateWindowAndRenderer(ScreenWidth * 2, ScreenHeight * 2, SDL_WINDOW_SHOWN, &window, &renderer);
-    SDL_SetWindowTitle(window, "danes");
+    SDL_CreateWindowAndRenderer("dannes", ScreenWidth * 2, ScreenHeight * 2, 0, &window, &renderer);
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    SDL_RenderSetLogicalSize(renderer, ScreenWidth, ScreenHeight);
+    SDL_SetRenderLogicalPresentation(renderer, ScreenWidth, ScreenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,
@@ -71,29 +62,13 @@ int main(int argc, const char * argv[]) {
     
     auto result = memory->read_uint16(0xFFFC);
     cpu->setPC(result);
-  
-//    SDL_Event event;
-//    while (run) {
-//        while (SDL_PollEvent(&event) != 0) {
-//            if (event.type == SDL_QUIT) {
-//                run = false;
-//            }
-//        }
-//
-//        auto frame = ppu->renderPatternTableToFrame();
-//        SDL_UpdateTexture(texture, NULL, &frame[0], 3 * ScreenWidth);
-//
-//        SDL_RenderClear(renderer);
-//        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
-//        SDL_RenderPresent(renderer);
-//    }
     
     auto last = std::chrono::high_resolution_clock::now();
     
     memory->setGameLoopCallback([&] () {
         SDL_Event event;
         while (SDL_PollEvent(&event) != 0) {
-            if (event.type == SDL_QUIT) {
+            if (event.type == SDL_EVENT_QUIT) {
                 run = false;
             }
         }
@@ -102,7 +77,7 @@ int main(int argc, const char * argv[]) {
         SDL_UpdateTexture(texture, NULL, &frame[0], 4 * ScreenWidth);
 
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+        SDL_RenderTexture(renderer, texture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
         
         auto now = std::chrono::high_resolution_clock::now();
@@ -119,6 +94,8 @@ int main(int argc, const char * argv[]) {
         instructionNumber++;
         cpu->executeOne();
     }
+
+    std::println("Instruction count: {}", instructionNumber);
     
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);

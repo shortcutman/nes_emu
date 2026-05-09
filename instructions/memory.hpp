@@ -9,6 +9,8 @@
 #define memory_hpp
 
 #include <array>
+#include <functional>
+#include <memory>
 
 namespace nes_emu {
     class Cartridge;
