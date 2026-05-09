@@ -11,6 +11,7 @@ add_compile_options(-Wall)
 add_library(libnes
     instructions/cartridge.cpp
     instructions/cpu.cpp
+    instructions/input_controller.cpp
     instructions/instruction_utils.cpp
     instructions/instructions_opcodes.cpp
     instructions/memory.cpp
@@ -32,6 +33,7 @@ enable_testing()
 
 add_executable(nes_test
     nes_emu-tests/cart_test.cpp
+    nes_emu-tests/controller_test.cpp
     nes_emu-tests/cpu_test.cpp
     nes_emu-tests/integration_test.cpp
     nes_emu-tests/interrupt_test.cpp
