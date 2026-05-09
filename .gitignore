@@ -1,2 +1,4 @@
 nes_emu.xcodeproj/xcuserdata/*
+nes_emu.xcodeproj/xcshareddata/*
 build/
+.vscode/
