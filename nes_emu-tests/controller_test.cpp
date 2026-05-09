@@ -38,3 +38,69 @@ TEST(Controller, check_strobe_always_returns_a) {
     EXPECT_EQ(lastjoy, 1);
     EXPECT_EQ(lastbutton, Controller::Button::A);
 }
+
+TEST(Controller, cycle_joy1) {
+    Controller c;
+    uint8_t lastjoy = 8;
+    Controller::Button lastbutton = Controller::Button::Right;
+    bool callbackReturn = true;
+    c.setUpdateCallback([&] (uint8_t joy, Controller::Button button) {
+        lastjoy = joy;
+        lastbutton = button;
+        return callbackReturn;
+    });
+
+    c.writeStrobe(0x1);
+    c.writeStrobe(0x0);
+
+    for (auto i = 0; i < Controller::Button::MAX; i++) {
+        EXPECT_TRUE(c.readJoy1());
+        EXPECT_EQ(lastjoy, 0);
+        EXPECT_EQ(lastbutton, static_cast<Controller::Button>(i));
+    }
+    EXPECT_TRUE(c.readJoy1());
+
+    callbackReturn = false;
+    c.writeStrobe(0x1);
+    c.writeStrobe(0x0);
+
+    for (auto i = 0; i < Controller::Button::MAX; i++) {
+        EXPECT_FALSE(c.readJoy1());
+        EXPECT_EQ(lastjoy, 0);
+        EXPECT_EQ(lastbutton, static_cast<Controller::Button>(i));
+    }
+    EXPECT_TRUE(c.readJoy1());
+}
+
+TEST(Controller, cycle_joy2) {
+    Controller c;
+    uint8_t lastjoy = 8;
+    Controller::Button lastbutton = Controller::Button::Right;
+    bool callbackReturn = true;
+    c.setUpdateCallback([&] (uint8_t joy, Controller::Button button) {
+        lastjoy = joy;
+        lastbutton = button;
+        return callbackReturn;
+    });
+
+    c.writeStrobe(0x1);
+    c.writeStrobe(0x0);
+
+    for (auto i = 0; i < Controller::Button::MAX; i++) {
+        EXPECT_TRUE(c.readJoy2());
+        EXPECT_EQ(lastjoy, 1);
+        EXPECT_EQ(lastbutton, static_cast<Controller::Button>(i));
+    }
+    EXPECT_TRUE(c.readJoy2());
+
+    callbackReturn = false;
+    c.writeStrobe(0x1);
+    c.writeStrobe(0x0);
+
+    for (auto i = 0; i < Controller::Button::MAX; i++) {
+        EXPECT_FALSE(c.readJoy2());
+        EXPECT_EQ(lastjoy, 1);
+        EXPECT_EQ(lastbutton, static_cast<Controller::Button>(i));
+    }
+    EXPECT_TRUE(c.readJoy2());
+}
