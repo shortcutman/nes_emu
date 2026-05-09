@@ -15,12 +15,25 @@
 
 #include "cartridge.hpp"
 #include "cpu.hpp"
+#include "input_controller.hpp"
 #include "memory.hpp"
 #include "ppu.hpp"
 
 namespace {
     const uint32_t ScreenWidth = 256;
     const uint32_t ScreenHeight = 240;
+
+    std::array<int, nes_emu::Controller::Button::MAX> keyboardMappings {
+        SDL_SCANCODE_P,
+        SDL_SCANCODE_O,
+        SDL_SCANCODE_Y,
+        SDL_SCANCODE_U,
+
+        SDL_SCANCODE_W,
+        SDL_SCANCODE_S,
+        SDL_SCANCODE_A,
+        SDL_SCANCODE_D
+    };
 }
 
 int main(int argc, const char * argv[]) {
@@ -52,11 +65,22 @@ int main(int argc, const char * argv[]) {
     auto cpu = std::make_shared<nes_emu::CPU>();
     auto memory = std::make_shared<nes_emu::Memory>();
     auto ppu = std::make_shared<nes_emu::PPU>();
+    auto controller = std::make_shared<nes_emu::Controller>();
+    controller->setUpdateCallback(
+        [] (uint8_t controller, nes_emu::Controller::Button button) -> bool {
+            if (controller == 1) {
+                return false;
+            }
+
+            const bool* keyStates = SDL_GetKeyboardState(NULL);
+            return keyStates[keyboardMappings[button]];
+        });
     
     bool run = true;
     
     cpu->setMemory(memory);
     memory->setCartridge(cart);
+    memory->setController(controller);
     memory->setPPU(ppu);
     ppu->setCartridge(cart);
     

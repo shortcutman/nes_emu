@@ -14,6 +14,7 @@
 
 namespace nes_emu {
     class Cartridge;
+    class Controller;
     class PPU;
 
     class Memory {
@@ -37,6 +38,7 @@ namespace nes_emu {
         
     private:
         std::shared_ptr<Cartridge> _cartridge;
+        std::shared_ptr<Controller> _controller;
         std::shared_ptr<PPU> _ppu;
         uint64_t _cpuClock;
         uint64_t _ppuClock;
@@ -48,6 +50,7 @@ namespace nes_emu {
         ~Memory();
         
         void setCartridge(std::shared_ptr<Cartridge> cartridge);
+        void setController(std::shared_ptr<Controller> controller);
         void setPPU(std::shared_ptr<PPU> ppu);
         
         uint64_t cpuClock() const;

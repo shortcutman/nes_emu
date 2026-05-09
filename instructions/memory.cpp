@@ -8,6 +8,7 @@
 #include "memory.hpp"
 
 #include "cartridge.hpp"
+#include "input_controller.hpp"
 #include "ppu.hpp"
 
 #include <algorithm>
@@ -27,6 +28,10 @@ nes_emu::Memory::~Memory() {
 
 void nes_emu::Memory::setCartridge(std::shared_ptr<Cartridge> cartridge) {
     _cartridge = cartridge;
+}
+
+void nes_emu::Memory::setController(std::shared_ptr<Controller> controller) {
+    _controller = controller;
 }
 
 void nes_emu::Memory::setPPU(std::shared_ptr<PPU> ppu) {
@@ -69,6 +74,10 @@ uint8_t nes_emu::Memory::read_uint8(const uint16_t address) const {
         return _internalRAM[address & 0x07FF];
     } else if (address <= nes_emu::Memory::MaxPPURegisterMirrorAddress) {
         return _ppu->readRegister_uint8(address);
+    } else if (address == 0x4016) {
+        return _controller->readJoy1();
+    } else if (address == 0x4017) {
+        return _controller->readJoy2();
     } else if (address <= nes_emu::Memory::LastAPUIORegister) {
         return _apuRegisters[address & 0x12];
     } else if (address <= nes_emu::Memory::LastAPUIOTestModeRegister) {
@@ -111,6 +120,8 @@ void nes_emu::Memory::write(const uint16_t address, const uint8_t value) {
 #warning CPU should suspend for 513 or 514 cycles
             _ppu->oamDMA(readPage(value));
             advanceClock(513);
+        } else if (address == 0x4016) {
+            _controller->writeStrobe(value);
         } else {
             _apuRegisters[address & 0x12] = value;
         }
