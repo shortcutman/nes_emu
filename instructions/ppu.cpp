@@ -166,6 +166,7 @@ uint8_t nes_emu::PPU::readStatusRegister() {
     auto result = _statusRegister;
     _statusRegister &= ~PPUStatus::VerticalBlankStarted; //vsync flag cleared after read
     _addressRegister = 0x0000;
+    _w = false;
     return result;
 }
 
@@ -187,6 +188,14 @@ void nes_emu::PPU::writeScrollRegister(uint8_t input) {
         return;
     }
 
+    if (_w == false) {
+        _scrollX = input;
+    } else {
+        _scrollY = input;
+    }
+
+    _w = !_w;
+
     //TODO: Scroll not implemented
 }
 
@@ -194,10 +203,14 @@ void nes_emu::PPU::writeAddressRegister(uint8_t input) {
     if (_ppuCycles < PPUPowerUpCycles) {
         return;
     }
-    
-    uint16_t newAddress = input;
-    newAddress += _addressRegister << 8;
-    _addressRegister = newAddress;
+
+    if (_w == false) {
+        _addressRegister = input << 8;
+    } else {
+        _addressRegister = (_addressRegister & ~0xff) | input;
+    }
+
+    _w = !_w;
 }
 
 uint8_t nes_emu::PPU::readDataRegister() {

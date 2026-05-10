@@ -60,6 +60,10 @@ namespace nes_emu {
         uint8_t _oamAddressRegister;
         uint16_t _addressRegister;
         uint8_t _dataRegisterBuffer;
+
+        bool _w = false;
+        uint8_t _scrollX;
+        uint8_t _scrollY;
         
         uint64_t _ppuCycles;
         uint64_t _scanLine;
