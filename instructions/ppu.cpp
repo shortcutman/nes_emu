@@ -147,7 +147,7 @@ void nes_emu::PPU::writeControlRegister(uint8_t input) {
     if (_controlRegister & PPUControl::GenerateNMI &&
         input & PPUControl::GenerateNMI &&
         _statusRegister & PPUStatus::VerticalBlankStarted) {
-#warning I think this logic is off
+        //TODO: I think this logic is off
         throw std::runtime_error("unhandled condition, this should immediately trigger an NMI interrupt");
     }
     
@@ -186,6 +186,8 @@ void nes_emu::PPU::writeScrollRegister(uint8_t input) {
     if (_ppuCycles < PPUPowerUpCycles) {
         return;
     }
+
+    //TODO: Scroll not implemented
 }
 
 void nes_emu::PPU::writeAddressRegister(uint8_t input) {

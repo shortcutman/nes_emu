@@ -129,7 +129,7 @@ void nes_emu::PPU::renderOAMTiles(Frame &frame) {
         throw std::runtime_error("8x16 sprites not yet implemented");
     }
 
-#warning OAM Attribute Priority not implemented
+//TODO: OAM Attribute Priority not implemented
     
     uint8_t nametable = (_controlRegister & 0x08) ? 1 : 0;
     
