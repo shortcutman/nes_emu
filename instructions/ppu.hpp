@@ -30,6 +30,17 @@ namespace nes_emu {
             PPUMasterSlaveSelect = 0x40,
             GenerateNMI = 0x80,
         };
+
+        enum PPUMask : uint8_t {
+            Greyscale = 0x01,
+            ShowBGLeftMostEight = 0x02,
+            ShowSpriteLeftMostEight = 0x04,
+            EnableBackground = 0x08,
+            EnableSprite = 0x10,
+            EmphasizeRed = 0x20,
+            EmphasizeGreen = 0x40,
+            EmphasizeBlue = 0x80,
+        };
         
         enum PPUStatus : uint8_t {
             SpriteOverflow = 0x20,

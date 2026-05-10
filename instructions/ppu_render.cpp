@@ -74,11 +74,11 @@ nes_emu::PPU::ColouredTile flipVertical(nes_emu::PPU::ColouredTile tile) {
 nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     PPU::Frame frame;
     
-    if (_maskRegister & 0x08) {
+    if (_maskRegister & PPUMask::EnableBackground) {
         renderBackgroundTiles(frame);
     }
     
-    if (_maskRegister & 0x10) {
+    if (_maskRegister & PPUMask::EnableSprite) {
         renderOAMTiles(frame);
     }
     
@@ -87,8 +87,13 @@ nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
 
 nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
     PPU::Frame frame;
+
+    uint16_t t = 0;
+    if (!(_maskRegister & PPUMask::ShowSpriteLeftMostEight)) {
+        t++;
+    }
     
-    for (uint16_t t = 0; t < 256; t++) {
+    for (; t < 256; t++) {
         uint16_t xOffset = t % 20 * 8;
         uint16_t yOffset = t / 20 * 8;
 
@@ -106,7 +111,13 @@ nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
 }
 
 void nes_emu::PPU::renderBackgroundTiles(Frame &frame) {
-    for (uint16_t bgIndex = 0; bgIndex < BackgroundTileCount; bgIndex++) {
+
+    uint16_t bgIndex = 0;
+    if (!(_maskRegister & PPUMask::ShowBGLeftMostEight)) {
+        bgIndex++;
+    }
+
+    for (; bgIndex < BackgroundTileCount; bgIndex++) {
         uint16_t xOffset = bgIndex % 32;
         uint16_t yOffset = bgIndex / 32;
 
