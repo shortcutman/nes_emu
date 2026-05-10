@@ -122,7 +122,7 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame) {
         uint16_t yOffset = bgIndex / 32;
 
         auto tileIndex = _vram[bgIndex];
-        uint8_t bank = (_controlRegister & 0x10) ? 1 : 0;
+        uint8_t bank = (_controlRegister & PPUControl::BackgroundPatternTableAddress) ? 1 : 0;
         uint16_t tileByte = bank * PatternTableSizeBytes + tileIndex * TileSizeBytes;
         auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
         auto colouredTile = colourTile(bank, xOffset, yOffset, tile);
@@ -136,13 +136,13 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame) {
 }
 
 void nes_emu::PPU::renderOAMTiles(Frame &frame) {
-    if (_controlRegister & 0x20) {
+    if (_controlRegister & PPUControl::SpriteSize) {
         throw std::runtime_error("8x16 sprites not yet implemented");
     }
 
 //TODO: OAM Attribute Priority not implemented
     
-    uint8_t nametable = (_controlRegister & 0x08) ? 1 : 0;
+    uint8_t nametable = (_controlRegister & PPUControl::SpritePatternTableAddress) ? 1 : 0;
     
     for (int8_t oamIndex = 0; oamIndex < MaxOAMCount; oamIndex++) {
         uint8_t oamMemoryStart = oamIndex * 4;
