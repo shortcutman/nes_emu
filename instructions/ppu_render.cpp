@@ -127,10 +127,10 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame) {
         auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
         auto colouredTile = colourTile(bank, xOffset, yOffset, tile);
 
-        for (uint8_t x = 0; x < 8; x++) {
-            for (uint8_t y = 0; y < 8; y++) {
-                frame[x + xOffset * 8 + (y + (yOffset*8)) * FrameWidth] = colouredTile[x + y * 8];
-            }
+        for (uint8_t y = 0; y < 8; y++) {
+            std::copy(&colouredTile[y * 8],
+                        &colouredTile[y * 8 + 8],
+                        &frame[xOffset * 8 + (y + (yOffset * 8)) * FrameWidth]);
         }
     }
 }
