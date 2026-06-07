@@ -19,6 +19,15 @@ namespace nes_emu {
     public:
         typedef std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> Colour;
         typedef std::array<Colour, 8*8> ColouredTile;
+
+        struct Rect {
+            int t, b;
+            int l, r;
+        };
+
+        struct Shift {
+            int x, y;
+        };
         
     protected:
         enum PPUControl : uint8_t {
@@ -104,7 +113,7 @@ namespace nes_emu {
         void write_uint8(uint16_t address, uint8_t value);
         
     protected:
-        void renderBackgroundTiles(Frame& frame, uint32_t nametable);
+        void renderBackgroundTiles(Frame& frame, uint32_t nametable, Rect rect, Shift shift);
         void renderOAMTiles(Frame& frame);
         PaletteTile constructTile(const uint8_t* data);
         ColouredTile colourTile(uint8_t nametable,

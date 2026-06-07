@@ -75,7 +75,15 @@ nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     PPU::Frame frame;
     
     if (_maskRegister & PPUMask::EnableBackground) {
-        renderBackgroundTiles(frame, _controlRegister & PPUControl::NameTableAddressBits);
+        Rect rect1 { .t = _scrollY, .b = FrameHeight, .l = _scrollX, .r = FrameWidth };
+        Shift shift1 { .x = _scrollX, .y = _scrollY * -1 };
+        renderBackgroundTiles(frame, _controlRegister & PPUControl::NameTableAddressBits, rect1, shift1);
+
+        if (_scrollX != 0 || _scrollY != 0) {
+            Rect rect2 { .t = 0, .b = _scrollY, .l = 0, .r = _scrollX };
+            Shift shift2 { .x = 0, .y = FrameHeight - _scrollY};
+            renderBackgroundTiles(frame, 0, rect2, shift2);
+        }
     }
     
     if (_maskRegister & PPUMask::EnableSprite) {
@@ -110,27 +118,39 @@ nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
     return frame;
 }
 
-void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable) {
+void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect rect, Shift shift) {
+    for (int yIdx = 0; yIdx < 30; yIdx++) {
+        if (((yIdx + 1) * 8) < rect.t || (yIdx) * 8 > rect.b) {
+            continue;
+        }
 
-    uint16_t bgIndex = 0;
-    if (!(_maskRegister & PPUMask::ShowBGLeftMostEight)) {
-        bgIndex++;
-    }
+        for (int xIdx = 0; xIdx < 32; xIdx++) {
+            if (((xIdx + 1) * 8) < rect.l) {
+                continue;
+            }
 
-    for (; bgIndex < BackgroundTileCount; bgIndex++) {
-        uint16_t xOffset = bgIndex % 32;
-        uint16_t yOffset = bgIndex / 32;
+            const size_t bgIndex = yIdx * 32 + xIdx;
+            auto tileIndex = _vram[demirrorVRAMAddress(0x2000 + nametable * 0x400 + bgIndex)];
+            uint8_t bank = (_controlRegister & PPUControl::BackgroundPatternTableAddress) ? 1 : 0;
+            uint16_t tileByte = bank * PatternTableSizeBytes + tileIndex * TileSizeBytes;
+            auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
+            auto colouredTile = colourTile(bank, xIdx, yIdx, tile);
 
-        auto tileIndex = _vram[demirrorVRAMAddress(0x2000 + nametable * 0x400 + bgIndex)];
-        uint8_t bank = (_controlRegister & PPUControl::BackgroundPatternTableAddress) ? 1 : 0;
-        uint16_t tileByte = bank * PatternTableSizeBytes + tileIndex * TileSizeBytes;
-        auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
-        auto colouredTile = colourTile(bank, xOffset, yOffset, tile);
+            int yStart = 0;
+            if ((yIdx * 8) < rect.t) {
+                yStart = std::abs(yIdx * 8 - rect.t);
+            }
 
-        for (uint8_t y = 0; y < 8; y++) {
-            std::copy(&colouredTile[y * 8],
-                        &colouredTile[y * 8 + 8],
-                        &frame[xOffset * 8 + (y + (yOffset * 8)) * FrameWidth]);
+            int yEnd = 8;
+            if ((yIdx + 1) * 8 > rect.b) {
+                yEnd = rect.b - yIdx * 8;
+            }
+
+            for (uint8_t y = yStart; y < yEnd; y++) {
+                std::copy(&colouredTile[y * 8],
+                          &colouredTile[y * 8 + 8],
+                          &frame[xIdx * 8 + (y + (yIdx * 8) + shift.y) * FrameWidth]);
+            }
         }
     }
 }
