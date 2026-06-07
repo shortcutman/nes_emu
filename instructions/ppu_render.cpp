@@ -75,7 +75,7 @@ nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     PPU::Frame frame;
     
     if (_maskRegister & PPUMask::EnableBackground) {
-        renderBackgroundTiles(frame);
+        renderBackgroundTiles(frame, _controlRegister & PPUControl::NameTableAddressBits);
     }
     
     if (_maskRegister & PPUMask::EnableSprite) {
@@ -110,7 +110,7 @@ nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
     return frame;
 }
 
-void nes_emu::PPU::renderBackgroundTiles(Frame &frame) {
+void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable) {
 
     uint16_t bgIndex = 0;
     if (!(_maskRegister & PPUMask::ShowBGLeftMostEight)) {
@@ -121,7 +121,7 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame) {
         uint16_t xOffset = bgIndex % 32;
         uint16_t yOffset = bgIndex / 32;
 
-        auto tileIndex = _vram[bgIndex];
+        auto tileIndex = _vram[demirrorVRAMAddress(0x2000 + nametable * 0x400 + bgIndex)];
         uint8_t bank = (_controlRegister & PPUControl::BackgroundPatternTableAddress) ? 1 : 0;
         uint16_t tileByte = bank * PatternTableSizeBytes + tileIndex * TileSizeBytes;
         auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));

@@ -104,7 +104,7 @@ namespace nes_emu {
         void write_uint8(uint16_t address, uint8_t value);
         
     protected:
-        void renderBackgroundTiles(Frame& frame);
+        void renderBackgroundTiles(Frame& frame, uint32_t nametable);
         void renderOAMTiles(Frame& frame);
         PaletteTile constructTile(const uint8_t* data);
         ColouredTile colourTile(uint8_t nametable,
