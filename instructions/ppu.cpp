@@ -137,7 +137,9 @@ void nes_emu::PPU::writeRegister_uint8(uint16_t address, uint8_t value) {
 }
 
 void nes_emu::PPU::oamDMA(std::array<uint8_t, 256> page) {
-    _oam = std::move(page);
+    for (auto value : page) {
+        writeOAMDataRegister(value);
+    }
 }
 
 void nes_emu::PPU::writeControlRegister(uint8_t input) {
