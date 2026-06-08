@@ -87,7 +87,7 @@ namespace nes_emu {
         
         void setCartridge(std::shared_ptr<const Cartridge> cartridge);
         
-        void advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInterrupt);
+        void advanceClockAndCheckInterrupt(uint64_t cycles, bool& render, bool& nmiInterrupt);
         
         uint8_t readRegister_uint8(uint16_t address);
         void writeRegister_uint8(uint16_t address, uint8_t value);

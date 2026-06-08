@@ -260,11 +260,11 @@ TEST_F(PPUTest, OAMDMA) {
 }
 
 TEST_F(PPUTest, ClockScanLineSingleIncrement) {
-    bool nmiInterruptTest = false;
+    bool render = false, nmiInterruptTest = false;
     
     EXPECT_EQ(readStatusRegister(), 0x00);
     
-    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
     
     EXPECT_EQ(_scanLine, 1);
     EXPECT_EQ(nmiInterruptTest, false);
@@ -272,78 +272,78 @@ TEST_F(PPUTest, ClockScanLineSingleIncrement) {
 }
 
 TEST_F(PPUTest, ClockScanLineMultipleIncrementEnableInterrupt) {
-    bool nmiInterruptTest = false;
+    bool render = false, nmiInterruptTest = false;
     _controlRegister = 0x80;
     
     EXPECT_EQ(_scanLine, 0);
     EXPECT_EQ(readStatusRegister(), 0x00);
     
     for (int i = 1; i < 262; i++) {
-        advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+        advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
         EXPECT_EQ(_scanLine, i);
         EXPECT_EQ(nmiInterruptTest, i == 241);
         EXPECT_EQ(readStatusRegister(), i == 241 ? 0x80 : 0x00);
     }
     
-    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
     EXPECT_EQ(_scanLine, 0);
     EXPECT_EQ(nmiInterruptTest, false);
     EXPECT_EQ(readStatusRegister(), 0x00);
 }
 
 TEST_F(PPUTest, ClockScanLineMultipleIncrementDisableInterrupt) {
-    bool nmiInterruptTest = false;
+    bool render = false, nmiInterruptTest = false;
     _controlRegister = 0x00;
     
     EXPECT_EQ(_scanLine, 0);
     EXPECT_EQ(readStatusRegister(), 0x00);
     
     for (int i = 1; i < 262; i++) {
-        advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+        advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
         EXPECT_EQ(_scanLine, i);
         EXPECT_EQ(nmiInterruptTest, false);
         EXPECT_EQ(readStatusRegister(), i == 241 ? 0x80 : 0x00);
     }
     
-    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
     EXPECT_EQ(_scanLine, 0);
     EXPECT_EQ(nmiInterruptTest, false);
     EXPECT_EQ(readStatusRegister(), 0x00);
 }
 
 TEST_F(PPUTest, ClockScanLineVSyncFlagClearInterruptEnable) {
-    bool nmiInterruptTest = false;
+    bool render = false, nmiInterruptTest = false;
     _controlRegister = 0x80;
     
     _scanLine = 240;
     EXPECT_EQ(readStatusRegister(), 0x00);
     
-    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
     EXPECT_EQ(_scanLine, 241);
     EXPECT_EQ(nmiInterruptTest, true);
     EXPECT_EQ(readStatusRegister(), 0x80);
     EXPECT_EQ(readStatusRegister(), 0x00); //flag should be cleared after read
     
-    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
     EXPECT_EQ(_scanLine, 242);
     EXPECT_EQ(nmiInterruptTest, false);
     EXPECT_EQ(readStatusRegister(), 0x00);
 }
 
 TEST_F(PPUTest, ClockScanLineVSyncFlagClearInterruptDisable) {
-    bool nmiInterruptTest = false;
+    bool render = false, nmiInterruptTest = false;
     _controlRegister = 0x00;
     
     _scanLine = 240;
     EXPECT_EQ(readStatusRegister(), 0x00);
     
-    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
     EXPECT_EQ(_scanLine, 241);
     EXPECT_EQ(nmiInterruptTest, false);
     EXPECT_EQ(readStatusRegister(), 0x80);
     EXPECT_EQ(readStatusRegister(), 0x00); //flag should be cleared after read
     
-    advanceClockAndCheckInterrupt(341, nmiInterruptTest);
+    advanceClockAndCheckInterrupt(341, render, nmiInterruptTest);
     EXPECT_EQ(_scanLine, 242);
     EXPECT_EQ(nmiInterruptTest, false);
     EXPECT_EQ(readStatusRegister(), 0x00);
@@ -351,10 +351,8 @@ TEST_F(PPUTest, ClockScanLineVSyncFlagClearInterruptDisable) {
 
 
 TEST_F(PPUTest, ClockScanLineNMIInterrupt) {
-    EXPECT_THROW({
-        bool nmiInterruptTest = false;
-        advanceClockAndCheckInterrupt(89344, nmiInterruptTest);
-    }, std::runtime_error);
+    bool render = false, nmiInterruptTest = false;
+    EXPECT_THROW(advanceClockAndCheckInterrupt(89344, render, nmiInterruptTest), std::runtime_error);
 }
 
 }

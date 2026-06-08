@@ -42,7 +42,7 @@ void nes_emu::PPU::setCartridge(std::shared_ptr<const Cartridge> cartridge) {
     _cartridge = cartridge;
 }
 
-void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInterrupt) {
+void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& render, bool& nmiInterrupt) {
     nmiInterrupt = false;
     _ppuCycles += cycles;
     _scanLineCycles += cycles;
@@ -56,6 +56,7 @@ void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& nmiInter
         _scanLineCycles = _scanLineCycles % PPUCyclesPerScanLine;
         
         if (_scanLine == PPUNMITriggerScanLine) {
+            render = true;
             nmiInterrupt = _controlRegister & PPUControl::GenerateNMI;
             _statusRegister |= PPUStatus::VerticalBlankStarted;
         } else if (_scanLine >= 262) {
