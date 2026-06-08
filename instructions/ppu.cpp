@@ -221,7 +221,7 @@ uint8_t nes_emu::PPU::readDataRegister() {
 
     if (_addressRegister >= 0x3f00 && _addressRegister < 0x4000) {
         dataBufferReturn = read_uint8(_addressRegister);
-        _dataRegisterBuffer = 0;
+        _dataRegisterBuffer = read_uint8(_addressRegister - 0x1000);
     } else {
         _dataRegisterBuffer = read_uint8(_addressRegister);
     }
