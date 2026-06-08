@@ -151,7 +151,7 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect 
             uint8_t bank = (_controlRegister & PPUControl::BackgroundPatternTableAddress) ? 1 : 0;
             uint16_t tileByte = bank * PatternTableSizeBytes + tileIndex * TileSizeBytes;
             auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
-            auto colouredTile = colourTile(bank, xIdx, yIdx, tile);
+            auto colouredTile = colourTile(nametable, xIdx, yIdx, tile);
 
             int yStart = 0;
             if ((yIdx * 8) < rect.t) {
@@ -252,7 +252,7 @@ nes_emu::PPU::ColouredTile nes_emu::PPU::colourTile(
                                                     std::array<uint8_t, 64>& tile) {
     std::array<nes_emu::PPU::Colour, 64> colouredTile;
     uint8_t attributeTableIndex = tileX / 4 + (tileY / 4) * 8;
-    uint8_t attributeTableValue = _vram[nametable * NameTableSizeBytes + BackgroundTileCount + attributeTableIndex];
+    uint8_t attributeTableValue = _vram[demirrorVRAMAddress(0x2000 + nametable * NameTableSizeBytes + BackgroundTileCount + attributeTableIndex)];
     
     uint8_t metatileX = tileX % 4 / 2;
     uint8_t metatileY = tileY % 4 / 2;
@@ -260,10 +260,10 @@ nes_emu::PPU::ColouredTile nes_emu::PPU::colourTile(
     uint8_t paletteStartByte = ((attributeTableValue >> bits) & 0b11) * 0x04;
     
     std::array<PPU::Colour, 4> palette;
-    palette[0] = SystemPalette[_paletteRAM[0x00]];
-    palette[1] = SystemPalette[_paletteRAM[1 + paletteStartByte + 0]];
-    palette[2] = SystemPalette[_paletteRAM[1 + paletteStartByte + 1]];
-    palette[3] = SystemPalette[_paletteRAM[1 + paletteStartByte + 2]];
+    palette[0] = SystemPalette[_paletteRAM[demirrorPaletteAddress(0x00)]];
+    palette[1] = SystemPalette[_paletteRAM[demirrorPaletteAddress(1 + paletteStartByte + 0)]];
+    palette[2] = SystemPalette[_paletteRAM[demirrorPaletteAddress(1 + paletteStartByte + 1)]];
+    palette[3] = SystemPalette[_paletteRAM[demirrorPaletteAddress(1 + paletteStartByte + 2)]];
     
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
@@ -284,9 +284,9 @@ nes_emu::PPU::ColouredTile nes_emu::PPU::colourSprite(
     
     std::array<PPU::Colour, 4> palette;
     palette[0] = std::make_tuple(0x00, 0x00, 0x00, 0x00);
-    palette[1] = SystemPalette[_paletteRAM[paletteStartByte + 0]];
-    palette[2] = SystemPalette[_paletteRAM[paletteStartByte + 1]];
-    palette[3] = SystemPalette[_paletteRAM[paletteStartByte + 2]];
+    palette[1] = SystemPalette[_paletteRAM[demirrorPaletteAddress(paletteStartByte + 0)]];
+    palette[2] = SystemPalette[_paletteRAM[demirrorPaletteAddress(paletteStartByte + 1)]];
+    palette[3] = SystemPalette[_paletteRAM[demirrorPaletteAddress(paletteStartByte + 2)]];
     
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
