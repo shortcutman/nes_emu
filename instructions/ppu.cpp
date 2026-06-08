@@ -38,7 +38,7 @@ nes_emu::PPU::~PPU() {
     
 }
 
-void nes_emu::PPU::setCartridge(std::shared_ptr<const Cartridge> cartridge) {
+void nes_emu::PPU::setCartridge(std::shared_ptr<Cartridge> cartridge) {
     _cartridge = cartridge;
 }
 
