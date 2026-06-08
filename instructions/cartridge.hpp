@@ -31,6 +31,7 @@ private:
 private:
     uint8_t _prgRomBanks;
     uint8_t _chrRomBanks;
+    uint8_t _chrRamBanks;
     uint8_t _controlByteOne;
     uint8_t _controlByteTwo;
     uint8_t _prgRamUnits;
@@ -49,6 +50,8 @@ public:
     uint8_t readCart(const uint16_t address) const;
     uint8_t readCHRRom(const uint16_t address) const;
     const uint8_t* readCHRRomDirect(const uint16_t address) const;
+
+    void writeCHRRAM(const uint16_t address, const uint8_t value); 
     
     static std::shared_ptr<Cartridge> cartridgeFromStream(std::istream& input);
     

@@ -49,6 +49,14 @@ const uint8_t* nes_emu::Cartridge::readCHRRomDirect(const uint16_t address) cons
     return &_chrROM[address];
 }
 
+void nes_emu::Cartridge::writeCHRRAM(const uint16_t address, const uint8_t value) {
+    if (_chrRamBanks == 0) {
+        throw std::runtime_error("No CHR-RAM banks found.");
+    }
+
+    _chrROM[address] = value;
+}
+
 std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std::istream& input) {
     auto cart = std::make_shared<nes_emu::Cartridge>();
         
@@ -104,16 +112,22 @@ std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std:
     }
     
     uint16_t chrROMSize = CHRROMPageSize * cart->_chrRomBanks;
-    cart->_chrROM.assign(chrROMSize, 0);
-    input.read(reinterpret_cast<char*>(cart->_chrROM.data()), chrROMSize);
+
+    if (chrROMSize == 0) {
+        cart->_chrRamBanks = 1;
+        cart->_chrROM.assign(0x2000, 0);
+    } else {
+        cart->_chrROM.assign(chrROMSize, 0);
+        input.read(reinterpret_cast<char*>(cart->_chrROM.data()), chrROMSize);
     
-    if (!input.good() && (input.gcount() == 0 && chrROMSize > 0)) {
-        std::stringstream ss;
-        ss  << "Failed to read CHR ROM, expected:"
-            << chrROMSize
-            << "but read"
-            << input.gcount();
-        throw std::runtime_error(ss.str());
+        if (!input.good() && (input.gcount() == 0 && chrROMSize > 0)) {
+            std::stringstream ss;
+            ss  << "Failed to read CHR ROM, expected:"
+                << chrROMSize
+                << "but read"
+                << input.gcount();
+            throw std::runtime_error(ss.str());
+        }
     }
 
     uint16_t prgRAMSize = PRGRAMPageSize * cart->_prgRamUnits;
