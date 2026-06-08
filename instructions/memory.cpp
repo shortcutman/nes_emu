@@ -52,11 +52,14 @@ void nes_emu::Memory::advanceClock(uint64_t cycles) {
     auto ppuCycleIncrement = cycles * 3;
     _ppuClock += ppuCycleIncrement;
     
-    bool nmiInterrupt = false;
-    _ppu->advanceClockAndCheckInterrupt(ppuCycleIncrement, nmiInterrupt);
+    bool render = false, nmiInterrupt = false;
+    _ppu->advanceClockAndCheckInterrupt(ppuCycleIncrement, render, nmiInterrupt);
+
+    if (render) {
+        _gameLoopCallback();
+    }
     
     if (nmiInterrupt) {
-        _gameLoopCallback();
         _nmiInterruptCallback();
     }
 }
