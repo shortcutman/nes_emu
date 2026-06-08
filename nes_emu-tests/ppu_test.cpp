@@ -118,7 +118,7 @@ TEST_F(PPUTest, ReadFromVRAMIncrement1) {
     EXPECT_EQ(incrementRead, 0xDC);
 }
 
-TEST_F(PPUTest, BasicWrite) {
+TEST_F(PPUTest, MappedPaletteWrite) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
     this->_ppuCycles = PPUPowerUpCycles + 1;
