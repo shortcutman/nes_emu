@@ -75,14 +75,31 @@ nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     PPU::Frame frame;
     
     if (_maskRegister & PPUMask::EnableBackground) {
+        auto base_nametable = _controlRegister & PPUControl::NameTableAddressBits;
+
         Rect rect1 { .t = _scrollY, .b = FrameHeight, .l = _scrollX, .r = FrameWidth };
         Shift shift1 { .x = _scrollX, .y = _scrollY * -1 };
-        renderBackgroundTiles(frame, _controlRegister & PPUControl::NameTableAddressBits, rect1, shift1);
+        renderBackgroundTiles(frame, base_nametable, rect1, shift1);
 
         if (_scrollX != 0 || _scrollY != 0) {
+            auto opposite_nametable = 0;
+            if (_cartridge->mirrorType() == Cartridge::MirrorType::Vertical) {
+                if (base_nametable == 0 || base_nametable == 1) {
+                    opposite_nametable = 2;
+                } else {
+                    opposite_nametable = 0;
+                }
+            } else {
+                if (base_nametable == 0 || base_nametable == 2) {
+                    opposite_nametable = 1;
+                } else {
+                    opposite_nametable = 0;
+                }
+            }
+
             Rect rect2 { .t = 0, .b = _scrollY, .l = 0, .r = _scrollX };
             Shift shift2 { .x = 0, .y = FrameHeight - _scrollY};
-            renderBackgroundTiles(frame, 0, rect2, shift2);
+            renderBackgroundTiles(frame, opposite_nametable, rect2, shift2);
         }
     }
     
