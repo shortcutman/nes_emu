@@ -129,7 +129,10 @@ TEST_F(PPUTest, BasicWrite) {
     writeAddressRegister(0xE0);
 
     EXPECT_EQ(this->_addressRegister, 0x3FE0);
+
+    EXPECT_EQ(this->_paletteRAM[0], 0x00);
     EXPECT_NO_THROW(writeDataRegister(0x34));
+    EXPECT_EQ(this->_paletteRAM[0], 0x34);
 }
 
 TEST_F(PPUTest, WriteToVRAMIncrement32) {
