@@ -9,11 +9,11 @@
 
 #include "cartridge.hpp"
 
-#include <cstdint>
-#include <tuple>
 #include <array>
 #include <algorithm>
+#include <cstdint>
 #include <iterator>
+#include <tuple>
 
 namespace {
 
@@ -130,7 +130,7 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect 
             }
 
             const size_t bgIndex = yIdx * 32 + xIdx;
-            auto tileIndex = _vram[demirrorVRAMAddress(0x2000 + nametable * 0x400 + bgIndex)];
+            uint32_t tileIndex = _vram[demirrorVRAMAddress(0x2000 + nametable * 0x400 + bgIndex)];
             uint8_t bank = (_controlRegister & PPUControl::BackgroundPatternTableAddress) ? 1 : 0;
             uint16_t tileByte = bank * PatternTableSizeBytes + tileIndex * TileSizeBytes;
             auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
