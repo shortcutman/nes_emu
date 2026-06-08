@@ -118,6 +118,20 @@ TEST_F(PPUTest, ReadFromVRAMIncrement1) {
     EXPECT_EQ(incrementRead, 0xDC);
 }
 
+TEST_F(PPUTest, BasicWrite) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
+    this->_cartridge = cart;
+    this->_ppuCycles = PPUPowerUpCycles + 1;
+    
+    std::fill(std::begin(_vram), std::end(_vram), 0x00);
+
+    writeAddressRegister(0x3F);
+    writeAddressRegister(0xE0);
+
+    EXPECT_EQ(this->_addressRegister, 0x3FE0);
+    EXPECT_NO_THROW(writeDataRegister(0x34));
+}
+
 TEST_F(PPUTest, WriteToVRAMIncrement32) {
     auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
     this->_cartridge = cart;
