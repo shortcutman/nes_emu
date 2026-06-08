@@ -216,8 +216,14 @@ void nes_emu::PPU::writeAddressRegister(uint8_t input) {
 
 uint8_t nes_emu::PPU::readDataRegister() {
     auto dataBufferReturn = _dataRegisterBuffer;
+
+    if (_addressRegister >= 0x3f00 && _addressRegister < 0x4000) {
+        dataBufferReturn = read_uint8(_addressRegister);
+        _dataRegisterBuffer = 0;
+    } else {
+        _dataRegisterBuffer = read_uint8(_addressRegister);
+    }
     
-    _dataRegisterBuffer = read_uint8(_addressRegister);
     if (_controlRegister & PPUControl::VRAMAddressIncrement) {
         _addressRegister += 32;
     } else {
@@ -243,7 +249,7 @@ uint8_t nes_emu::PPU::read_uint8(uint16_t address) {
     } else if (address < 0x3EFF) {
         return _vram[demirrorVRAMAddress(address)];
     } else if (address < 0x3FFF) {
-        auto addressOffset = (address - 0x3EFF) & 0x1F;
+        auto addressOffset = demirrorPaletteAddress((address - 0x3F00) & 0x1F);
         return _paletteRAM[addressOffset];
     }
     
@@ -257,7 +263,7 @@ void nes_emu::PPU::write_uint8(uint16_t address, uint8_t value) {
     } else if (address >= 0x2000 && address < 0x3F00) {
         _vram[demirrorVRAMAddress(address)] = value;
     } else if (address >= 0x3F00 && address < 0x4000) {
-        auto addressOffset = address & 0x1F;
+        auto addressOffset = demirrorPaletteAddress(address & 0x1F);
         _paletteRAM[addressOffset] = value;
     } else {
         throw std::logic_error("no PPU memory at address");
@@ -302,4 +308,18 @@ uint16_t nes_emu::PPU::demirrorVRAMAddress(uint16_t address) {
     }
     
     return vramAddress;
+}
+
+uint16_t nes_emu::PPU::demirrorPaletteAddress(uint16_t address) {
+    if (address == 0x10) {
+        return 0x00;
+    } else if (address == 0x14) {
+        return 0x04;
+    } else if (address == 0x18) {
+        return 0x08;
+    } else if (address == 0x1C) {
+        return 0x0C;
+    } else {
+        return address;
+    }
 }

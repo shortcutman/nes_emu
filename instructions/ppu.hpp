@@ -124,7 +124,8 @@ namespace nes_emu {
                           std::array<uint8_t, 64>& tile);
         
     private:
-        uint16_t demirrorVRAMAddress(uint16_t);
+        uint16_t demirrorVRAMAddress(uint16_t address);
+        uint16_t demirrorPaletteAddress(uint16_t address);
     };
 }
 
