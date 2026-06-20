@@ -94,8 +94,6 @@ std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::cartridgeFromStream(std:
         throw std::runtime_error("trainers unsupported");
     } else if ((cart->_controlByteOne & 0b00000010) != 0) {
         throw std::runtime_error("battery backed ram unsupported");
-    } else if ((cart->_controlByteTwo & 0x0F) != 0) {
-        throw std::runtime_error("ines 2.0 unsupported");
     }
     
     uint16_t prgROMSize = PRGROMPageSize * cart->_prgRomBanks;
