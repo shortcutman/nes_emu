@@ -78,12 +78,12 @@ nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
         auto base_nametable = _controlRegister & PPUControl::NameTableAddressBits;
 
         Rect rect1 { .t = _scrollY, .b = FrameHeight, .l = _scrollX, .r = FrameWidth };
-        Shift shift1 { .x = _scrollX, .y = _scrollY * -1 };
+        Shift shift1 { .x = _scrollX * -1, .y = _scrollY * -1 };
         renderBackgroundTiles(frame, base_nametable, rect1, shift1);
 
         if (_scrollX != 0 || _scrollY != 0) {
             auto opposite_nametable = 0;
-            if (_cartridge->mirrorType() == Cartridge::MirrorType::Vertical) {
+            if (_cartridge->mirrorType() == Cartridge::MirrorType::Horizontal) {
                 if (base_nametable == 0 || base_nametable == 1) {
                     opposite_nametable = 2;
                 } else {
@@ -97,11 +97,13 @@ nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
                 }
             }
 
-            Rect rect2 { .t = 0, .b = _scrollY, .l = 0, .r = _scrollX };
-            Shift shift2 { .x = 0, .y = FrameHeight - _scrollY};
+            Rect rect2 { .t = 0, .b = _scrollY == 0 ? FrameHeight : _scrollY,
+                         .l = 0, .r = _scrollX == 0 ? FrameWidth : _scrollX };
+            Shift shift2 { .x = _scrollX == 0 ? 0 : FrameWidth - _scrollX,
+                           .y = _scrollY == 0 ? 0 : FrameHeight - _scrollY};
             renderBackgroundTiles(frame, opposite_nametable, rect2, shift2);
         }
-    }
+    } 
     
     if (_maskRegister & PPUMask::EnableSprite) {
         renderOAMTiles(frame);
@@ -137,12 +139,12 @@ nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
 
 void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect rect, Shift shift) {
     for (int yIdx = 0; yIdx < 30; yIdx++) {
-        if (((yIdx + 1) * 8) < rect.t || (yIdx) * 8 > rect.b) {
+        if (((yIdx + 1) * 8) < rect.t || yIdx * 8 > rect.b) {
             continue;
         }
 
         for (int xIdx = 0; xIdx < 32; xIdx++) {
-            if (((xIdx + 1) * 8) < rect.l) {
+            if (((xIdx + 1) * 8) < rect.l || xIdx * 8 >= rect.r) {
                 continue;
             }
 
@@ -155,7 +157,7 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect 
 
             int yStart = 0;
             if ((yIdx * 8) < rect.t) {
-                yStart = std::abs(yIdx * 8 - rect.t);
+                yStart = rect.t - yIdx * 8;
             }
 
             int yEnd = 8;
@@ -163,10 +165,20 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect 
                 yEnd = rect.b - yIdx * 8;
             }
 
-            for (uint8_t y = yStart; y < yEnd; y++) {
-                std::copy(&colouredTile[y * 8],
-                          &colouredTile[y * 8 + 8],
-                          &frame[xIdx * 8 + (y + (yIdx * 8) + shift.y) * FrameWidth]);
+            int xStart = 0;
+            if ((xIdx * 8) < rect.l) {
+                xStart = rect.l - xIdx * 8;
+            }
+
+            int xEnd = 8;
+            if ((xIdx + 1) * 8 > rect.r) {
+                xEnd = rect.r - xIdx * 8 + 1;
+            }
+
+            for (uint16_t y = yStart; y < yEnd; y++) {
+                std::copy(&colouredTile[y * 8 + xStart],
+                          &colouredTile[y * 8 + xEnd],
+                          &frame.at((y + (yIdx * 8) + shift.y) * FrameWidth + xIdx * 8 + xStart + shift.x));
             }
         }
     }
@@ -179,26 +191,8 @@ void nes_emu::PPU::renderOAMTiles(Frame &frame) {
 
 //TODO: OAM Attribute Priority not implemented
     
-    uint8_t nametable = (_controlRegister & PPUControl::SpritePatternTableAddress) ? 1 : 0;
-    
     for (int8_t oamIndex = 0; oamIndex < MaxOAMCount; oamIndex++) {
-        uint8_t oamMemoryStart = oamIndex * 4;
-        uint8_t yPosition = _oam[oamMemoryStart + 0];
-        uint8_t tileIndex = _oam[oamMemoryStart + 1];
-        uint8_t attributes = _oam[oamMemoryStart + 2];
-        uint8_t xPosition = _oam[oamMemoryStart + 3];
-        
-        uint16_t tileByte = nametable * PatternTableSizeBytes + tileIndex * TileSizeBytes;
-        auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
-        auto colouredSprite  = colourSprite(attributes & 0x03, tile);
-        
-        if (attributes & 0x40) {
-            colouredSprite = flipHorizontal(colouredSprite);
-        }
-        
-        if (attributes & 0x80) {
-            colouredSprite = flipVertical(colouredSprite);
-        }
+        auto [xPosition, yPosition, colouredSprite] = getSprite(oamIndex);
         
         for (uint8_t y = 0; y < 8; y++) {
             if (yPosition + y >= FrameHeight) {
@@ -296,4 +290,27 @@ nes_emu::PPU::ColouredTile nes_emu::PPU::colourSprite(
     }
     
     return colouredTile;
+}
+
+std::tuple<uint16_t, uint16_t, nes_emu::PPU::ColouredTile> nes_emu::PPU::getSprite(size_t index) {
+    uint8_t nametable = (_controlRegister & PPUControl::SpritePatternTableAddress) ? 1 : 0;
+    uint8_t oamMemoryStart = index * 4;
+    uint8_t yPosition = _oam[oamMemoryStart + 0];
+    uint8_t tileIndex = _oam[oamMemoryStart + 1];
+    uint8_t attributes = _oam[oamMemoryStart + 2];
+    uint8_t xPosition = _oam[oamMemoryStart + 3];
+    
+    uint16_t tileByte = nametable * PatternTableSizeBytes + tileIndex * TileSizeBytes;
+    auto tile = constructTile(_cartridge->readCHRRomDirect(tileByte));
+    auto colouredSprite  = colourSprite(attributes & 0x03, tile);
+
+    if (attributes & 0x40) {
+        colouredSprite = flipHorizontal(colouredSprite);
+    }
+    
+    if (attributes & 0x80) {
+        colouredSprite = flipVertical(colouredSprite);
+    }
+
+    return std::make_tuple(xPosition, yPosition, colouredSprite);
 }

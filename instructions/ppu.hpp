@@ -122,6 +122,7 @@ namespace nes_emu {
                         std::array<uint8_t, 64>& tile);
         ColouredTile colourSprite(uint8_t palette,
                           std::array<uint8_t, 64>& tile);
+        std::tuple<uint16_t, uint16_t, ColouredTile> getSprite(size_t index);
         
     private:
         uint16_t demirrorVRAMAddress(uint16_t address);
