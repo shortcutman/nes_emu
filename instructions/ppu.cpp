@@ -54,6 +54,12 @@ void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& render, 
     if (_scanLineCycles >= PPUCyclesPerScanLine) {
         _scanLine += _scanLineCycles / PPUCyclesPerScanLine;
         _scanLineCycles = _scanLineCycles % PPUCyclesPerScanLine;
+
+        uint16_t yPosition = _oam[0];
+        uint16_t xPosition = _oam[3];
+        if (_scanLine == yPosition && /*xPosition <= _scanLineCycles &&*/ _maskRegister & PPUMask::EnableSprite) {
+            _statusRegister |= PPUStatus::SpriteZeroHit;
+        }
         
         if (_scanLine == PPUNMITriggerScanLine) {
             render = true;
@@ -62,6 +68,7 @@ void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& render, 
         } else if (_scanLine >= 262) {
             _scanLine = 0;
             _statusRegister &= ~PPUStatus::VerticalBlankStarted;
+            _statusRegister &= ~PPUStatus::SpriteZeroHit;
         }
     }
 }
