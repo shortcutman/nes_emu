@@ -114,7 +114,7 @@ namespace nes_emu {
         
     protected:
         void renderBackgroundTiles(Frame& frame, uint32_t nametable, Rect rect, Shift shift);
-        void renderOAMTiles(Frame& frame);
+        void renderOAMTiles(Frame& frame, uint8_t priority);
         PaletteTile constructTile(const uint8_t* data);
         ColouredTile colourTile(uint8_t nametable,
                         uint8_t tileX,

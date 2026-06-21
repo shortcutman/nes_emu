@@ -73,6 +73,14 @@ nes_emu::PPU::ColouredTile flipVertical(nes_emu::PPU::ColouredTile tile) {
 
 nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     PPU::Frame frame;
+
+    for (auto c : frame) {
+        c = SystemPalette[_paletteRAM[0]];
+    }
+
+    if (_maskRegister & PPUMask::EnableSprite) {
+        renderOAMTiles(frame, 1);
+    }
     
     if (_maskRegister & PPUMask::EnableBackground) {
         auto base_nametable = _controlRegister & PPUControl::NameTableAddressBits;
@@ -106,7 +114,7 @@ nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
     } 
     
     if (_maskRegister & PPUMask::EnableSprite) {
-        renderOAMTiles(frame);
+        renderOAMTiles(frame, 0);
     }
     
     return frame;
@@ -184,14 +192,17 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect 
     }
 }
 
-void nes_emu::PPU::renderOAMTiles(Frame &frame) {
+void nes_emu::PPU::renderOAMTiles(Frame &frame, uint8_t priority) {
     if (_controlRegister & PPUControl::SpriteSize) {
         throw std::runtime_error("8x16 sprites not yet implemented");
     }
 
-//TODO: OAM Attribute Priority not implemented
-    
     for (int8_t oamIndex = 0; oamIndex < MaxOAMCount; oamIndex++) {
+        uint8_t attributes = _oam[oamIndex * 4 + 2];
+        if ((attributes & 0x20) >> 5 != priority) {
+            continue;
+        }
+
         auto [xPosition, yPosition, colouredSprite] = getSprite(oamIndex);
         
         for (uint8_t y = 0; y < 8; y++) {
