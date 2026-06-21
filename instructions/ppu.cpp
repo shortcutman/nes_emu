@@ -57,7 +57,7 @@ void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& render, 
 
         uint16_t yPosition = _oam[0];
         uint16_t xPosition = _oam[3];
-        if (_scanLine == yPosition && /*xPosition <= _scanLineCycles &&*/ _maskRegister & PPUMask::EnableSprite) {
+        if (_scanLine == yPosition && /*xPosition <= _scanLineCycles &&*/ _maskRegister & PPUMask::EnableSprite && _maskRegister & PPUMask::EnableBackground) {
             _statusRegister |= PPUStatus::SpriteZeroHit;
         }
         
