@@ -190,6 +190,11 @@ void nes_emu::PPU::renderOAMTiles(Frame &frame, uint8_t priority) {
         }
 
         auto [xPosition, yPosition, _attr] = getSpriteDetails(oamIndex);
+
+        if (yPosition > 240) {
+            continue;
+        }
+
         auto [palette, spriteTile] = getSpriteTile(oamIndex);
         auto colouredSprite = colourSprite(palette, spriteTile);
         
