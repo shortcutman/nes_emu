@@ -29,12 +29,12 @@ private:
     static const uint16_t PRGRAMPageSize = 8192;
     
 private:
-    uint8_t _prgRomBanks;
-    uint8_t _chrRomBanks;
-    uint8_t _chrRamBanks;
-    uint8_t _controlByteOne;
-    uint8_t _controlByteTwo;
-    uint8_t _prgRamUnits;
+    uint8_t _prgRomBanks = 0;
+    uint8_t _chrRomBanks = 0;
+    uint8_t _chrRamBanks = 0;
+    uint8_t _controlByteOne = 0;
+    uint8_t _controlByteTwo = 0;
+    uint8_t _prgRamUnits = 0;
     
 public:
     std::vector<uint8_t> _prgROM;

@@ -37,4 +37,15 @@ TEST(CartridgeTest, readCart) {
     EXPECT_EQ(cart->readCart(0xc003), 0x60);
 }
 
+TEST(CartridgeTest, emptyCartVertical) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Vertical);
+    EXPECT_EQ(cart->mirrorType(), nes_emu::Cartridge::MirrorType::Vertical);
+}
+
+TEST(CartridgeTest, emptyCartHorizontal) {
+    auto cart = nes_emu::Cartridge::emptyCartridge(nes_emu::Cartridge::MirrorType::Horizontal);
+    EXPECT_EQ(cart->mirrorType(), nes_emu::Cartridge::MirrorType::Horizontal);
+}
+
+
 }

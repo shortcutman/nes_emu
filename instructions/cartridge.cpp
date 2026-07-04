@@ -159,6 +159,7 @@ std::shared_ptr<nes_emu::Cartridge> nes_emu::Cartridge::emptyCartridge(
             break;
         
         case MirrorType::Horizontal:
+            cart->_controlByteOne &= ~(0x01);
             break;
             
         default:
