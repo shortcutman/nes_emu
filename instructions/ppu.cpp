@@ -59,10 +59,22 @@ void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& render, 
             renderFrame(_scanLine, _scanLine + 1);
         }
 
-        uint16_t yPosition = _oam[0];
-        uint16_t xPosition = _oam[3];
-        if (_scanLine == yPosition && /*xPosition <= _scanLineCycles &&*/ _maskRegister & PPUMask::EnableSprite && _maskRegister & PPUMask::EnableBackground) {
-            _statusRegister |= PPUStatus::SpriteZeroHit;
+        auto [x, y, attributes] = getSpriteDetails(0);
+        if (_scanLine >= y && _scanLine < y + 8
+            && _maskRegister & PPUMask::EnableSprite
+            && _maskRegister & PPUMask::EnableBackground
+            && !(_statusRegister & PPUStatus::SpriteZeroHit)) {
+
+            auto [palette, tile] = getSpriteTile(0);
+
+            for (size_t idx = 0; idx < 64; idx++) {
+                if (tile[idx] != 0) {
+                    if (_scanLine == (y + idx / 8)) {
+                        _statusRegister |= PPUStatus::SpriteZeroHit;
+                        break;
+                    }
+                }
+            }
         }
         
         if (_scanLine == PPUNMITriggerScanLine) {
