@@ -69,25 +69,35 @@ nes_emu::PPU::ColouredTile flipVertical(nes_emu::PPU::ColouredTile tile) {
     return flipped;
 }
 
+nes_emu::PPU::Rect intersection(const nes_emu::PPU::Rect a,
+                             const nes_emu::PPU::Rect b) {
+    return nes_emu::PPU::Rect{
+        .t = std::max(a.t, b.t),
+        .b = std::min(a.b, b.b),
+        .l = std::max(a.l, b.l),
+        .r = std::min(a.r, b.r),
+    };
 }
 
-nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
-    PPU::Frame frame;
+}
 
-    for (auto c : frame) {
-        c = SystemPalette[_paletteRAM[0]];
-    }
+nes_emu::PPU::Frame nes_emu::PPU::getFrame() const {
+    return _frame;
+}
 
+void nes_emu::PPU::renderFrame(uint16_t from, uint16_t to) {
     if (_maskRegister & PPUMask::EnableSprite) {
-        renderOAMTiles(frame, 1);
+        renderOAMTiles(_frame, 1);
     }
     
     if (_maskRegister & PPUMask::EnableBackground) {
+        Rect render_rect{ .t = from, .b = to, .l = 0, .r = FrameWidth };
+
         auto base_nametable = _controlRegister & PPUControl::NameTableAddressBits;
 
         Rect rect1 { .t = _scrollY, .b = FrameHeight, .l = _scrollX, .r = FrameWidth };
         Shift shift1 { .x = _scrollX * -1, .y = _scrollY * -1 };
-        renderBackgroundTiles(frame, base_nametable, rect1, shift1);
+        renderBackgroundTiles(_frame, base_nametable, intersection(render_rect, rect1), shift1);
 
         if (_scrollX != 0 || _scrollY != 0) {
             auto opposite_nametable = 0;
@@ -109,15 +119,13 @@ nes_emu::PPU::Frame nes_emu::PPU::renderFrame() {
                          .l = 0, .r = _scrollX == 0 ? FrameWidth : _scrollX };
             Shift shift2 { .x = _scrollX == 0 ? 0 : FrameWidth - _scrollX,
                            .y = _scrollY == 0 ? 0 : FrameHeight - _scrollY};
-            renderBackgroundTiles(frame, opposite_nametable, rect2, shift2);
+            renderBackgroundTiles(_frame, opposite_nametable, intersection(render_rect, rect2), shift2);
         }
     } 
     
     if (_maskRegister & PPUMask::EnableSprite) {
-        renderOAMTiles(frame, 0);
+        renderOAMTiles(_frame, 0);
     }
-    
-    return frame;
 }
 
 nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
@@ -180,13 +188,13 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect 
 
             int xEnd = 8;
             if ((xIdx + 1) * 8 > rect.r) {
-                xEnd = rect.r - xIdx * 8 + 1;
+                xEnd = rect.r - xIdx * 8;
             }
 
             for (uint16_t y = yStart; y < yEnd; y++) {
-                std::copy(&colouredTile[y * 8 + xStart],
-                          &colouredTile[y * 8 + xEnd],
-                          &frame.at((y + (yIdx * 8) + shift.y) * FrameWidth + xIdx * 8 + xStart + shift.x));
+                for (uint16_t x = xStart; x < xEnd; x++) {
+                    frame.at((y + (yIdx * 8) + shift.y) * FrameWidth + xIdx * 8 + x + shift.x) = colouredTile[y * 8 + x];
+                }
             }
         }
     }

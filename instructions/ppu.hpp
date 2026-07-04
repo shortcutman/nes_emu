@@ -80,6 +80,8 @@ namespace nes_emu {
         
         typedef std::array<Colour, 256*240> Frame;
         typedef std::array<uint8_t, 8*8> PaletteTile;
+
+        Frame _frame;
         
     public:
         PPU();
@@ -94,7 +96,8 @@ namespace nes_emu {
         
         void oamDMA(std::array<uint8_t, 256> page);
         
-        Frame renderFrame();
+        Frame getFrame() const;
+        void renderFrame(uint16_t from, uint16_t to);
         Frame renderPatternTableToFrame();
         
     protected:

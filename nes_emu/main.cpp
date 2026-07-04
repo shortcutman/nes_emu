@@ -97,7 +97,7 @@ int main(int argc, const char * argv[]) {
             }
         }
 
-        auto frame = ppu->renderFrame();
+        auto frame = ppu->getFrame();
         SDL_UpdateTexture(texture, NULL, &frame[0], 4 * ScreenWidth);
 
         SDL_RenderClear(renderer);

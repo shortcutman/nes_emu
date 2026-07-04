@@ -55,6 +55,10 @@ void nes_emu::PPU::advanceClockAndCheckInterrupt(uint64_t cycles, bool& render, 
         _scanLine += _scanLineCycles / PPUCyclesPerScanLine;
         _scanLineCycles = _scanLineCycles % PPUCyclesPerScanLine;
 
+        if (_scanLine > 0 && _scanLine < 241) {
+            renderFrame(_scanLine, _scanLine + 1);
+        }
+
         uint16_t yPosition = _oam[0];
         uint16_t xPosition = _oam[3];
         if (_scanLine == yPosition && /*xPosition <= _scanLineCycles &&*/ _maskRegister & PPUMask::EnableSprite && _maskRegister & PPUMask::EnableBackground) {
