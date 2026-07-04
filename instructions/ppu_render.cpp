@@ -128,31 +128,6 @@ void nes_emu::PPU::renderFrame(uint16_t from, uint16_t to) {
     }
 }
 
-nes_emu::PPU::Frame nes_emu::PPU::renderPatternTableToFrame() {
-    PPU::Frame frame;
-
-    uint16_t t = 0;
-    if (!(_maskRegister & PPUMask::ShowSpriteLeftMostEight)) {
-        t++;
-    }
-    
-    for (; t < 256; t++) {
-        uint16_t xOffset = t % 20 * 8;
-        uint16_t yOffset = t / 20 * 8;
-
-        auto tile = constructTile(_cartridge->readCHRRomDirect(0 * 0x1000 + t * 0x10));
-        auto colouredTile = colourTile(0, xOffset/8, yOffset/8, tile);
-
-        for (uint8_t x = 0; x < 8; x++) {
-            for (uint8_t y = 0; y < 8; y++) {
-                frame[x + xOffset + (y + yOffset) * 256] = colouredTile[x + y * 8];
-            }
-        }
-    }
-    
-    return frame;
-}
-
 void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect rect, Shift shift) {
     for (int yIdx = 0; yIdx < 30; yIdx++) {
         if (((yIdx + 1) * 8) < rect.t || yIdx * 8 > rect.b) {
