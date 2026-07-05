@@ -96,7 +96,7 @@ nes_emu::PPU::Frame nes_emu::PPU::getFrame() {
 
 void nes_emu::PPU::renderFrame(uint16_t from, uint16_t to) {
     if (_maskRegister & PPUMask::EnableSprite) {
-        renderOAMTiles(_frame, 1);
+        renderOAMTiles(_frame, 1, from, to);
     }
     
     if (_maskRegister & PPUMask::EnableBackground) {
@@ -133,7 +133,7 @@ void nes_emu::PPU::renderFrame(uint16_t from, uint16_t to) {
     } 
     
     if (_maskRegister & PPUMask::EnableSprite) {
-        renderOAMTiles(_frame, 0);
+        renderOAMTiles(_frame, 0, from, to);
     }
 }
 
@@ -186,20 +186,20 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect 
     }
 }
 
-void nes_emu::PPU::renderOAMTiles(Frame &frame, uint8_t priority) {
+void nes_emu::PPU::renderOAMTiles(Frame &frame, uint8_t priority, uint16_t from, uint16_t to) {
     if (_controlRegister & PPUControl::SpriteSize) {
         throw std::runtime_error("8x16 sprites not yet implemented");
     }
 
     for (int8_t oamIndex = 0; oamIndex < MaxOAMCount; oamIndex++) {
-        uint8_t attributes = _oam[oamIndex * 4 + 2];
+        auto [xPosition, yPosition, attributes] = getSpriteDetails(oamIndex);
+
         if ((attributes & 0x20) >> 5 != priority) {
             continue;
         }
 
-        auto [xPosition, yPosition, _attr] = getSpriteDetails(oamIndex);
-
-        if (yPosition > 240) {
+        if ((from < yPosition && to < (yPosition + 8)) ||
+            (from > (yPosition + 8) && to > (yPosition + 8))) {
             continue;
         }
 
@@ -207,8 +207,11 @@ void nes_emu::PPU::renderOAMTiles(Frame &frame, uint8_t priority) {
         auto colouredSprite = colourSprite(palette, spriteTile);
         
         for (uint8_t y = 0; y < 8; y++) {
-            if (yPosition + y >= FrameHeight) {
+            auto renderLine = yPosition + y;
+            if (renderLine >= FrameHeight || renderLine > to) {
                 break;
+            } else if (renderLine < from) {
+                continue;
             }
             
             for (uint8_t x = 0; x < 8; x++) {
