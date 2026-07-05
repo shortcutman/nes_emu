@@ -16,6 +16,22 @@ namespace nes_emu {
 
 class APU {
 protected:
+    struct Pulse {
+        uint16_t _duty = 0;
+        uint16_t _lengthCounterHalt = 0;
+        uint16_t _constantVolume = 0;
+        uint16_t _volume = 0;
+
+        uint16_t _sweepEnabled = 0;
+        uint16_t _sweepPeriod = 0;
+        uint16_t _sweepNegate = 0;
+        uint16_t _sweepShift = 0;
+
+        uint16_t _timer = 0;
+        uint16_t _lengthCounterLoad = 0;
+    };
+    Pulse _pulse1;
+
     bool _enableDMC = false;
     bool _enableNoise = false;
     bool _enableTriangle = false;

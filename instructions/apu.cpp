@@ -22,6 +22,30 @@ void nes_emu::APU::writeRegister(const uint16_t address, const uint8_t value) {
 }
 
 void nes_emu::APU::writePulse1(const uint16_t address, const uint8_t value) {
+    switch (address & 0x3) {
+        case 0:
+            _pulse1._duty = value >> 6;
+            _pulse1._lengthCounterHalt = (value >> 5) & 0x1;
+            _pulse1._constantVolume = (value >> 4) & 0x1;
+            _pulse1._volume = value & 0xf;
+        break;
+
+        case 1:
+            _pulse1._sweepEnabled = value >> 7;
+            _pulse1._sweepPeriod = (value >> 4) & 0x7;
+            _pulse1._sweepNegate = (value >> 3) & 0x1;
+            _pulse1._sweepShift = value & 0x7;
+        break;
+
+        case 2:
+            _pulse1._timer = (_pulse1._timer & 0xff00) | value;
+        break;
+
+        case 3:
+            _pulse1._lengthCounterLoad = value >> 3;
+            _pulse1._timer = (_pulse1._timer & 0xff) | (static_cast<uint16_t>(value & 0x7) << 8);
+        break;
+    }
 }
 
 void nes_emu::APU::writeStatus(const uint8_t value) {

@@ -13,6 +13,27 @@ namespace {
 class APUTest : public nes_emu::APU, public ::testing::Test {
 };
 
+TEST_F(APUTest, WritePulse1) {
+    this->writeRegister(0x4000, 0b01110101);
+    EXPECT_EQ(this->_pulse1._duty, 1);
+    EXPECT_EQ(this->_pulse1._lengthCounterHalt, 1);
+    EXPECT_EQ(this->_pulse1._constantVolume, 1);
+    EXPECT_EQ(this->_pulse1._volume, 5);
+
+    this->writeRegister(0x4001, 0b01110101);
+    EXPECT_EQ(this->_pulse1._sweepEnabled, 0);
+    EXPECT_EQ(this->_pulse1._sweepPeriod, 7);
+    EXPECT_EQ(this->_pulse1._sweepNegate, 0);
+    EXPECT_EQ(this->_pulse1._sweepShift, 5);
+
+    this->writeRegister(0x4002, 0x44);
+    EXPECT_EQ(this->_pulse1._timer, 0x44);
+
+    this->writeRegister(0x4003, 0x44);
+    EXPECT_EQ(this->_pulse1._lengthCounterLoad, 0x8);
+    EXPECT_EQ(this->_pulse1._timer, 0x444);
+}
+
 TEST_F(APUTest, WriteStatus) {
     this->writeRegister(0x4015, 0);
     EXPECT_EQ(this->_enableDMC, false);
