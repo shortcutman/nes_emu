@@ -96,7 +96,7 @@ namespace nes_emu {
         
         void oamDMA(std::array<uint8_t, 256> page);
         
-        Frame getFrame() const;
+        Frame getFrame();
         void renderFrame(uint16_t from, uint16_t to);
         Frame renderPatternTableToFrame();
         

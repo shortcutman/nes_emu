@@ -84,8 +84,14 @@ nes_emu::PPU::Rect intersection(const nes_emu::PPU::Rect a,
 
 }
 
-nes_emu::PPU::Frame nes_emu::PPU::getFrame() const {
-    return _frame;
+nes_emu::PPU::Frame nes_emu::PPU::getFrame() {
+    auto temp = _frame;
+
+    for (auto& c : _frame) {
+        c = SystemPalette[_paletteRAM[0x00]];
+    }
+
+    return temp;
 }
 
 void nes_emu::PPU::renderFrame(uint16_t from, uint16_t to) {
@@ -171,7 +177,9 @@ void nes_emu::PPU::renderBackgroundTiles(Frame &frame, uint32_t nametable, Rect 
 
             for (uint16_t y = yStart; y < yEnd; y++) {
                 for (uint16_t x = xStart; x < xEnd; x++) {
-                    frame.at((y + (yIdx * 8) + shift.y) * FrameWidth + xIdx * 8 + x + shift.x) = colouredTile[y * 8 + x];
+                    if (tile[y * 8 + x] != 0) {
+                        frame.at((y + (yIdx * 8) + shift.y) * FrameWidth + xIdx * 8 + x + shift.x) = colouredTile[y * 8 + x];
+                    }
                 }
             }
         }
