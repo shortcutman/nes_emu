@@ -9,6 +9,7 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR False)
 add_compile_options(-Wall)
 
 add_library(libnes
+    instructions/apu.cpp
     instructions/cartridge.cpp
     instructions/cpu.cpp
     instructions/input_controller.cpp
@@ -32,6 +33,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(nes_test
+    nes_emu-tests/apu_test.cpp
     nes_emu-tests/cart_test.cpp
     nes_emu-tests/controller_test.cpp
     nes_emu-tests/cpu_test.cpp
