@@ -33,4 +33,5 @@ void nes_emu::APU::writeStatus(const uint8_t value) {
 }
 
 void nes_emu::APU::writeFrameCounter(const uint8_t value) {
+    _mode = value >> 7;
 }

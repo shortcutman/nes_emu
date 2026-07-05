@@ -36,4 +36,15 @@ TEST_F(APUTest, WriteStatus) {
     EXPECT_EQ(this->_enablePulse2, false);
 }
 
+TEST_F(APUTest, WriteFrameCounter) {
+    this->writeRegister(0x4017, 0);
+    EXPECT_EQ(this->_mode, 0);
+
+    this->writeRegister(0x4017, 0x80);
+    EXPECT_EQ(this->_mode, 1);
+
+    this->writeRegister(0x4017, 0);
+    EXPECT_EQ(this->_mode, 0);
+}
+
 }

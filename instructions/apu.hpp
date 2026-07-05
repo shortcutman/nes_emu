@@ -22,6 +22,8 @@ protected:
     bool _enablePulse1 = false;
     bool _enablePulse2 = false;
 
+    uint16_t _mode = 0;
+
 public:
     APU() {}
     ~APU() {}
