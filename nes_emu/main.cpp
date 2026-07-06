@@ -13,6 +13,7 @@
 
 #include <SDL3/SDL.h>
 
+#include "apu.hpp"
 #include "cartridge.hpp"
 #include "cpu.hpp"
 #include "input_controller.hpp"
@@ -37,7 +38,7 @@ namespace {
 }
 
 int main(int argc, const char * argv[]) {
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
         std::println("Could not initialise SDL: {}", SDL_GetError());
         return -1;
     }
@@ -53,6 +54,18 @@ int main(int argc, const char * argv[]) {
         SDL_PIXELFORMAT_RGBA32,
         SDL_TEXTUREACCESS_STREAMING,
         ScreenWidth, ScreenHeight);
+
+    SDL_AudioSpec audio_spec{
+        .format = SDL_AUDIO_S16,
+        .channels = 1,
+        .freq = 44100
+    };
+    SDL_AudioStream* audio_stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &audio_spec, NULL, NULL);
+    if (!audio_stream) {
+        std::println("Failed to create audio stream: {}", SDL_GetError());
+        return 1;
+    }
+    SDL_ResumeAudioStreamDevice(audio_stream);
     
     std::ifstream cartFile(argv[1], std::fstream::in | std::fstream::binary);
     
@@ -65,6 +78,7 @@ int main(int argc, const char * argv[]) {
     auto cpu = std::make_shared<nes_emu::CPU>();
     auto memory = std::make_shared<nes_emu::Memory>();
     auto ppu = std::make_shared<nes_emu::PPU>();
+    auto apu = std::make_shared<nes_emu::APU>();
     auto controller = std::make_shared<nes_emu::Controller>();
     controller->setUpdateCallback(
         [] (uint8_t controller, nes_emu::Controller::Button button) -> bool {
@@ -79,6 +93,7 @@ int main(int argc, const char * argv[]) {
     bool run = true;
     
     cpu->setMemory(memory);
+    memory->setAPU(apu);
     memory->setCartridge(cart);
     memory->setController(controller);
     memory->setPPU(ppu);
@@ -103,7 +118,23 @@ int main(int argc, const char * argv[]) {
         SDL_RenderClear(renderer);
         SDL_RenderTexture(renderer, texture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
-        
+
+        auto aud_que = SDL_GetAudioStreamQueued(audio_stream);
+        std::println("frame, aud_que sampels: {}", aud_que/sizeof(int16_t));
+
+        // while (SDL_GetAudioStreamQueued(audio_stream) > (735 * sizeof(int16_t))) {
+        //     continue;
+        // }
+
+        if (SDL_GetAudioStreamQueued(audio_stream) < (735 * sizeof(int16_t))) {
+        auto res = SDL_PutAudioStreamData(audio_stream, apu->_samples.data(), apu->sample_counter * sizeof(int16_t));
+        if (!res) {
+            std::println("Failed to put audio data: {} {}", SDL_GetError(), SDL_AUDIO_FRAMESIZE(audio_spec));
+        }
+        std::println("{} sample bytes added for: {}", apu->sample_counter, SDL_GetAudioStreamQueued(audio_stream)/sizeof(int16_t));
+        apu->clear_samples();
+        }
+
         auto now = std::chrono::high_resolution_clock::now();
         auto diff = now - last;
         std::chrono::milliseconds frameTime(1000 / 60);
@@ -120,6 +151,8 @@ int main(int argc, const char * argv[]) {
     }
 
     std::println("Instruction count: {}", instructionNumber);
+
+    SDL_PauseAudioStreamDevice(audio_stream);
     
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);

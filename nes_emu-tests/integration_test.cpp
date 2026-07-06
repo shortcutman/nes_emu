@@ -11,6 +11,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "apu.hpp"
 #include "cartridge.hpp"
 #include "memory.hpp"
 #include "cpu.hpp"
@@ -137,6 +138,7 @@ TEST_F(IntegrationTest, nestest) {
     ASSERT_TRUE(cartFile.good());
 
     this->setMemory(std::make_shared<Memory>());
+    _memory->setAPU(std::make_shared<APU>());
     _memory->setCartridge(nes_emu::Cartridge::cartridgeFromStream(cartFile));
 
     _registers->programCounter = 0xC000;

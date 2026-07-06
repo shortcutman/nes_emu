@@ -29,6 +29,10 @@ protected:
 
         uint16_t _timer = 0;
         uint16_t _lengthCounterLoad = 0;
+
+        int16_t _timerState;
+        uint16_t _dutySequenceState;
+        uint16_t _lengthCounter = 0;
     };
     Pulse _pulse1;
 
@@ -39,10 +43,23 @@ protected:
     bool _enablePulse2 = false;
 
     uint16_t _mode = 0;
+    uint16_t _frameCounterStep = 0;
+    uint64_t _cycles = 0;
+    bool carry = false;
+
+    static constexpr float sample_rate = 40100.f;
+    static constexpr float cycles_per_sample = 1789773.f / sample_rate;
+    static const int max_samples = sample_rate / 60 * 3;
 
 public:
     APU() {}
     ~APU() {}
+
+    float sample_cycles = 0;
+    uint32_t sample_counter = 0;
+    std::array<int16_t, max_samples> _samples;
+
+    void clear_samples() { sample_counter = 0; }
 
     void advanceClock(uint64_t cycles);
 

@@ -7,6 +7,7 @@
 
 #include "memory.hpp"
 
+#include "apu.hpp"
 #include "cartridge.hpp"
 #include "input_controller.hpp"
 #include "ppu.hpp"
@@ -38,6 +39,10 @@ void nes_emu::Memory::setPPU(std::shared_ptr<PPU> ppu) {
     _ppu = ppu;
 }
 
+void nes_emu::Memory::setAPU(std::shared_ptr<APU> apu) {
+    _apu = apu;
+}
+
 uint64_t nes_emu::Memory::cpuClock() const {
     return _cpuClock;
 }
@@ -54,6 +59,8 @@ void nes_emu::Memory::advanceClock(uint64_t cycles) {
     
     bool render = false, nmiInterrupt = false;
     _ppu->advanceClockAndCheckInterrupt(ppuCycleIncrement, render, nmiInterrupt);
+
+    _apu->advanceClock(cycles);
 
     if (render) {
         _gameLoopCallback();
@@ -126,7 +133,8 @@ void nes_emu::Memory::write(const uint16_t address, const uint8_t value) {
         } else if (address == 0x4016) {
             _controller->writeStrobe(value);
         } else {
-            _apuRegisters[address & 0x12] = value;
+            _apu->writeRegister(address, value);
+            // _apuRegisters[address & 0x12] = value;
         }
     } else if (address <= nes_emu::Memory::LastAPUIOTestModeRegister) {
         throw std::runtime_error("apu/io test mode not implemented");

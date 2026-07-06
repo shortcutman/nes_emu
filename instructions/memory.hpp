@@ -16,6 +16,7 @@ namespace nes_emu {
     class Cartridge;
     class Controller;
     class PPU;
+    class APU;
 
     class Memory {
         
@@ -40,6 +41,7 @@ namespace nes_emu {
         std::shared_ptr<Cartridge> _cartridge;
         std::shared_ptr<Controller> _controller;
         std::shared_ptr<PPU> _ppu;
+        std::shared_ptr<APU> _apu;
         uint64_t _cpuClock;
         uint64_t _ppuClock;
         std::function<void(void)> _nmiInterruptCallback;
@@ -52,6 +54,7 @@ namespace nes_emu {
         void setCartridge(std::shared_ptr<Cartridge> cartridge);
         void setController(std::shared_ptr<Controller> controller);
         void setPPU(std::shared_ptr<PPU> ppu);
+        void setAPU(std::shared_ptr<APU> apu);
         
         uint64_t cpuClock() const;
         uint64_t ppuClock() const;
