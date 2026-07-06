@@ -58,9 +58,21 @@ void nes_emu::APU::Pulse::step(int stepNum) {
     //length counter
     if ((stepNum == 1 || stepNum == 3) && !_lengthCounterHalt && _lengthCounter > 0) {
         _lengthCounter--;
-    }
 
-    //sweep
+        if (sweepDivider == 0 && _sweepEnabled && _sweepShift != 0) {
+            auto target = calcTargetPeriod();
+            if (target < 0x8ff && _timer >= 8) {
+                _timer = target;
+            }
+        }
+        
+        if (sweepDivider == 0 || sweepReload) {
+            sweepDivider = _sweepPeriod;
+            sweepReload = false;
+        } else {
+            sweepDivider--;
+        }
+    }
 }
 
 void nes_emu::APU::Pulse::tick(uint64_t cycles) {
@@ -72,11 +84,19 @@ void nes_emu::APU::Pulse::tick(uint64_t cycles) {
 }
 
 int16_t nes_emu::APU::Pulse::sample() {
-    if (_lengthCounter > 0 && _timerState > 8) {
+    if (_lengthCounter > 0 && _timerState > 8 && calcTargetPeriod() < 0x8ff) {
         return PulseDutySequence[_duty][_dutySequenceState % 8] * _envelope.volume();
     } else {
         return 0;
     }
+}
+
+uint16_t nes_emu::APU::Pulse::calcTargetPeriod() {
+    int16_t changeAmount = _timer >> _sweepShift;
+    if (_sweepNegate) {
+        changeAmount *= -1;
+    }
+    return _timer + changeAmount;
 }
 
 void nes_emu::APU::advanceClock(uint64_t cycles) {
@@ -144,6 +164,7 @@ void nes_emu::APU::writePulse1(const uint16_t address, const uint8_t value) {
             _pulse1._sweepPeriod = (value >> 4) & 0x7;
             _pulse1._sweepNegate = (value >> 3) & 0x1;
             _pulse1._sweepShift = value & 0x7;
+            _pulse1.sweepReload = true;
         break;
 
         case 2:

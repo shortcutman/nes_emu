@@ -29,6 +29,18 @@ protected:
         uint8_t volume();
     };
 
+    struct Sweep {
+        bool enabled = false;
+        uint16_t dividerPeriod = 0;
+        bool negate = false;
+        uint16_t shiftCount = 0;
+
+        uint16_t divider = 0;
+        bool reload = false;
+
+        void step();
+    };
+
     struct Pulse {
         uint16_t _duty = 0;
         uint16_t _lengthCounterHalt = 0;
@@ -49,9 +61,13 @@ protected:
         uint16_t _dutySequenceState;
         uint16_t _lengthCounter = 0;
 
+        uint16_t sweepDivider = 0;
+        bool sweepReload = false;
+
         void step(int stepNum);
         void tick(uint64_t cycles);
         int16_t sample();
+        uint16_t calcTargetPeriod();
     };
     Pulse _pulse1;
 
