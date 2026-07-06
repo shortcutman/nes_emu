@@ -16,11 +16,26 @@ namespace nes_emu {
 
 class APU {
 protected:
+    struct Envelope {
+        bool _constantVolume = false;
+        uint16_t _volume = 0;
+        bool _loop = false;
+
+        bool _startFlag = true;
+        uint16_t _divider = 0;
+        uint16_t _decayLevelCounter = 0;
+
+        void step();
+        uint8_t volume();
+    };
+
     struct Pulse {
         uint16_t _duty = 0;
         uint16_t _lengthCounterHalt = 0;
         uint16_t _constantVolume = 0;
         uint16_t _volume = 0;
+
+        Envelope _envelope;
 
         uint16_t _sweepEnabled = 0;
         uint16_t _sweepPeriod = 0;

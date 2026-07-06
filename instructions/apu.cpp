@@ -28,7 +28,33 @@ namespace {
     };
 }
 
+void nes_emu::APU::Envelope::step() {
+    if (!_startFlag) {
+        if (_divider == 0) {
+            _divider = _volume;
+
+            if (_decayLevelCounter != 0) {
+                _decayLevelCounter--;
+            } else if (_loop) {
+                _decayLevelCounter = 15;
+            }
+        } else {
+            _divider--;
+        }
+    } else {
+        _startFlag = false;
+        _decayLevelCounter = 15;
+        _divider = _volume;
+    }
+}
+
+uint8_t nes_emu::APU::Envelope::volume() {
+    return _constantVolume ? _volume : _decayLevelCounter;
+}
+
 void nes_emu::APU::Pulse::step(int stepNum) {
+    _envelope.step();
+
     //length counter
     if ((stepNum == 1 || stepNum == 3) && !_lengthCounterHalt && _lengthCounter > 0) {
         _lengthCounter--;
@@ -47,7 +73,7 @@ void nes_emu::APU::Pulse::tick(uint64_t cycles) {
 
 int16_t nes_emu::APU::Pulse::sample() {
     if (_lengthCounter > 0 && _timerState > 8) {
-        return PulseDutySequence[_duty][_dutySequenceState % 8] * _volume;
+        return PulseDutySequence[_duty][_dutySequenceState % 8] * _envelope.volume();
     } else {
         return 0;
     }
@@ -108,8 +134,9 @@ void nes_emu::APU::writePulse1(const uint16_t address, const uint8_t value) {
         case 0:
             _pulse1._duty = value >> 6;
             _pulse1._lengthCounterHalt = (value >> 5) & 0x1;
-            _pulse1._constantVolume = (value >> 4) & 0x1;
-            _pulse1._volume = value & 0xf;
+            _pulse1._envelope._constantVolume = (value >> 4) & 0x1;
+            _pulse1._envelope._volume = value & 0xf;
+            _pulse1._envelope._loop = _pulse1._lengthCounterHalt;
         break;
 
         case 1:
