@@ -28,6 +28,31 @@ namespace {
     };
 }
 
+void nes_emu::APU::Pulse::step(int stepNum) {
+    //length counter
+    if ((stepNum == 1 || stepNum == 3) && !_lengthCounterHalt && _lengthCounter > 0) {
+        _lengthCounter--;
+    }
+
+    //sweep
+}
+
+void nes_emu::APU::Pulse::tick(uint64_t cycles) {
+    _timerState -= cycles;
+    if (_timerState <= 0) {
+        _dutySequenceState++;
+        _timerState = _timer; //maybe a problem
+    }
+}
+
+int16_t nes_emu::APU::Pulse::sample() {
+    if (_lengthCounter > 0 && _timerState > 8) {
+        return PulseDutySequence[_duty][_dutySequenceState % 8] * _volume;
+    } else {
+        return 0;
+    }
+}
+
 void nes_emu::APU::advanceClock(uint64_t cycles) {
     if (carry) {
         cycles++;
@@ -39,13 +64,7 @@ void nes_emu::APU::advanceClock(uint64_t cycles) {
     if (_cycles >= FrameCounterMode[_mode][_frameCounterStep]) {
         //envelopes
 
-        if (_frameCounterStep == 1 || _frameCounterStep == 3) {
-            //length counter
-            if (!_pulse1._lengthCounterHalt && _pulse1._lengthCounter > 0) {
-                _pulse1._lengthCounter--;    
-            }
-            //sweep
-        }
+        _pulse1.step(_frameCounterStep);
 
         _frameCounterStep++;
         if (_frameCounterStep >= 4) {
@@ -54,21 +73,16 @@ void nes_emu::APU::advanceClock(uint64_t cycles) {
         }
     }
 
-    _pulse1._timerState -= apuDeltaCycles;
-    if (_pulse1._timerState <= 0) {
-        _pulse1._dutySequenceState++;
-        _pulse1._timerState = _pulse1._timer; //maybe a problem
-    }
+    _pulse1.tick(apuDeltaCycles);
 
     sample_cycles += cycles;
     if (sample_cycles >= cycles_per_sample) {
         sample_cycles -= cycles_per_sample;
 
         if (sample_counter < max_samples) {
-            uint8_t pulse_sample = 0;
+            uint8_t pulse_sample = _pulse1.sample();
             float mixed_sample = 0.f;
-            if (_pulse1._lengthCounter > 0 && _pulse1._timerState > 8) {
-                pulse_sample = PulseDutySequence[_pulse1._duty][_pulse1._dutySequenceState % 8] * _pulse1._volume;
+            if (pulse_sample != 0) {
                 mixed_sample = 95.52f / ((8128.f / pulse_sample) + 100.f) * std::numeric_limits<int16_t>::max();
             }
 

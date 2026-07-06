@@ -33,6 +33,10 @@ protected:
         int16_t _timerState;
         uint16_t _dutySequenceState;
         uint16_t _lengthCounter = 0;
+
+        void step(int stepNum);
+        void tick(uint64_t cycles);
+        int16_t sample();
     };
     Pulse _pulse1;
 
