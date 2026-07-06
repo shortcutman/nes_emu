@@ -132,7 +132,7 @@ void nes_emu::APU::writeRegister(const uint16_t address, const uint8_t value) {
 void nes_emu::APU::writePulse1(const uint16_t address, const uint8_t value) {
     switch (address & 0x3) {
         case 0:
-            _pulse1._duty = value >> 6;
+            _pulse1._duty = (value >> 6) & 0x3;
             _pulse1._lengthCounterHalt = (value >> 5) & 0x1;
             _pulse1._envelope._constantVolume = (value >> 4) & 0x1;
             _pulse1._envelope._volume = value & 0xf;
@@ -155,6 +155,7 @@ void nes_emu::APU::writePulse1(const uint16_t address, const uint8_t value) {
             _pulse1._lengthCounter = LengthCounterLoad[_pulse1._lengthCounterLoad];
             _pulse1._timer = (_pulse1._timer & 0xff) | (static_cast<uint16_t>(value & 0x7) << 8);
             _pulse1._dutySequenceState = 0;
+            _pulse1._envelope._startFlag = true;
         break;
     }
 }

@@ -21,7 +21,7 @@ protected:
         uint16_t _volume = 0;
         bool _loop = false;
 
-        bool _startFlag = true;
+        bool _startFlag = false;
         uint16_t _divider = 0;
         uint16_t _decayLevelCounter = 0;
 
