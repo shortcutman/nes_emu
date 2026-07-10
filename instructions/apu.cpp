@@ -8,6 +8,7 @@
 #include "apu.hpp"
 
 #include <cassert>
+#include <cmath>
 
 namespace {
     std::array<std::array<uint8_t, 8>, 4> PulseDutySequence = {{
@@ -76,16 +77,38 @@ void nes_emu::APU::Pulse::step(int stepNum) {
 }
 
 void nes_emu::APU::Pulse::tick(uint64_t cycles) {
-    _timerState -= cycles;
-    if (_timerState <= 0) {
-        _dutySequenceState++;
-        _timerState = _timer; //maybe a problem
+    for (auto i = 0; i < cycles; i++) {
+        if (flip) {
+            _timerState--;
+            if (_timerState <= 0) {
+                _dutySequenceState = (_dutySequenceState + 1) & 0x7;
+                _timerState = _timer + _timerState;
+            }
+        }
+        flip = !flip;
+
+        accumulate += PulseDutySequence[_duty][_dutySequenceState] * _envelope.volume();
+        accumlatedSamples++;
     }
+}
+
+//https://stackoverflow.com/questions/23621435/how-to-determine-alpha-smoothing-constant-of-a-lowpass-filter
+constexpr float alpha() {
+    double dt = 1.0 / nes_emu::APU::sample_rate;
+    double rc = 1.0 / (2.0 * M_PI * 22050);
+    return dt / (rc + dt);
 }
 
 int16_t nes_emu::APU::Pulse::sample() {
     if (_lengthCounter > 0 && _timerState > 8 && calcTargetPeriod() < 0x8ff) {
-        return PulseDutySequence[_duty][_dutySequenceState % 8] * _envelope.volume();
+        auto nextXSample = accumulate / accumlatedSamples;
+        accumulate = 0;
+        accumlatedSamples = 0;
+
+        // https://en.wikipedia.org/wiki/Exponential_smoothing
+        int16_t sample = alpha() * nextXSample + (1.f - alpha()) * lastSample;
+        lastSample = sample;
+        return sample;
     } else {
         return 0;
     }
@@ -99,34 +122,32 @@ uint16_t nes_emu::APU::Pulse::calcTargetPeriod() {
     return _timer + changeAmount;
 }
 
-void nes_emu::APU::advanceClock(uint64_t cycles) {
-    if (carry) {
-        cycles++;
-    }
-    carry = cycles % 2 ? true : false;
-    uint64_t apuDeltaCycles = cycles / 2;
-    _cycles += apuDeltaCycles;
+void nes_emu::APU::advanceClock(const uint64_t cpuCyclesDelta) {
+    auto cpuCyclesDeltaWithCarry = cpuCyclesDelta;
+    cpuCyclesDeltaWithCarry += carry ? 1 : 0;
+    carry = cpuCyclesDeltaWithCarry % 2 ? true : false;
+    _apuCycles += cpuCyclesDeltaWithCarry / 2;
 
-    if (_cycles >= FrameCounterMode[_mode][_frameCounterStep]) {
-        //envelopes
-
+    if (_apuCycles >= FrameCounterMode[_mode][_frameCounterStep]) {
         _pulse1.step(_frameCounterStep);
+        _pulse2.step(_frameCounterStep);
 
         _frameCounterStep++;
         if (_frameCounterStep >= 4) {
-            _cycles = 0;
+            _apuCycles = 0;
             _frameCounterStep = 0;
         }
     }
 
-    _pulse1.tick(apuDeltaCycles);
+    _pulse1.tick(cpuCyclesDelta);
+    _pulse2.tick(cpuCyclesDelta);
 
-    sample_cycles += cycles;
+    sample_cycles += cpuCyclesDelta;
     if (sample_cycles >= cycles_per_sample) {
-        sample_cycles -= cycles_per_sample;
+        sample_cycles -= std::floorf(cycles_per_sample);
 
         if (sample_counter < max_samples) {
-            uint8_t pulse_sample = _pulse1.sample();
+            uint8_t pulse_sample = _pulse1.sample() + _pulse2.sample();
             float mixed_sample = 0.f;
             if (pulse_sample != 0) {
                 mixed_sample = 95.52f / ((8128.f / pulse_sample) + 100.f) * std::numeric_limits<int16_t>::max();
@@ -141,7 +162,9 @@ void nes_emu::APU::writeRegister(const uint16_t address, const uint8_t value) {
     assert(address >= 0x4000 && address < 0x4018);
 
     if (address < 0x4004) {
-        writePulse1(address, value);
+        _pulse1.write(address & 0x03, value);
+    } else if (address < 0x4008) {
+        _pulse2.write(address & 0x03, value);
     } else if (address == 0x4015) {
         writeStatus(value);
     } else if (address == 0x4017) {
@@ -149,34 +172,34 @@ void nes_emu::APU::writeRegister(const uint16_t address, const uint8_t value) {
     }
 }
 
-void nes_emu::APU::writePulse1(const uint16_t address, const uint8_t value) {
-    switch (address & 0x3) {
+void nes_emu::APU::Pulse::write(uint16_t address, uint8_t value) {
+    switch (address) {
         case 0:
-            _pulse1._duty = (value >> 6) & 0x3;
-            _pulse1._lengthCounterHalt = (value >> 5) & 0x1;
-            _pulse1._envelope._constantVolume = (value >> 4) & 0x1;
-            _pulse1._envelope._volume = value & 0xf;
-            _pulse1._envelope._loop = _pulse1._lengthCounterHalt;
+            _duty = (value >> 6) & 0x3;
+            _lengthCounterHalt = (value >> 5) & 0x1;
+            _envelope._constantVolume = (value >> 4) & 0x1;
+            _envelope._volume = value & 0xf;
+            _envelope._loop = _lengthCounterHalt;
         break;
 
         case 1:
-            _pulse1._sweepEnabled = value >> 7;
-            _pulse1._sweepPeriod = (value >> 4) & 0x7;
-            _pulse1._sweepNegate = (value >> 3) & 0x1;
-            _pulse1._sweepShift = value & 0x7;
-            _pulse1.sweepReload = true;
+            _sweepEnabled = value >> 7;
+            _sweepPeriod = (value >> 4) & 0x7;
+            _sweepNegate = (value >> 3) & 0x1;
+            _sweepShift = value & 0x7;
+            sweepReload = true;
         break;
 
         case 2:
-            _pulse1._timer = (_pulse1._timer & 0xff00) | value;
+            _timer = (_timer & 0xff00) | value;
         break;
 
         case 3:
-            _pulse1._lengthCounterLoad = value >> 3;
-            _pulse1._lengthCounter = LengthCounterLoad[_pulse1._lengthCounterLoad];
-            _pulse1._timer = (_pulse1._timer & 0xff) | (static_cast<uint16_t>(value & 0x7) << 8);
-            _pulse1._dutySequenceState = 0;
-            _pulse1._envelope._startFlag = true;
+            _lengthCounterLoad = value >> 3;
+            _lengthCounter = LengthCounterLoad[_lengthCounterLoad];
+            _timer = (_timer & 0xff) | (static_cast<uint16_t>(value & 0x7) << 8);
+            _dutySequenceState = 0;
+            _envelope._startFlag = true;
         break;
     }
 }
@@ -192,6 +215,6 @@ void nes_emu::APU::writeStatus(const uint8_t value) {
 void nes_emu::APU::writeFrameCounter(const uint8_t value) {
     _mode = value >> 7;
 
-    _cycles = 0;
+    _apuCycles = 0;
     _frameCounterStep = 0;
 }

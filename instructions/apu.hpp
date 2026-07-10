@@ -64,12 +64,19 @@ protected:
         uint16_t sweepDivider = 0;
         bool sweepReload = false;
 
+        bool flip = false;
+        int32_t accumulate = 0;
+        uint64_t accumlatedSamples = 0;
+        int16_t lastSample = 0;
+
+        void write(uint16_t address, uint8_t value);
         void step(int stepNum);
         void tick(uint64_t cycles);
         int16_t sample();
         uint16_t calcTargetPeriod();
     };
     Pulse _pulse1;
+    Pulse _pulse2;
 
     bool _enableDMC = false;
     bool _enableNoise = false;
@@ -79,10 +86,11 @@ protected:
 
     uint16_t _mode = 0;
     uint16_t _frameCounterStep = 0;
-    uint64_t _cycles = 0;
+    uint64_t _apuCycles = 0;
     bool carry = false;
 
-    static constexpr float sample_rate = 40100.f;
+public:
+    static constexpr float sample_rate = 44100.f;
     static constexpr float cycles_per_sample = 1789773.f / sample_rate;
     static const int max_samples = sample_rate / 60 * 3;
 
@@ -96,7 +104,7 @@ public:
 
     void clear_samples() { sample_counter = 0; }
 
-    void advanceClock(uint64_t cycles);
+    void advanceClock(const uint64_t cpuCyclesDelta);
 
     void writeRegister(const uint16_t address, const uint8_t value);
 
