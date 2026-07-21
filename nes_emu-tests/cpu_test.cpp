@@ -7,6 +7,7 @@
 
 #include <gtest/gtest.h>
 
+#include "apu.hpp"
 #include "cpu.hpp"
 #include "registers.hpp"
 #include "memory.hpp"
@@ -16,7 +17,9 @@ namespace {
 
 class CPUTest : public nes_emu::CPU, public ::testing::Test {
     void SetUp() override {
-        this->setMemory(std::make_shared<nes_emu::Memory>());
+        auto memory = std::make_shared<nes_emu::Memory>();
+        memory->setAPU(std::make_shared<nes_emu::APU>());
+        this->setMemory(memory);
     }
 };
 
