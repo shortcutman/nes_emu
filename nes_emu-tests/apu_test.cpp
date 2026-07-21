@@ -17,8 +17,8 @@ TEST_F(APUTest, WritePulse1) {
     this->writeRegister(0x4000, 0b01110101);
     EXPECT_EQ(this->_pulse1._duty, 1);
     EXPECT_EQ(this->_pulse1._lengthCounterHalt, 1);
-    EXPECT_EQ(this->_pulse1._constantVolume, 1);
-    EXPECT_EQ(this->_pulse1._volume, 5);
+    EXPECT_EQ(this->_pulse1._envelope._constantVolume, 1);
+    EXPECT_EQ(this->_pulse1._envelope._volume, 5);
 
     this->writeRegister(0x4001, 0b01110101);
     EXPECT_EQ(this->_pulse1._sweepEnabled, 0);
