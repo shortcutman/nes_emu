@@ -63,20 +63,24 @@ protected:
 
         uint16_t sweepDivider = 0;
         bool sweepReload = false;
+        uint16_t targetPeriod = 0;
 
-        bool flip = false;
         int32_t accumulate = 0;
-        uint64_t accumlatedSamples = 0;
+        float accumlatedSamples = 0;
         int16_t lastSample = 0;
 
         void write(uint16_t address, uint8_t value);
         void step(int stepNum);
-        void tick(uint64_t cycles);
+        void tick();
         int16_t sample();
-        uint16_t calcTargetPeriod();
+        void calcTargetPeriod();
+
+    public:
+        int32_t apuSample();
     };
     Pulse _pulse1;
     Pulse _pulse2;
+    bool flip = false;
 
     bool _enableDMC = false;
     bool _enableNoise = false;

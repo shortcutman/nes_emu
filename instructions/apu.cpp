@@ -61,9 +61,9 @@ void nes_emu::APU::Pulse::step(int stepNum) {
         _lengthCounter--;
 
         if (sweepDivider == 0 && _sweepEnabled && _sweepShift != 0) {
-            auto target = calcTargetPeriod();
-            if (target < 0x8ff && _timer >= 8) {
-                _timer = target;
+            calcTargetPeriod();
+            if (targetPeriod < 0x8ff && _timer >= 8) {
+                _timer = targetPeriod;
             }
         }
         
@@ -76,19 +76,19 @@ void nes_emu::APU::Pulse::step(int stepNum) {
     }
 }
 
-void nes_emu::APU::Pulse::tick(uint64_t cycles) {
-    for (auto i = 0; i < cycles; i++) {
-        if (flip) {
-            _timerState--;
-            if (_timerState <= 0) {
-                _dutySequenceState = (_dutySequenceState + 1) & 0x7;
-                _timerState = _timer + _timerState;
-            }
-        }
-        flip = !flip;
+int32_t nes_emu::APU::Pulse::apuSample() {
+    if (_lengthCounter != 0 && _timer >= 8 && targetPeriod < 0x8ff) {
+        return PulseDutySequence[_duty][_dutySequenceState] * _envelope.volume();
+    } else {
+        return 0;
+    }
+}
 
-        accumulate += PulseDutySequence[_duty][_dutySequenceState] * _envelope.volume();
-        accumlatedSamples++;
+void nes_emu::APU::Pulse::tick() {
+    _timerState--;
+    if (_timerState <= 0) {
+        _dutySequenceState = (_dutySequenceState + 1) & 0x7;
+        _timerState = _timer + _timerState;
     }
 }
 
@@ -100,32 +100,27 @@ constexpr float alpha() {
 }
 
 int16_t nes_emu::APU::Pulse::sample() {
-    if (_lengthCounter > 0 && _timerState > 8 && calcTargetPeriod() < 0x8ff) {
-        auto nextXSample = accumulate / accumlatedSamples;
-        accumulate = 0;
-        accumlatedSamples = 0;
+    auto nextXSample = accumulate / accumlatedSamples;
+    accumulate = 0;
+    accumlatedSamples = 0;
+    return nextXSample;
 
-        // https://en.wikipedia.org/wiki/Exponential_smoothing
-        int16_t sample = alpha() * nextXSample + (1.f - alpha()) * lastSample;
-        lastSample = sample;
-        return sample;
-    } else {
-        return 0;
-    }
+    // https://en.wikipedia.org/wiki/Exponential_smoothing
+    // int16_t sample = alpha() * nextXSample + (1.f - alpha()) * lastSample;
+    // lastSample = sample;
+    // return sample;
 }
 
-uint16_t nes_emu::APU::Pulse::calcTargetPeriod() {
+void nes_emu::APU::Pulse::calcTargetPeriod() {
     int16_t changeAmount = _timer >> _sweepShift;
     if (_sweepNegate) {
         changeAmount *= -1;
     }
-    return _timer + changeAmount;
+    targetPeriod = _timer + changeAmount;
 }
 
 void nes_emu::APU::advanceClock(const uint64_t cpuCyclesDelta) {
     auto cpuCyclesDeltaWithCarry = cpuCyclesDelta;
-    cpuCyclesDeltaWithCarry += carry ? 1 : 0;
-    carry = cpuCyclesDeltaWithCarry % 2 ? true : false;
     _apuCycles += cpuCyclesDeltaWithCarry / 2;
 
     if (_apuCycles >= FrameCounterMode[_mode][_frameCounterStep]) {
@@ -139,14 +134,30 @@ void nes_emu::APU::advanceClock(const uint64_t cpuCyclesDelta) {
         }
     }
 
-    _pulse1.tick(cpuCyclesDelta);
-    _pulse2.tick(cpuCyclesDelta);
+    for (auto i = 0; i < cpuCyclesDelta; i++) {
+        if (flip) {
+            _pulse1.tick();
+            _pulse2.tick();
+        }
+        flip = !flip;
 
-    sample_cycles += cpuCyclesDelta;
-    if (sample_cycles >= cycles_per_sample) {
-        sample_cycles -= std::floorf(cycles_per_sample);
+        sample_cycles++;
 
-        if (sample_counter < max_samples) {
+        if (sample_cycles < cycles_per_sample) {
+            _pulse1.accumulate += _pulse1.apuSample();
+            _pulse1.accumlatedSamples++;
+            _pulse2.accumulate += _pulse2.apuSample();
+            _pulse2.accumlatedSamples++;
+        } else {
+            auto fraction = sample_cycles - cycles_per_sample;
+
+            auto pulse1apuSample = _pulse1.apuSample();
+            _pulse1.accumulate += pulse1apuSample * (1 - fraction);
+            _pulse1.accumlatedSamples += (1 - fraction);
+            auto pulse2apuSample = _pulse1.apuSample();
+            _pulse2.accumulate += pulse2apuSample * (1 - fraction);
+            _pulse2.accumlatedSamples += (1 - fraction);
+
             uint8_t pulse_sample = _pulse1.sample() + _pulse2.sample();
             float mixed_sample = 0.f;
             if (pulse_sample != 0) {
@@ -154,6 +165,13 @@ void nes_emu::APU::advanceClock(const uint64_t cpuCyclesDelta) {
             }
 
             _samples[sample_counter++] = mixed_sample;
+
+            _pulse1.accumulate = pulse1apuSample * fraction;
+            _pulse1.accumlatedSamples = fraction;
+            _pulse2.accumulate = pulse2apuSample * fraction;
+            _pulse2.accumlatedSamples = fraction;
+
+            sample_cycles = 0;
         }
     }
 }
